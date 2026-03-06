@@ -1,0 +1,425 @@
+(self.webpackChunk_N_E = self.webpackChunk_N_E || []).push([
+    [6663], {
+        6675: (e, s, l) => {
+            "use strict";
+            l.d(s, {
+                default: () => p
+            });
+            var a = l(5155),
+                i = l(2115),
+                t = l(967),
+                r = l(8001),
+                c = l(5271),
+                n = l(9721),
+                o = l(6202),
+                d = l(59);
+
+            function m(e) {
+                let {
+                    allProps: s
+                } = e;
+                return (0, a.jsx)("div", {
+                    className: "offcanvas offcanvas-start canvas-sidebar canvas-filter-product",
+                    id: "filterShop2",
+                    children: (0, a.jsxs)("div", {
+                        className: "canvas-wrapper",
+                        children: [(0, a.jsxs)("div", {
+                            className: "canvas-header",
+                            children: [(0, a.jsx)("h5", {
+                                className: "title",
+                                children: "Filter"
+                            }), (0, a.jsx)("span", {
+                                className: "icon-close link icon-close-popup close-filter",
+                                "data-bs-dismiss": "offcanvas"
+                            })]
+                        }), (0, a.jsx)("div", {
+                            className: "canvas-body",
+                            children: (0, a.jsx)(t.A, {
+                                allProps: s
+                            })
+                        }), (0, a.jsx)("div", {
+                            className: "canvas-bottom",
+                            children: (0, a.jsx)("button", {
+                                id: "reset-filter",
+                                onClick: () => s.clearFilter(),
+                                className: "tf-btn btn-reset w-100",
+                                children: (0, a.jsx)("span", {
+                                    className: "caption text-white",
+                                    children: "Reset Filters"
+                                })
+                            })
+                        })]
+                    })
+                })
+            }
+
+            function p() {
+                let [e, s] = (0, i.useReducer)(n.F, n.u), {
+                    price: l,
+                    isNew: t,
+                    deals: p,
+                    rating: h,
+                    brands: f,
+                    filtered: x,
+                    sortingOption: N,
+                    sorted: v,
+                    currentPage: j,
+                    itemPerPage: y
+                } = e, u = {
+                    ...e,
+                    setPrice: e => s({
+                        type: "SET_PRICE",
+                        payload: e
+                    }),
+                    setDeals: e => {
+                        e == p ? s({
+                            type: "SET_DEALS",
+                            payload: "All"
+                        }) : s({
+                            type: "SET_DEALS",
+                            payload: e
+                        })
+                    },
+                    setRating: e => {
+                        e == h ? s({
+                            type: "SET_RATING",
+                            payload: "All"
+                        }) : s({
+                            type: "SET_RATING",
+                            payload: e
+                        })
+                    },
+                    setIsNew: e => {
+                        s({
+                            type: "SET_ISNEW",
+                            payload: e
+                        })
+                    },
+                    setBrands: e => {
+                        f.includes(e) ? s({
+                            type: "SET_BRANDS",
+                            payload: [...f].filter(s => s != e)
+                        }) : s({
+                            type: "SET_BRANDS",
+                            payload: [...f, e]
+                        })
+                    },
+                    removeBrand: e => {
+                        s({
+                            type: "SET_BRANDS",
+                            payload: [...f].filter(s => s != e)
+                        })
+                    },
+                    setSortingOption: e => s({
+                        type: "SET_SORTING_OPTION",
+                        payload: e
+                    }),
+                    setCurrentPage: e => s({
+                        type: "SET_CURRENT_PAGE",
+                        payload: e
+                    }),
+                    setItemPerPage: e => {
+                        s({
+                            type: "SET_CURRENT_PAGE",
+                            payload: 1
+                        }), s({
+                            type: "SET_ITEM_PER_PAGE",
+                            payload: e
+                        })
+                    },
+                    clearFilter: () => {
+                        s({
+                            type: "CLEAR_FILTER"
+                        })
+                    }
+                };
+                return (0, i.useEffect)(() => {
+                    let e = [];
+                    if (f.length) {
+                        let s = [...r.Kh].filter(e => f.some(s => e.filterBrands.includes(s)));
+                        e = [...e, s]
+                    }
+                    if ("All" !== t) {
+                        let s = [...r.Kh].filter(e => t ? e.inNew : !e.inNew);
+                        e = [...e, s]
+                    }
+                    if ("All" !== p) {
+                        if ("All Discounts" == p) {
+                            let s = [...r.Kh].filter(e => e.oldPrice);
+                            e = [...e, s]
+                        }
+                        if ("Today’s Deals" == p) {
+                            let s = [...r.Kh].filter(e => e.isTodaysDeals);
+                            e = [...e, s]
+                        }
+                    }
+                    if ("All" !== h) {
+                        let s = [...r.Kh].filter(e => e.rating >= h);
+                        e = [...e, s]
+                    }
+                    let a = [...r.Kh].filter(e => e.price >= l[0] && e.price <= l[1]);
+                    e = [...e, a], s({
+                        type: "SET_FILTERED",
+                        payload: [...r.Kh].filter(s => e.every(e => e.includes(s)))
+                    })
+                }, [l, t, p, h, f]), (0, i.useEffect)(() => {
+                    "Price Ascending" === N ? s({
+                        type: "SET_SORTED",
+                        payload: [...x].sort((e, s) => e.price - s.price)
+                    }) : "Price Descending" === N ? s({
+                        type: "SET_SORTED",
+                        payload: [...x].sort((e, s) => s.price - e.price)
+                    }) : "Title Ascending" === N ? s({
+                        type: "SET_SORTED",
+                        payload: [...x].sort((e, s) => e.title.localeCompare(s.title))
+                    }) : "Title Descending" === N ? s({
+                        type: "SET_SORTED",
+                        payload: [...x].sort((e, s) => s.title.localeCompare(e.title))
+                    }) : s({
+                        type: "SET_SORTED",
+                        payload: x
+                    }), s({
+                        type: "SET_CURRENT_PAGE",
+                        payload: 1
+                    })
+                }, [x, N]), (0, i.useEffect)(() => {
+                    let e = () => {
+                            window.innerWidth <= 1200 && (document.querySelector(".sidebar-filter").classList.add("show"), document.querySelector(".overlay-filter").classList.add("show"), document.body.classList.toggle("no-scroll"))
+                        },
+                        s = () => {
+                            document.querySelector(".sidebar-filter").classList.remove("show"), document.querySelector(".overlay-filter").classList.remove("show"), document.body.classList.toggle("no-scroll")
+                        },
+                        l = document.querySelectorAll("#filterShop, .sidebar-btn");
+                    l.forEach(s => {
+                        s.addEventListener("click", e)
+                    });
+                    let a = document.querySelectorAll(".close-filter, .overlay-filter");
+                    return a.forEach(e => {
+                        e.addEventListener("click", s)
+                    }), () => {
+                        l.forEach(s => {
+                            s.removeEventListener("click", e)
+                        }), a.forEach(e => {
+                            e.removeEventListener("click", s)
+                        })
+                    }
+                }, []), (0, a.jsxs)(a.Fragment, {
+                    children: [(0, a.jsx)("div", {
+                        className: "flat-content",
+                        children: (0, a.jsx)("div", {
+                            className: "container-full",
+                            children: (0, a.jsx)("div", {
+                                className: "tf-product-view-content wrapper-control-shop ",
+                                children: (0, a.jsxs)("div", {
+                                    className: "content-area",
+                                    children: [(0, a.jsxs)("div", {
+                                        className: "tf-shop-control flex-wrap gap-10",
+                                        children: [(0, a.jsxs)("div", {
+                                            className: "d-flex align-items-center gap-10",
+                                            children: [(0, a.jsxs)("a", {
+                                                href: "#filterShop2",
+                                                className: "tf-btn-filter",
+                                                "data-bs-toggle": "offcanvas",
+                                                "aria-controls": "mobileMenu",
+                                                children: [(0, a.jsx)("span", {
+                                                    className: "icon icon-filter",
+                                                    children: (0, a.jsx)("svg", {
+                                                        xmlns: "http://www.w3.org/2000/svg",
+                                                        width: 20,
+                                                        height: 20,
+                                                        fill: "#121212",
+                                                        viewBox: "0 0 256 256",
+                                                        children: (0, a.jsx)("path", {
+                                                            d: "M176,80a8,8,0,0,1,8-8h32a8,8,0,0,1,0,16H184A8,8,0,0,1,176,80ZM40,88H144v16a8,8,0,0,0,16,0V56a8,8,0,0,0-16,0V72H40a8,8,0,0,0,0,16Zm176,80H120a8,8,0,0,0,0,16h96a8,8,0,0,0,0-16ZM88,144a8,8,0,0,0-8,8v16H40a8,8,0,0,0,0,16H80v16a8,8,0,0,0,16,0V152A8,8,0,0,0,88,144Z"
+                                                        })
+                                                    })
+                                                }), (0, a.jsx)("span", {
+                                                    className: "body-md-2 fw-medium",
+                                                    children: "Filter"
+                                                })]
+                                            }), (0, a.jsxs)("p", {
+                                                className: "body-text-3 d-none d-lg-block",
+                                                children: ['1-16 of 66 results for "', (0, a.jsx)("span", {
+                                                    className: "title-sidebar fw-bold",
+                                                    children: "macbook m1"
+                                                }), '"']
+                                            })]
+                                        }), (0, a.jsxs)("div", {
+                                            className: "tf-control-view flat-title-tab-product flex-wrap",
+                                            children: [(0, a.jsx)(o.A, {}), (0, a.jsx)(c.A, {}), (0, a.jsxs)("div", {
+                                                className: "tf-dropdown-sort tf-sort type-sort-by",
+                                                "data-bs-toggle": "dropdown",
+                                                children: [(0, a.jsxs)("div", {
+                                                    className: "btn-select w-100",
+                                                    children: [(0, a.jsx)("i", {
+                                                        className: "icon-sort"
+                                                    }), (0, a.jsxs)("p", {
+                                                        className: "body-text-3 w-100",
+                                                        children: ["Sort by:", " ", (0, a.jsx)("span", {
+                                                            className: "text-sort-value",
+                                                            children: N
+                                                        })]
+                                                    }), (0, a.jsx)("i", {
+                                                        className: "icon-arrow-down fs-10"
+                                                    })]
+                                                }), (0, a.jsx)("div", {
+                                                    className: "dropdown-menu",
+                                                    children: ["Default", "Title Ascending", "Title Descending", "Price Ascending", "Price Descending"].map((e, s) => (0, a.jsx)("div", {
+                                                        className: "select-item ".concat(N == e ? "active" : ""),
+                                                        onClick: () => u.setSortingOption(e),
+                                                        children: (0, a.jsx)("span", {
+                                                            className: "text-value-item",
+                                                            children: e
+                                                        })
+                                                    }, s))
+                                                })]
+                                            })]
+                                        })]
+                                    }), 0 != l[0] || 100 != l[1] || "All" != t || "All" != p || "All" != h || f.length ? (0, a.jsxs)("div", {
+                                        className: "meta-filter-shop",
+                                        style: {},
+                                        children: [(0, a.jsxs)("div", {
+                                            id: "product-count-grid",
+                                            className: "count-text",
+                                            children: [(0, a.jsx)("span", {
+                                                className: "count",
+                                                children: v.length
+                                            }), " Products Found"]
+                                        }), (0, a.jsx)("div", {
+                                            id: "product-count-list",
+                                            className: "count-text"
+                                        }), (0, a.jsxs)("div", {
+                                            id: "applied-filters",
+                                            children: [!0 == t && (0, a.jsxs)("span", {
+                                                className: "filter-tag",
+                                                onClick: () => u.setIsNew("All"),
+                                                children: ["New ", (0, a.jsx)("span", {
+                                                    className: "remove-tag icon-close"
+                                                })]
+                                            }), !1 == t && (0, a.jsxs)("span", {
+                                                className: "filter-tag",
+                                                onClick: () => u.setIsNew("All"),
+                                                children: ["Old ", (0, a.jsx)("span", {
+                                                    className: "remove-tag icon-close"
+                                                })]
+                                            }), f.map((e, s) => (0, a.jsxs)("span", {
+                                                className: "filter-tag",
+                                                onClick: () => u.removeBrand(e),
+                                                children: [e, (0, a.jsx)("span", {
+                                                    className: "remove-tag icon-close"
+                                                })]
+                                            }, s)), "All" != p && (0, a.jsxs)("span", {
+                                                className: "filter-tag",
+                                                onClick: () => u.setDeals("All"),
+                                                children: [p, (0, a.jsx)("span", {
+                                                    className: "remove-tag icon-close"
+                                                })]
+                                            }), "All" != h && (0, a.jsxs)("span", {
+                                                className: "filter-tag",
+                                                onClick: () => u.setRating("All"),
+                                                children: [h, " Rating", (0, a.jsx)("span", {
+                                                    className: "remove-tag icon-close"
+                                                })]
+                                            }), (0 != l[0] || 100 != l[1]) && (0, a.jsxs)("span", {
+                                                className: "filter-tag",
+                                                onClick: () => u.setPrice([0, 100]),
+                                                children: ["$", l[0], " to $", l[1], (0, a.jsx)("span", {
+                                                    className: "remove-tag icon-close",
+                                                    "data-filter": "priceRadio"
+                                                })]
+                                            })]
+                                        }), (0, a.jsxs)("button", {
+                                            id: "remove-all",
+                                            className: "remove-all-filters",
+                                            onClick: () => u.clearFilter(),
+                                            children: [(0, a.jsx)("span", {
+                                                className: "caption",
+                                                children: "REMOVE ALL"
+                                            }), (0, a.jsx)("i", {
+                                                className: "icon icon-close"
+                                            })]
+                                        })]
+                                    }) : "", (0, a.jsx)("div", {
+                                        className: "gridLayout-wrapper gridLayout-fullWidth",
+                                        children: (0, a.jsxs)("div", {
+                                            className: "tf-grid-layout xxl-col-5 lg-col-4 md-col-3 sm-col-2 flat-grid-product wrapper-shop layout-tabgrid-1",
+                                            id: "gridLayout",
+                                            children: [v.map((e, s) => (0, a.jsx)(d.A, {
+                                                product: e
+                                            }, s)), (0, a.jsxs)("ul", {
+                                                className: "wg-pagination wd-load",
+                                                children: [(0, a.jsx)("li", {
+                                                    children: (0, a.jsx)("a", {
+                                                        href: "#",
+                                                        className: "link",
+                                                        children: (0, a.jsx)("i", {
+                                                            className: "icon-arrow-left-lg"
+                                                        })
+                                                    })
+                                                }), (0, a.jsx)("li", {
+                                                    className: "active",
+                                                    children: (0, a.jsx)("p", {
+                                                        className: "title-normal link",
+                                                        children: "1"
+                                                    })
+                                                }), (0, a.jsx)("li", {
+                                                    children: (0, a.jsx)("a", {
+                                                        href: "#",
+                                                        className: "title-normal link",
+                                                        children: "2"
+                                                    })
+                                                }), (0, a.jsx)("li", {
+                                                    className: "d-none d-sm-flex",
+                                                    children: (0, a.jsx)("a", {
+                                                        href: "#",
+                                                        className: "title-normal link",
+                                                        children: "3"
+                                                    })
+                                                }), (0, a.jsx)("li", {
+                                                    className: "d-none d-sm-flex",
+                                                    children: (0, a.jsx)("a", {
+                                                        href: "#",
+                                                        className: "title-normal link",
+                                                        children: "4"
+                                                    })
+                                                }), (0, a.jsx)("li", {
+                                                    children: (0, a.jsx)("p", {
+                                                        className: "title-normal",
+                                                        children: "..."
+                                                    })
+                                                }), (0, a.jsx)("li", {
+                                                    children: (0, a.jsx)("a", {
+                                                        href: "#",
+                                                        className: "title-normal link",
+                                                        children: "10"
+                                                    })
+                                                }), (0, a.jsx)("li", {
+                                                    children: (0, a.jsx)("a", {
+                                                        href: "#",
+                                                        className: "link",
+                                                        children: (0, a.jsx)("i", {
+                                                            className: "icon-arrow-right-lg"
+                                                        })
+                                                    })
+                                                })]
+                                            })]
+                                        })
+                                    })]
+                                })
+                            })
+                        })
+                    }), (0, a.jsx)(m, {
+                        allProps: u
+                    })]
+                })
+            }
+        },
+        8940: (e, s, l) => {
+            Promise.resolve().then(l.bind(l, 2988)), Promise.resolve().then(l.bind(l, 6750)), Promise.resolve().then(l.bind(l, 3603)), Promise.resolve().then(l.bind(l, 5736)), Promise.resolve().then(l.bind(l, 3340)), Promise.resolve().then(l.bind(l, 2867)), Promise.resolve().then(l.bind(l, 3899)), Promise.resolve().then(l.bind(l, 7526)), Promise.resolve().then(l.bind(l, 7718)), Promise.resolve().then(l.bind(l, 6675)), Promise.resolve().then(l.t.bind(l, 6874, 23)), Promise.resolve().then(l.t.bind(l, 3063, 23))
+        }
+    },
+    e => {
+        var s = s => e(e.s = s);
+        e.O(0, [5270, 2357, 2331, 2867, 31, 5120, 2120, 7718, 8441, 1684, 7358], () => s(8940)), _N_E = e.O()
+    }
+]);

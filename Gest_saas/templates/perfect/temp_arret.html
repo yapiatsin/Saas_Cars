@@ -1,0 +1,169 @@
+{% extends 'perfect/bases.html' %} 
+{% load static %} 
+{% block title %} 
+Temps d'arrêt 
+{% endblock title %} 
+{% block liste %}
+<li class="nav-item">
+    <a href="{% url 'dashgarage' %}" class="nav-link"></a>
+</li>
+{% endblock liste %}
+{% block page_title %} TEMPS D'ARRET {% endblock page_title %} 
+{% block search_form %}
+    <div class="col-sm-12 text-right mb-2">
+        <a href="#" id="export-excel-btn" class="btn btn-default text-success" style="font-size: 16px;" data-export-url="{% url 'export_temps_arret_excel' %}">
+            <i class="fa fa-file-excel-o"></i> Exporter Excel
+        </a>
+    </div>
+    <div class="col-sm-4">
+        <li class="breadcrumb-item">
+            <select id="categorie" class="form-control" onchange="selectMonthYear()">
+                <option value="">Toutes les catégories</option>
+                {% for cat in categories_list %}
+                    <option value="{{ cat.id }}" {% if selected_categorie_id == cat.id %}selected{% endif %}>{{ cat.category }}</option>
+                {% endfor %}
+            </select>
+        </li>
+    </div>
+    <div class="col-sm-4">
+        <li class="breadcrumb-item">
+            <select id="month" class="form-control month-select" onchange="selectMonthYear()">
+                {% for val, label in month_choices %}
+                    <option value="{{ val }}" {% if val == month %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </li>
+    </div>
+    <div class="col-sm-4">
+        <li class="breadcrumb-item ">
+            <select id="year" class="form-control year-select" onchange="selectMonthYear()">
+                {% for y in years %}
+                    <option class='' value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+        </li>
+    </div>
+{% endblock search_form %} 
+{% block main_content %}
+
+<div class="col-lg-12">
+    <table>
+        <thead>
+            <tr style="font-weight: 700;" class="text-danger">
+                <th rowspan="2" style='font-size:10px'>Immat</th>
+                <th rowspan="2" style='font-size:10px'>Marque</th>
+                <th style='font-size:10px' colspan="{{ days_in_month|length }}">
+                    <a style='font-size:10px' class="btn btn-default btn-prev" onclick="changeMonth(-1)"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a> {{ month_name }} - {{ year}}
+                    <a style='font-size:10px' class="btn btn-default btn-next" onclick="changeMonth(1)"><i class="fa fa-angle-double-right" aria-hidden="true" style=""></i></a>
+                </th>
+                <th rowspan="2" style='font-size:10px'>T arrêt</th>
+                <th rowspan="2" style='font-size:10px'>T Pièce</th>
+                <th rowspan="2" style='font-size:10px'>Recette</th>
+                <th rowspan="2" style='font-size:10px'>Pièce</th>
+                <th rowspan="2" style='font-size:10px'>Motif rép</th>
+                <th rowspan="2" style='font-size:10px'>Motif arrêt</th>
+            </tr>
+            <tr>
+                {% for day in days_in_month %}
+                    <th class="text-primary" style='font-size:12px'>{{ day }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for vehicule in vehicule_data %}
+                <tr style="font-weight: 700; ">
+                    <td style="font-size:12px"><a href="" title="{{vehicule.category}}">{{ vehicule.immatriculation }}</a></td>
+                    <td style='font-size:12px'>{{ vehicule.marque }}</td>
+                    {% for action in vehicule.daily_actions %}
+                        <td style='font-size:12px' class="{% if action != 0 %}text-danger{% else %}text-cyan{% endif %}">{{ action }}</td>
+                    {% endfor %}
+                    <td style='font-size:12px' class="text-warning">{{ vehicule.total_actions }}</td>
+                    <td style='font-size:12px'>{{ vehicule.total_cost_parts }}</td>
+                    <td style='font-size:12px'>{{ vehicule.total_income }}</td>
+                    <td style='font-size:12px'>{{ vehicule.part_details }}</td>
+                    <td style='font-size:12px'>{{ vehicule.repairs_by_motif }}</td>
+                    <td style='font-size:12px'>{{ vehicule.motif_arret }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2" style="text-align: right; font-weight: bold; font-size:12px">Total par jour:</td>
+                {% for total in daily_totals %}
+                    <td style='font-weight: 700; font-size:12px; background-color: #ffff99;' class="text-danger">{{ total }}</td>
+                {% endfor %}
+                <td style='font-weight: 700; font-size:12px' class="text-danger">{{ total_actions_sum }}</td>
+                <td style='font-weight: 700; font-size:12px' class="text-danger">{{ total_cost_parts_sum }}</td>
+                <td style='font-weight: 700; font-size:12px' class="text-danger">{{ total_income_sum }}</td>
+                <td style='font-weight: 700; font-size:12px' class="text-danger">{{ total_piece_sum }}</td>
+
+                <td style='font-weight: 700; font-size:12px' class="text-danger">{{ total_repairs_by_motifs }}</td>
+                <td style='font-weight: 700; font-size:12px' class="text-danger">{{ total_motif_arrets }}</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align: right; font-size:12px; font-weight: 700;" class="text-secondary">
+                    Préparation de visite ('P-vis) = <i class="text-success">{{total_visit_sum}}</i><br> 
+                    Garage pour panne (pan) = <i class="text-warning" aria-hidden="true">{{total_panne_sum}}</i><br> 
+                    Accident (acc) = <i class="text-danger" aria-hidden="true">{{total_accident_sum}}</i><br>                    
+                    Autre arrêt (aut) = <i class="text-cyan" aria-hidden="true">{{total_autrarret_sum}}</i>
+                    <hr>
+                    Visite Technique = <i class="text-primary">{{total_visitechique_sum}}</i><br> 
+                    Entretien = <i class="text-primary">{{total_entretien_sum}}</i><br> 
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const exportBtn = document.getElementById('export-excel-btn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const baseUrl = exportBtn.getAttribute('data-export-url');
+                const month = document.getElementById('month') ? document.getElementById('month').value : '{{ month }}';
+                const year = document.getElementById('year') ? document.getElementById('year').value : '{{ year }}';
+                const categorie = document.getElementById('categorie') ? document.getElementById('categorie').value : '';
+                let url = baseUrl + '?month=' + month + '&year=' + year;
+                if (categorie) url += '&categorie=' + categorie;
+                window.location.href = url;
+            });
+        }
+    });
+    function updateTable(month, year) {
+        const categorie = document.getElementById('categorie') ? document.getElementById('categorie').value : '';
+        let url = '?month=' + month + '&year=' + year;
+        if (categorie) url += '&categorie=' + categorie;
+        fetch(url)
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const newDoc = parser.parseFromString(html, 'text/html');
+                const newTable = newDoc.querySelector('table');
+                const oldTable = document.querySelector('table');
+                if (newTable && oldTable) {
+                    oldTable.innerHTML = newTable.innerHTML;
+                }
+            })
+            .catch(err => console.error('Error updating table:', err));
+    }
+    function changeMonth(offset) {
+        let month = parseInt(document.getElementById('month').value);
+        let year = parseInt(document.getElementById('year').value);
+        month += offset;
+        if (month > 12) { month = 1; year++; } else if (month < 1) { month = 12; year--; }
+        document.getElementById('month').value = month;
+        document.getElementById('year').value = year;
+        updateTable(month, year);
+    }
+    function selectMonthYear() {
+        const month = document.getElementById('month').value;
+        const year = document.getElementById('year').value;
+        updateTable(month, year);
+    }
+</script>
+{% endblock custom_js %}

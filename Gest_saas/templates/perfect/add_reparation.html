@@ -1,0 +1,427 @@
+{% extends 'perfect/base.html' %} 
+{% load static %} 
+{% block title %} Saisie & Etat des réparations {% endblock title %}  
+{% block page_title %}
+<a href="{% url 'temps_arrets' %}"><img class="profile-user-img" style="border:none; height:25px;width:25px" src="{% static 'retour.png' %}" alt="Retour"></a>
+<img class="profile-user-img" style="border:none; height:45px;width:45px" src="{% static 'clereparat.png' %}" alt="User profile picture">Saisie & Etat des réparations du <b class="text-danger"> {{vehicule}}</b> 
+{% endblock page_title %} 
+
+{% block page_action %}
+        <form id="quickForm">
+            <button type="button" class="btn btn-default text-success" data-toggle="modal" data-target="#modal-lg">Saisie <i class="fa fa-plus-circle"></i></button>
+            <a class="btn btn-default text-info" data-toggle="modal" data-target="#modal-sm" href="#" style="font-size: 16px;"><i style="font-size: 20px;" class="fa fa-calendar"></i></a>
+            <a class="btn btn-default text-info" href="{% url 'add_reparation' vehicule.pk %}" style="font-size: 16px;"><i style="font-size: 20px;" class="fa fa-refresh"></i></a>
+        </form>
+{% endblock page_action %}
+
+{% block main_content %}
+
+<div class="modal fade" id="modal-sm">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="border-radius:25px;">
+            <div class="modal-header">
+                <h4 class="modal-title" style="font-weight:700;color: #06497C;">FILTRE</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card-body">
+                    <form id="basic-form" method="get" novalidate>
+                        <div class="row clearfix">
+                            <div class="col-12">
+                                <label>Date debut </label>
+                                <div class="form-group">                                    
+                                    {{ form.date_debut }}
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label>Date fin</label>
+                                <div class="form-group">                                    
+                                    {{ form.date_fin }}
+                                </div>
+                            </div>
+                            <div class="col-12">
+                              <label>Date fin</label>
+                                <div class="form-group">                                    
+                                    {{ form.motif }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary" style="border-radius:25px;" data-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-outline-success" style="border-radius:25px;">Afficher</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-12 col-sm-6 col-md-3">
+    <div class="info-box" style="border-radius:25px;">
+        <span class="info-box-icon elevation-1" style="border-radius:25px; background-color:rgba(229, 229, 229, 0.51);"><i class="fas fa-plus" style="color:rgba(6, 73, 124, 0.54);"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text" style="font-size:18px; font-weight: 700; color: #06497C;">Nombre total</span>
+            <span class="info-box-number" style="font-size:20px; color: #fa7832">
+            {{reparat_total}}
+            <small></small>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="clearfix hidden-md-up"></div>
+<div class="col-12 col-sm-6 col-md-3">
+    <div class="info-box" style="border-radius:25px;">
+        <span class="info-box-icon elevation-1" style="border-radius:25px; background-color:rgba(229, 229, 229, 0.51);"><i class="fas fa-clock" style="color:rgba(6, 73, 124, 0.54);"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text" style="font-size:18px; font-weight: 700; color: #06497C;">Aujourd'hui</span>
+            <span class="info-box-number" style="font-size:20px; color: #fa7832">
+            {{reparat_jours_format}}
+            <small>frs cfa</small>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="clearfix hidden-md-up"></div>
+<div class="col-12 col-sm-6 col-md-3">
+    <div class="info-box mb-3" style="border-radius:25px;">
+    <span class="info-box-icon elevation-1" style="border-radius:25px; background-color:rgba(229, 229, 229, 0.51);"><i class="fa fa-calendar" style="color:rgba(6, 73, 124, 0.54);"></i></span>
+    <div class="info-box-content">
+        <span class="info-box-text" style="font-size:18px; font-weight: 700; color: #06497C;">Mensuelle</span>
+        <span class="info-box-number" style="font-size:20px; color: #fa7832">
+        {{reparat_mois_format}}
+        <small>frs cfa</small>
+        </span>
+    </div>
+    </div>
+</div>
+
+<div class="clearfix hidden-md-up"></div>
+<div class="col-12 col-sm-6 col-md-3" >
+    <div class="info-box mb-3" style="border-radius:25px;">
+        <span class="info-box-icon elevation-1" style="border-radius:25px; background-color:rgba(229, 229, 229, 0.51);"><i class="fas fa-calendar" style="color:rgba(6, 73, 124, 0.54);"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text" style="font-size:18px; font-weight: 700; color: #06497C;">Annuelle</span>
+            <span class="info-box-number" style="font-size:20px; color: #fa7832">
+            {{reparat_an_format}}
+            <small>frs cfa</small>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-lg">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" style="font-weight:700;color: #06497C;">
+            Enrégistrer une nouvelle réparation du <b class="text-danger"> {{vehicule}}</b>
+          </h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+  
+        <div class="modal-body">
+          <form method="post" role="form" id="quickForm" enctype="multipart/form-data">
+            {% csrf_token %}
+  
+            <div class="row card-body">
+              <!-- Info Réparation -->
+              <div class="col-md-12 form-group">
+                <input value="REPARATION" class="form-control text-center" disabled>
+              </div>
+  
+              <div class="col-md-3 col-sm-6 form-group">
+                <label>Motif de réparation</label> {{ forms.motif }}
+              </div>
+              <div class="col-md-3 col-sm-6 form-group">
+                <label>N°facture</label> {{ forms.num_fich }}
+              </div>
+              <div class="col-md-3 col-sm-6 form-group">
+                <label>Heure d'entrée</label> {{ forms.date_entree }}
+              </div>
+              <div class="col-md-3 col-sm-6 form-group">
+                <label>Heure de sortie</label> {{ forms.date_sortie }}
+              </div>
+  
+              <div class="col-md-12 form-group">
+                <label>Réçu</label> {{ forms.image }}
+              </div>
+              <div class="col-md-12 form-group">
+                <label>Description de la réparation</label> {{ forms.description }}
+              </div>
+  
+              <hr class="col-md-12">
+  
+              <!-- Partie Pièces -->
+              <div class="col-md-12 form-group">
+                <input value="LES PIÈCES DE REPARATION" class="form-control text-center" disabled>
+              </div>
+  
+              <div class="col-md-12">
+                <div class="text-right mb-3">
+                  <button type="button" class="btn btn-primary" id="add-piece" style="position:absolute;right: -80px; top:95px; z-index:1; border-radius: 50px;"><i class="fa fa-plus"></i> Ajouter</button>
+                </div>
+                <div id="piece-formset-container">
+                  {{ piece_formset.management_form }}
+                  {% for form in piece_formset %}
+                    <div class="ligne-piece border p-3 mb-2 bg-light rounded">
+                      <div class="row">
+                        <div class="col-md-3">
+                          {{ form.libelle.label_tag }}
+                          {{ form.libelle }}
+                        </div>
+                        <div class="col-md-3">
+                          {{ form.lieu.label_tag }}
+                          {{ form.lieu }}
+                        </div>
+                        <div class="col-md-2">
+                          {{ form.quantite.label_tag }}
+                          {{ form.quantite }}
+                        </div>
+                        <div class="col-md-3">
+                          {{ form.montant.label_tag }}
+                          {{ form.montant }}
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end" style="position: relative; top: -3px;">
+                          <button type="button" class="btn btn-outline-danger btn-sm remove-piece" style="margin-top: -15px;">🗑</button>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+  
+              <hr class="col-md-12">
+              <!-- Coûts -->
+              <div class="col-md-12 form-group">
+                <label>Coût de prestation</label> {{ forms.prestation }}
+              </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class=" btn btn-outline-secondary" style="border-radius:25px;" data-dismiss="modal" aria-label="Close">Annuler</button>
+                <button type="submit" class="btn btn-outline-primary" style="border-radius:25px;">Enregistrer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="" style="border-radius:20px" >
+                <div id="" class="">
+                    <div class="row p-0 m-0">
+                        <div class="col-md-12 p-0">
+                            <div class="card" style="box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);backdrop-filter: blur(5.2px);--webkit-backdrop-filter: blur(5.2px); border-radius:25px;">
+                                <div class="card-header col-12 col-sm-12 col-md-12" style="font-size:18px; font-weight: 700; color: #06497C;">
+                                    <form class="search-form">
+                                        <div class="input-group">
+                                            <input type="text" name="search" value="{{ search_query }}" class="form-control" placeholder="Saisissez l'immatriculation du véhicule..." style="border-radius: 50px 0 0 50px;">
+                                            <div class="input-group-append">
+                                            <button type="submit" name="submit" class="btn btn-danger" style="border-radius: 0 50px 50px 0;"><i class="fas fa-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <div class="col-md-4">
+                                        {% if vehicules %}
+                                            {% for v in vehicules %}
+                                                <div class="card card-widget widget-user" style="border-radius:25px; ">
+                                                    <div class="widget-user-header" style="border-radius:25px;">
+                                                        <i class="fa fa-car text-center" style="font-size: 50px; color:rgba(139, 139, 139, 0.39);"></i>
+                                                      <h5 class="widget-user-desc">{{v.immatriculation}}</h5>
+                                                    </div>
+                                                    <div class="card-footer p-0">
+                                                      <ul class="nav flex-column">
+                                                        <li class="nav-item">
+                                                            {% for categorie, perms in grouped_permissions.items %}
+                                                                {% if categorie.categorie == "permentretien" %}
+                                                                    {% for perm in perms %}
+                                                                        {% if perm.name == "add entretien" %}
+                                                                            <a href="{% url perm.url v.pk %}" class="nav-link" title="Ajouter un entretien">
+                                                                                Entretien
+                                                                                <span class="float-right badge bg-info"><i style="font-size: 20px;" class="fa fa-plus-circle"></i></span>
+                                                                            </a>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            {% for categorie, perms in grouped_permissions.items %}
+                                                                {% if categorie.categorie == "permvisit" %}
+                                                                    {% for perm in perms %}
+                                                                        {% if perm.name == "add visite" %}
+                                                                            <a href="{% url perm.url v.pk %}" class="nav-link" title="Ajouter une visite">
+                                                                                Visite technique
+                                                                                <span class="float-right badge bg-primary"><i style="font-size: 20px;" class="fa fa-plus-circle"></i></span>
+                                                                            </a>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            {% for categorie, perms in grouped_permissions.items %}
+                                                                {% if categorie.categorie == "permreparation" %}
+                                                                    {% for perm in perms %}
+                                                                        {% if perm.name == "add reparation" %}
+                                                                            <a href="{% url perm.url v.pk %}" class="nav-link" title="Ajouter un réparation">
+                                                                                Réparation
+                                                                                <span class="float-right badge bg-success"><i style="font-size: 20px;" class="fa fa-plus-circle"></i></span>
+                                                                            </a>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            {% for categorie, perms in grouped_permissions.items %}
+                                                                {% if categorie.categorie == "permarret" %}
+                                                                    {% for perm in perms %}
+                                                                        {% if perm.name == "add autre arrêt" %}
+                                                                            <a href="{% url perm.url v.pk %}" class="nav-link" title="Ajouter un autre arrêt">
+                                                                                Autre arrêt
+                                                                                <span class="float-right badge bg-secondary"><i style="font-size: 20px;" class="fa fa-plus-circle"></i></span>
+                                                                            </a>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </li>
+                                                      </ul>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                            
+                                        {% else %}
+                                            <p>Aucun véhicule trouvé.</p>
+                                        {% endif %}
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="" style="border-radius:20px">
+                <div id="" class="">
+                    <div class="row p-0 m-0">
+                        <div class="col-md-12 p-0">
+                            <div class="card" style="box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);backdrop-filter: blur(5.2px);-webkit-backdrop-filter: blur(5.2px);border-radius:20px">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                    </h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                    </div>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <table id="example1" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr class=" text-center text-danger">
+                                                <th>IMMAT</th>
+                                                <th>MOTIF</th>
+                                                <th>MONTANT</th>
+                                                <th>DATE SAISIE</th>
+                                                <th>SAISIR PAR</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody> 
+                                            {% if liste_reparat %} 
+                                                {% for u in liste_reparat %}
+                                                    <tr class="text-center">
+                                                        <td><a href="{% url 'detail_reparat' u.pk %}" class="mr-3 text-primary">{{u.vehicule.immatriculation}}</a></td>
+                                                        <td>{{u.motif}}</td>
+                                                        <td>{{u.montant}}</td>
+                                                        <td>{{u.date_saisie|date:"d/m/Y"}}</td>
+                                                        <td>{{u.auteur.username}}</td>
+                                                    </tr>
+                                                {% endfor %} 
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block custom_js %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const formsetContainer = document.getElementById('piece-formset-container');
+      const addButton = document.getElementById('add-piece');
+      const totalForms = document.querySelector('#id_pieces-TOTAL_FORMS'); // ⚠ Vérifie bien le préfixe (ici 'pieces')
+    
+      addButton.addEventListener('click', function () {
+        const currentFormCount = parseInt(totalForms.value);
+        const firstForm = formsetContainer.querySelector('.ligne-piece');
+        if (!firstForm) return;
+        // Clone du premier formulaire
+        const newForm = firstForm.cloneNode(true);
+        // Réinitialiser les valeurs
+        newForm.querySelectorAll('input, select, textarea').forEach(function (input) {
+          input.value = '';
+        });
+        // Mise à jour des indexes
+        newForm.querySelectorAll('input, select, textarea').forEach(function (input) {
+          if (input.name) {
+            input.name = input.name.replace(/pieces-\d+-/, `pieces-${currentFormCount}-`);
+          }
+          if (input.id) {
+            input.id = input.id.replace(/id_pieces-\d+-/, `id_pieces-${currentFormCount}-`);
+          }
+        });
+        totalForms.value = currentFormCount + 1;
+        formsetContainer.appendChild(newForm);
+      });
+      // Suppression d'une pièce
+      formsetContainer.addEventListener('click', function (e) {
+        if (e.target && e.target.classList.contains('remove-piece')) {
+          const ligne = e.target.closest('.ligne-piece');
+          ligne.remove();
+          updateFormIndexes();
+        }
+      });
+      function updateFormIndexes() {
+        const forms = document.querySelectorAll('.ligne-piece');
+        forms.forEach(function (form, index) {
+          form.querySelectorAll('input, select, textarea').forEach(function (input) {
+            if (input.name) {
+              input.name = input.name.replace(/pieces-\d+-/, `pieces-${index}-`);
+            }
+            if (input.id) {
+              input.id = input.id.replace(/id_pieces-\d+-/, `id_pieces-${index}-`);
+            }
+          });
+        });
+        totalForms.value = forms.length;
+      }
+    });
+  </script>
+{% endblock custom_js %}
+
+{% endblock main_content %}

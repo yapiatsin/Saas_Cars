@@ -1,0 +1,39 @@
+<form method="post" id="autarretUpdateForm" action="{% url 'updat_autarret' object.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
+    <div class="modal-header">
+        <h5 class="modal-title">
+            Modifier l'autre arrêt - {{ object.vehicule.immatriculation }}
+        </h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+
+    <div class="modal-body row">
+        <div class="form-group col-md-12">
+            <label>Libellé</label>
+            {{ form.libelle }}
+        </div>
+        <div class="form-group col-md-6">
+            <label>Date arrêt</label>
+            {{ form.date_arret }}
+        </div>
+        <div class="form-group col-md-6">
+            <label>Date sortie</label>
+            {{ form.date_sortie }}
+        </div>
+        <div class="form-group col-md-6">
+            <label>N° fiche</label>
+            {{ form.numfich }}
+        </div>
+        <div class="form-group col-md-6">
+            <label>Montant</label>
+            {{ form.montant }}
+        </div>
+        {{ form.auteur }}
+    </div>
+
+    <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Annuler</button>
+        <button type="submit" class="btn btn-outline-success">Enregistrer</button>
+    </div>
+</form>

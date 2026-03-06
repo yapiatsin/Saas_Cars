@@ -1,0 +1,166 @@
+{% extends 'perfect/bases.html' %} 
+{% load static %} 
+{% block title %} Meilleures recettes {% endblock title %}  
+{% block page_title %}
+    Bilan journalier
+{% endblock page_title %} 
+{% block search_form %}
+<div class="col-sm-12 text-right mb-2">
+    <a class="btn btn-default text-success" href="{% url 'export_bilanday_excel' %}{% if request.GET.date_debut and request.GET.date_fin %}?date_debut={{ request.GET.date_debut }}&date_fin={{ request.GET.date_fin }}{% endif %}" style="font-size: 16px;">
+        <i class="fa fa-file-excel-o"></i> Exporter
+    </a>
+    <a class="btn btn-default text-info" data-toggle="modal" data-target="#modal-filtre-bilan" href="#" style="font-size: 16px;">
+        <i class="fa fa-calendar"></i> Filtres (dates)
+    </a>
+    <a class="btn btn-default text-info" href="{% url 'bilanday' %}" style="font-size: 16px;">
+        <i class="fas fa-refresh"></i>
+    </a>
+</div>
+<div class="modal fade" id="modal-filtre-bilan">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="border-radius:25px;">
+            <div class="modal-header">
+                <h4 class="modal-title" style="font-weight:700;color: #06497C;">Période du bilan</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form method="get" action="{% url 'bilanday' %}">
+                    <div class="form-group">
+                        <label>Date début</label>
+                        {{ form.date_debut }}
+                    </div>
+                    <div class="form-group">
+                        <label>Date fin</label>
+                        {{ form.date_fin }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Afficher</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock search_form %} 
+
+{% block main_content %}
+    <style>
+        .content-wrapper {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.123), rgba(221, 221, 221, 0.197));
+            background-size: 200% 200%;
+            animation: iceEffect 10s ease infinite;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 2px;
+        }
+        /* Animation pour l'effet de glace */
+        
+        @keyframes iceEffect {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 5px;
+            text-align: center;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+    </style>
+    <div class="col-md-12">
+        <div class="" style="border-radius:20px">
+            <div id="" class="">
+                <div class="row p-0 m-0">
+                    <div class="col-md-12 p-0">
+                        <div class="card" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);backdrop-filter: blur(5.2px);-webkit-backdrop-filter: blur(5.2px);">
+                            <div class="card-header">
+                                <h3 class="card-title"></h3>
+
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="6" style="color: rgb(255, 64, 64)">Bilan — {{ period_label }}</th>
+                                        </tr>
+                                    </thead>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2" style="color: rgb(3, 92, 159)">Section & intitulé</th>
+                                            <th colspan="2" style="color: rgb(3, 92, 159)">Mouvements</th>
+                                            <th colspan="2" style="color: rgb(3, 92, 159)">Tenue de compte : FCFA</th>
+                                        </tr>
+                                    </thead>
+                                    <thead>
+                                        <tr class="text-danger">
+                                            <th>Section</th>
+                                            <th>Intitulé de section</th>
+                                            <th>Débit</th>
+                                            <th>Crédit</th>
+                                            <th>Soldes</th>
+                                            <th>Exercice précédent</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for ligne in lignes_bilan %}
+                                        <tr>
+                                            <td>{{ ligne.section }}</td>
+                                            <td class="text-left">{{ ligne.intitule }}</td>
+                                            <td class="text-right">{{ ligne.debit_fmt }}</td>
+                                            <td class="text-right">{{ ligne.credit_fmt }}</td>
+                                            <td class="text-right">
+                                                {% if ligne.solde_créditeur %}C-{{ ligne.solde_fmt }}{% elif ligne.solde_débiteur %}D-{{ ligne.solde_fmt }}{% else %}-{% endif %}
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style="font-weight:700;background-color: rgb(241, 241, 241);">
+                                            <td colspan="2" class="text-right">Total</td>
+                                            <td class="text-right">{{ total_debit_fmt }}</td>
+                                            <td class="text-right">{{ total_credit_fmt }}</td>
+                                            <td class="text-right">
+                                                {% if solde_periode_crediteur %}C-{{ solde_periode_fmt }}{% else %}D-{{ solde_periode_fmt }}{% endif %}
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        <tr style="font-weight:700;color: rgb(255, 57, 57);">
+                                            <td colspan="2">A reporter (résultat période)</td>
+                                            <td class="text-right">{{ total_debit_fmt }}</td>
+                                            <td class="text-right">{{ total_credit_fmt }}</td>
+                                            <td class="text-right">
+                                                {% if solde_periode_crediteur %}C-{{ solde_periode_fmt }}{% else %}D-{{ solde_periode_fmt }}{% endif %}
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main_content %} 
