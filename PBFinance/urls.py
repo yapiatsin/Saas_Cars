@@ -1,9 +1,10 @@
 from django.urls import path
 from . import views
 from .views import *
-
+# from PBFinance.views import *
 urlpatterns = [
     path('',Home.as_view(), name='home'),
+    path('home', HomeSite, name='basite'),
     path('identites', Apropos.as_view(), name='Apropos'),
     path('contacts', Contact.as_view(), name='contact'),
     

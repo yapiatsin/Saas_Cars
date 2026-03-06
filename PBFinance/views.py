@@ -18,9 +18,12 @@ from django.utils.decorators import method_decorator
 from django.core.paginator import EmptyPage, PageNotAnInteger,Paginator
 from django.contrib.auth import logout
 
+def HomeSite(request):
+    return render(request, 'basite.html')
+
 # Create your views here.
 class Home(TemplateView):
-    template_name = 'pbent/index.html' 
+    template_name = 'basite.html' 
     timeout_minutes = 100
     def dispatch(self, request, *args, **kwargs):
         last_activity = request.session.get('last_activity')
@@ -78,7 +81,6 @@ class Equip(TemplateView):
                 return redirect("equipes")
         return super().dispatch(request, *args, **kwargs)
 
-
 class Identite(TemplateView):
     template_name = 'pbent/identite.html' 
     timeout_minutes = 100
@@ -119,7 +121,6 @@ class Vtc(TemplateView):
                 messages.warning(request, "Vous avez été déconnecté ")
                 return redirect("vtc")
         return super().dispatch(request, *args, **kwargs)
-
 
 class Location(TemplateView):
     template_name = 'pbent/details_location.html' 
