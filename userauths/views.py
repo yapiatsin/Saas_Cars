@@ -4,10 +4,17 @@ from typing import Any
 from urllib import request
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy
-from .utils import send_email_with_html_body
+from .utils import send_email_with_html_body, send_verification_email
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
-from userauths.forms import EditUserProfileForm, CustomUserCreationForm, PasswordChangingForm, CreateUserProfileForm
+from userauths.forms import (
+    EditUserProfileForm,
+    CustomUserCreationForm,
+    PasswordChangingForm,
+    CreateUserProfileForm,
+    EntrepriseSignupForm,
+    ChoixFormuleForm,
+)
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.conf import settings 
@@ -20,12 +27,12 @@ from django.contrib.auth.views import PasswordChangeView
 from django.contrib.auth.mixins import LoginRequiredMixin
 #User = settings.AUTH_USER_MODEL
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
-from .models import UserProfile
+from django.views.decorators.http import require_POST, require_http_methods
+from .models import UserProfile, EmailVerificationToken
 from .models import *
 from userauths.forms import *
 from .models import CustomUser
-from Gest_saas.models import Gerant
+from Gest_saas.models import Gerant, Entreprise, FormuleSouscription, Souscription
 # Create your views here.
 # from .utils import generate_greeting, generate_goodbye
 from django.core.mail import send_mail
@@ -38,6 +45,7 @@ from django.contrib.auth import get_user_model
 # Vue pour vérifier l'OTP envoyé par email
 from django.utils import timezone
 from .forms import ChangePasswordForm
+from django.db import transaction
 
 from userauths.forms import CustomPermissionForm, TypeCustomPermissionForm
 import openpyxl
@@ -47,6 +55,196 @@ from django.http import HttpResponse
 import pandas as pd
 CustomUser = get_user_model()
 
+def entreprise_signup_view(request, code=None):
+    """Inscription d'une nouvelle entreprise + utilisateur propriétaire."""
+    plan_code = code or request.GET.get("plan")
+    initial = {}
+    if plan_code:
+        initial["plan_code"] = plan_code
+    if request.method == "POST":
+        form = EntrepriseSignupForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            plan_code = data.get("plan_code") or plan_code
+            # Récupérer éventuellement la formule choisie
+            formule = None
+            if plan_code:
+                try:
+                    formule = FormuleSouscription.objects.get(code=plan_code)
+                except FormuleSouscription.DoesNotExist:
+                    formule = None
+
+            with transaction.atomic():
+                user = CustomUser.objects.create_user(
+                    email=data["email"],
+                    username=data["username"],
+                    password=data["password1"],
+                    gender=data["gender"],
+                )
+                # Marquer comme administrateur de son entreprise
+                user.user_type = "admin"
+                user.is_active = True
+                user.save()
+                admin_profile = Administ.objects.create(
+                    user=user,
+                    nom=data["username"],
+                    prenom="",
+                    commune=data.get("ville") or "",
+                    tel1=data.get("telephone") or "",
+                )
+                entreprise = Entreprise.objects.create(
+                    proprietaire=admin_profile,
+                    nom=data["entreprise_nom"],
+                    sigle=data.get("sigle") or "",
+                    email=data["email"],
+                    telephone=data.get("telephone") or "",
+                    ville=data.get("ville") or "",
+                    pays=data.get("pays") or "",
+                )
+                user.entreprise = entreprise
+                user.save(update_fields=["entreprise"])
+                # Créer automatiquement une souscription active si une formule est connue
+                if formule:
+                    today = timezone.now().date()
+                    date_fin = today + timezone.timedelta(days=formule.duree_jours)
+                    Souscription.objects.create(
+                        entreprise=entreprise,
+                        formule=formule,
+                        date_debut=today,
+                        date_fin=date_fin,
+                        statut=Souscription.STATUT_ACTIVE,
+                    )
+            verification_token = EmailVerificationToken.objects.create(user=user)
+            email_sent = send_verification_email(request, user, verification_token.token)
+            if email_sent:
+                messages.success(
+                    request,
+                    f"Compte créé avec succès ! Un email de vérification a été envoyé à {user.email}. "
+                    "Veuillez vérifier votre boîte de réception puis vous connecter.",
+                )
+            else:
+                messages.warning(
+                    request,
+                    "Compte créé avec succès, mais l'email de vérification n'a pas pu être envoyé. "
+                    "Veuillez contacter l'administrateur.",
+                )
+            return redirect("login")
+    else:
+        form = EntrepriseSignupForm(initial=initial)
+    context = {
+        "form": form,
+        "plan_code": plan_code,
+    }
+    return render(request, "userauths/entreprise_signup.html", context)
+
+def choix_formule_view(request, code):
+    """Étape de confirmation de la formule avant création de la souscription."""
+    formule = get_object_or_404(FormuleSouscription, code=code, est_active=True)
+
+    if request.method == "POST":
+        form = ChoixFormuleForm(request.POST)
+        if form.is_valid():
+            messages.success(request, "Formule sélectionnée avec succès.")
+            return redirect("dash")
+    else:
+        form = ChoixFormuleForm(initial={"code": formule.code})
+
+    return render(
+        request,
+        "userauths/choix_formule.html",
+        {
+            "form": form,
+            "formule": formule,
+        },
+    )
+
+def verify_email_view(request, token):
+    """Vérification de l'email avec le token envoyé par email."""
+    try:
+        verification_token = EmailVerificationToken.objects.get(token=token)
+        if not verification_token.is_valid():
+            if verification_token.used:
+                context = {
+                    "success": False,
+                    "title": "Token déjà utilisé",
+                    "message": "Ce lien de vérification a déjà été utilisé. Votre email a déjà été vérifié.",
+                    "user": verification_token.user,
+                }
+            else:
+                context = {
+                    "success": False,
+                    "title": "Token expiré",
+                    "message": "Ce lien de vérification a expiré. Veuillez demander un nouveau lien de vérification.",
+                    "user": verification_token.user,
+                }
+            return render(request, "userauths/verify_email.html", context)
+        with transaction.atomic():
+            user = verification_token.user
+            user.email_verified = True
+            user.email_verified_at = timezone.now()
+            user.save(update_fields=["email_verified", "email_verified_at"])
+            verification_token.used = True
+            verification_token.used_at = timezone.now()
+            verification_token.save(update_fields=["used", "used_at"])
+        context = {
+            "success": True,
+            "title": "Email vérifié avec succès",
+            "message": f"Félicitations {user.username} ! Votre adresse email a été vérifiée avec succès. Vous pouvez maintenant vous connecter à votre compte.",
+            "user": user,
+        }
+        return render(request, "userauths/verify_email.html", context)
+    except EmailVerificationToken.DoesNotExist:
+        context = {
+            "success": False,
+            "title": "Token invalide",
+            "message": "Le lien de vérification est invalide ou n'existe pas. Veuillez vérifier votre email ou demander un nouveau lien.",
+            "user": None,
+        }
+        return render(request, "userauths/verify_email.html", context)
+    except Exception as e:
+        context = {
+            "success": False,
+            "title": "Erreur",
+            "message": f"Une erreur est survenue lors de la vérification : {str(e)}. Veuillez contacter l'administrateur.",
+            "user": None,
+        }
+        return render(request, "userauths/verify_email.html", context)
+
+@require_http_methods(["GET", "POST"])
+def resend_verification_email_view(request):
+    """Renvoyer un email de vérification."""
+    if request.method == "POST":
+        email = request.POST.get("email", "").strip()
+        if not email:
+            messages.error(request, "Veuillez fournir une adresse email.")
+            return render(request, "userauths/resend_verification.html")
+        try:
+            user = CustomUser.objects.get(email=email)
+            if user.email_verified:
+                messages.info(request, "Votre email est déjà vérifié. Vous pouvez vous connecter.")
+                return redirect("login")
+            EmailVerificationToken.objects.filter(user=user, used=False).update(
+                used=True, used_at=timezone.now()
+            )
+            verification_token = EmailVerificationToken.objects.create(user=user)
+            email_sent = send_verification_email(request, user, verification_token.token)
+            if email_sent:
+                messages.success(
+                    request,
+                    f"Un nouvel email de vérification a été envoyé à {user.email}. "
+                    "Veuillez vérifier votre boîte de réception.",
+                )
+            else:
+                messages.error(
+                    request,
+                    "L'email n'a pas pu être envoyé. Veuillez réessayer plus tard ou contacter l'administrateur.",
+                )
+            return redirect("login")
+        except CustomUser.DoesNotExist:
+            messages.error(request, "Aucun compte n'est associé à cette adresse email.")
+        except Exception as e:
+            messages.error(request, f"Une erreur est survenue : {str(e)}")
+    return render(request, "userauths/resend_verification.html")
 
 def list_users(request):
     users = CustomUser.objects.filter(is_superuser=False)
@@ -56,7 +254,6 @@ def list_users(request):
 def edit_user_permissions(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
-    
     if request.method == 'POST':
         form = UserPermissionForm(request.POST)
         if form.is_valid():
@@ -91,79 +288,76 @@ def generate_random_password(length=8):
     characters = string.ascii_letters + string.digits 
     return ''.join(random.choice(characters) for i in range(length))
 
-@login_required(login_url='/login/')
-def add_administrateur(request):
-    cxt = {}
-    adm = Administ.objects.all()
-    if request.method == 'POST':
-        userform = CustomUserCreationForm(request.POST)
-        adminform = AdministForm(request.POST)
-        permission_form = UserPermissionForm(request.POST)
-        if userform.is_valid() and adminform.is_valid() and permission_form.is_valid():
-            try:
-                user = userform.save(commit=False)
-                password = generate_random_password()
-                user.set_password(password)
-                user.user_type = "1"
-                user.save()
-                adminst = adminform.save(commit=False)
-                adminst.user = user
-                adminst.save()
-
-                permissions = permission_form.cleaned_data['permissions']
-                user.custom_permissions.set(permissions)
-                
-                subjet = 'Création de Compte Administrateur'
-                receivers = [user.email]
-                template = 'compte_success.html'
-                context = {
-                    'username': user.username,
-                    'password': password,
-                    'date': datetime.today().date,
-                    'user_email':user.email
-                }
-                has_send=send_email_with_html_body(
-                    subjet=subjet, 
-                    receivers= receivers, 
-                    template= template, 
-                    context=context
-                )
-                if has_send:
-                    messages.success(request, 'Compte créé avec succès. Un email a été envoyé.')
-                else:
-                    messages.error(request, 'Centre de santé enregistré avec succès, mais l\'email n\'a pas pu être envoyé.')
-                return redirect('addadministrateur')
-            except Exception as e:
-                messages.error(request, f"Erreur: {str(e)}")
-        else:
-            for field, errors in userform.errors.items():
-                for error in errors:
-                    messages.error(request, f"Erreur dans {field}: {error}")
-            for field, errors in adminform.errors.items():
-                for error in errors:
-                    messages.error(request, f"Erreur dans {field}: {error}")
-    else:
-        userform = CustomUserCreationForm()
-        adminform = AdministForm()
-        permission_form = UserPermissionForm()
-    return render(request, 'add_admin.html', {
-        'user_form': userform,
-        'admin_form': adminform,
-        'cxt': cxt,
-        'admins': adm,
-        'permission_form': permission_form,
-    })
-
-def delete_admin(request, pk):
-    try:
-        admin = get_object_or_404(Administ, id=pk)
-        user = admin.user  
-        admin.delete()
-        user.delete()
-        messages.success(request, f"le compte administrateur de {admin.user.username} et le profile associé ont été supprimés avec succès.")
-    except Exception as e:
-        messages.error(request, f"Erreur lors de la suppression : {str(e)}")
-    return redirect('addadministrateur')
+# @login_required(login_url='/login/')
+# def add_administrateur(request):
+#     cxt = {}
+#     adm = Administ.objects.all()
+#     if request.method == 'POST':
+#         userform = CustomUserCreationForm(request.POST)
+#         adminform = AdministForm(request.POST)
+#         permission_form = UserPermissionForm(request.POST)
+#         if userform.is_valid() and adminform.is_valid() and permission_form.is_valid():
+#             try:
+#                 user = userform.save(commit=False)
+#                 password = generate_random_password()
+#                 user.set_password(password)
+#                 user.user_type = "1"
+#                 user.save()
+#                 adminst = adminform.save(commit=False)
+#                 adminst.user = user
+#                 adminst.save()
+#                 permissions = permission_form.cleaned_data['permissions']
+#                 user.custom_permissions.set(permissions)
+#                 subjet = 'Création de Compte Administrateur'
+#                 receivers = [user.email]
+#                 template = 'compte_success.html'
+#                 context = {
+#                     'username': user.username,
+#                     'password': password,
+#                     'date': datetime.today().date,
+#                     'user_email':user.email
+#                 }
+#                 has_send=send_email_with_html_body(
+#                     subjet=subjet, 
+#                     receivers= receivers, 
+#                     template= template, 
+#                     context=context
+#                 )
+#                 if has_send:
+#                     messages.success(request, 'Compte créé avec succès. Un email a été envoyé.')
+#                 else:
+#                     messages.error(request, 'Centre de santé enregistré avec succès, mais l\'email n\'a pas pu être envoyé.')
+#                 return redirect('addadministrateur')
+#             except Exception as e:
+#                 messages.error(request, f"Erreur: {str(e)}")
+#         else:
+#             for field, errors in userform.errors.items():
+#                 for error in errors:
+#                     messages.error(request, f"Erreur dans {field}: {error}")
+#             for field, errors in adminform.errors.items():
+#                 for error in errors:
+#                     messages.error(request, f"Erreur dans {field}: {error}")
+#     else:
+#         userform = CustomUserCreationForm()
+#         adminform = AdministForm()
+#         permission_form = UserPermissionForm()
+#     return render(request, 'add_admin.html', {
+#         'user_form': userform,
+#         'admin_form': adminform,
+#         'cxt': cxt,
+#         'admins': adm,
+#         'permission_form': permission_form,
+#     })
+# def delete_admin(request, pk):
+#     try:
+#         admin = get_object_or_404(Administ, id=pk)
+#         user = admin.user  
+#         admin.delete()
+#         user.delete()
+#         messages.success(request, f"le compte administrateur de {admin.user.username} et le profile associé ont été supprimés avec succès.")
+#     except Exception as e:
+#         messages.error(request, f"Erreur lors de la suppression : {str(e)}")
+#     return redirect('addadministrateur')
 
 @login_required(login_url='/login/')
 def add_chefexploit(request):
@@ -663,9 +857,16 @@ def loginview(request):
             user = CustomUser.objects.get(email=email)
             user = authenticate(request, email=email, password=password)
             if user is not None:
+                if not getattr(user, "email_verified", True):
+                    messages.error(
+                        request,
+                        "Veuillez vérifier votre adresse email avant de vous connecter. "
+                        "Consultez votre boîte de réception ou renvoyez le lien de vérification.",
+                    )
+                    return render(request, "perfect/logins.html")
                 login(request, user)
                 user_type=user.user_type
-                if user_type == '1':
+                if user_type == 'admin':
                     messages.success(request, f"Bienvenue Administrateur {user.username}")
                     return redirect('dash')
                 elif user_type == '2':

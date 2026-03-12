@@ -1492,7 +1492,8 @@ class ExportRecetteMensuelleExcelView(LoginRequiredMixin, View):
         wb.save(response)
         return response
 
-class DashboardView(CustomPermissionRequiredMixin,LoginRequiredMixin,TemplateView):
+# class DashboardView(CustomPermissionRequiredMixin,LoginRequiredMixin,TemplateView):
+class DashboardView(LoginRequiredMixin,TemplateView):
     login_url = 'login'
     permission_url = 'dash'
     template_name = 'perfect/dashboard.html'

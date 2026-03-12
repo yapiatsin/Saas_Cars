@@ -1,14 +1,6 @@
 from django.contrib import admin
 from .models import *
 
-class VideoAdmin(admin.ModelAdmin):
-    list_display = ['title','date_saisie']
-    list_filter = ['title','date_saisie']
-
-class PhotoAdmin(admin.ModelAdmin):
-    list_display = ['libelle']
-    list_filter = ['libelle']
-
 class EvenementAdmin(admin.ModelAdmin):
     list_display = ['title','date_saisie']
     list_filter = ['title','date_saisie']
@@ -24,9 +16,9 @@ class SousCategorieOngletAdmin(admin.ModelAdmin):
     search_fields = ['libelle']
 
 class PageAccueilAdmin(admin.ModelAdmin):
-    list_display = ['libelle','taille_texte','background','couleur_fond']
-    list_filter = ['libelle','taille_texte','background','couleur_fond']
-    search_fields = ['libelle','taille_texte','background','couleur_fond']
+    list_display = ['libelle','texte_accueil','background',]
+    list_filter = ['libelle','texte_accueil','background',]
+    search_fields = ['libelle','texte_accueil','background',]
 
 class NosServiceAdmin(admin.ModelAdmin):
     list_display = ['libelle','image','description','lien_detail']
@@ -89,22 +81,17 @@ class PageSiteSearchAdmin(admin.ModelAdmin):
     search_fields = ['nom','slug']
 
 class VisiteAdmin(admin.ModelAdmin):
-    list_display = ['page','url_visitee','titre_page','date_visite','session_key','ip_address','user_agent']
-    list_filter = ['page','url_visitee','titre_page','date_visite','session_key','ip_address','user_agent']
-    search_fields = ['page','url_visitee','titre_page','date_visite','session_key','ip_address','user_agent']
+    list_display = ['url_visitee','titre_page','date_visite','session_key','ip_address','user_agent']
+    list_filter = ['url_visitee','titre_page','date_visite','session_key','ip_address','user_agent']
+    search_fields = ['url_visitee','titre_page','date_visite','session_key','ip_address','user_agent']
 
 class ClicAdmin(admin.ModelAdmin):
     list_display = ['element','url_page','date_clic','session_key','ip_address']
     list_filter = ['element','url_page','date_clic','session_key','ip_address']
     search_fields = ['element','url_page','date_clic','session_key','ip_address']
 
-admin.site.register(Video, VideoAdmin)
-admin.site.register(Photo, PhotoAdmin)
 admin.site.register(Evenement, EvenementAdmin)
 admin.site.register(PartenSpons, PartenSponsAdmin)
-admin.site.register(CategorieOnglet, CategorieOngletAdmin)
-admin.site.register(SousCategorieOnglet, SousCategorieOngletAdmin)
-admin.site.register(PageSiteSearch, PageSiteSearchAdmin)
 admin.site.register(Visite, VisiteAdmin)
 admin.site.register(Clic, ClicAdmin)
 admin.site.register(PageAccueil, PageAccueilAdmin)

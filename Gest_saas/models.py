@@ -5,6 +5,7 @@ from django.utils import timezone
 from userauths.models import CustomUser
 from simple_history.models import HistoricalRecords 
 from userauths.models import Administ
+from django.core.validators import RegexValidator
 #-------------------------categorie de vehicule-----------------------------#
 
 ##formule de souscription nb categorie de vehicule et nb vehicule
@@ -428,7 +429,17 @@ class Entreprise(models.Model):
     nom = models.CharField(max_length=255)
     sigle = models.CharField(max_length=50, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
-    telephone = models.CharField(max_length=50, null=True, blank=True)
+    # telephone = models.CharField(max_length=50, null=True, blank=True)
+    telephone_validator = RegexValidator(
+        regex=r'^\+?1?\d{9,15}$',
+        message="Le numéro de téléphone doit être au format: '+999999999'. Maximum 15 chiffres."
+    )
+    telephone = models.CharField(
+        validators=[telephone_validator],
+        max_length=17,
+        blank=True,
+        verbose_name="Téléphone"
+    )
     adresse = models.CharField(max_length=255, null=True, blank=True)
     ville = models.CharField(max_length=100, null=True, blank=True)
     pays = models.CharField(max_length=100, null=True, blank=True)

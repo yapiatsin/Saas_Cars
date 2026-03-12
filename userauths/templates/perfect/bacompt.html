@@ -1,4 +1,4 @@
-{% load static %} 
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -30,261 +30,236 @@
     <link rel="stylesheet" href="{% static 'pb/plugins/toastr/toastr.min.css' %}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{% static 'pb/dists/css/adminlte.min.css' %}">
+    <!-- Google Font: Raleway -->
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;400;500;700&display=swap" rel="stylesheet">
     <style>
-        .btn{
-            background-color:rgba(255, 255, 255, 0.24);
-            color:rgba(0, 139, 163, 0.58);
-            border-color: rgba(255, 255, 255, 0.79);
-            color:rgba(255, 255, 255, 0.79);
-        }
-        .btn:hover{
-            background-color:rgba(234, 252, 255, 0.32);
-            color:rgb(41, 159, 180)
-        }
-        @import url('https://fonts.googleapis.com/css?family=Nuto:400,700');
-        body{
-            font-family: poppins;
-        }
-        .context {
-            width: 100%;
-            position: absolute;
-        }
-        .context h1{
-            text-align: center;
-            color: rgba(255,255,255,0.5);
-            font-size: 50px;
-            backdrop-filter: blur(10px);
-        }
-        .circles{
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        html, body {
+            font-family: Raleway, sans-serif;
             overflow: hidden;
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            text-shadow: 0px 1px 2px rgba(0,0,0,0.4);
         }
-        .circles li{
-            position: absolute;
-            display: block;
-            list-style: none;
-            width: 40px;
-            height: 40px;
-            animation: animate 25s linear infinite;
-            bottom: -150px;
+        /* Forcer le fond sur toute la page AdminLTE */
+        body.login-page {
+            background: transparent !important;
+            min-height: 100vh;
         }
-        .circles li:nth-child(1){
-            left: 25%;
-            width: 50px;
-            height: 50px;
-            animation-delay: 20s;
-        }
-        .circles li:nth-child(2){
-            left: 10%;
-            width: 60px;
-            height: 60px;
-            animation-delay: 2s;
-            animation-duration: 12s;
-        }
-        .circles li:nth-child(3){
-            left: 70%;
-            width: 40px;
-            height: 40px;
-            animation-delay: 8s;
-        }
-        .circles li:nth-child(4){
-            left: 40%;
-            width: 50px;
-            height: 50px;
-            animation-delay: 4s;
-            animation-duration: 15s;
-        }
-        .circles li:nth-child(5){
-            left: 65%;
-            width: 30px;
-            height: 30px;
-            animation-delay: 4s;
-        }
-        .circles li:nth-child(6){
-            left: 75%;
-            width: 65px;
-            height: 65px;
-            animation-delay: 5s;
-        }
-        .circles li:nth-child(7){
-            left: 35%;
-            width: 70px;
-            height: 70px;
-            animation-delay: 25s;
-        }
-        .circles li:nth-child(8){
-            left: 50%;
-            width: 25px;
-            height: 25px;
-            animation-delay: 5s;
-            animation-duration: 20s;
-        }
-        .circles li:nth-child(9){
-            left: 20%;
-            width: 35px;
-            height: 35px;
-            animation-delay: 2s;
-            animation-duration: 15s;
-        }
-        .circles li:nth-child(10){
-            left: 85%;
-            width: 40px;
-            height: 40px;
-            animation-delay: 4s;
-            animation-duration: 14s;
-        }
-        @keyframes animate {
-            0%{
-                transform: translateY(0) rotate(0deg);
-                opacity: 1;
-                border-radius: 0;
-            }
-            100%{
-                transform: translateY(-1000px) rotate(720deg);
-                opacity: 0;
-                border-radius: 50%;
-            }
-        }
-        .video-background {
+        /* Canvas plein écran derrière la carte */
+        .auth-bg-container {
             position: fixed;
-            top: 0;
-            left: 0;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        #authBackground {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            z-index: -1;
+            display: block;
         }
-        
-        .login-box {
+        .login-box, .login-page .content-wrapper {
             position: relative;
             z-index: 1;
         }
-        
-        body {
-            overflow: hidden;
+        .btn {
+            background-color: rgba(255, 255, 255, 0.24);
+            color: rgba(255, 255, 255, 0.79);
+            border-color: rgba(255, 255, 255, 0.79);
+        }
+        .btn:hover {
+            background-color: rgba(234, 252, 255, 0.32);
+            color: rgb(41, 159, 180);
         }
     </style>
 </head>
-<body class="hold-transition login-page" style="background-image: url('{% static "birdcus.png" %}');
-background-size: cover;
-background-position: center;
-background-repeat: no-repeat;
-opacity:1">
-    <div class="area">
-        <ul class="circles">
-            <li style="background-image: url('{% static "bird_amico.png" %}');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: .95"></li>
-            <li style="background-image: url('{% static "bird_amico.png" %}');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: .95"></li>
-            <li style="background-image: url('{% static "bird_amico.png" %}');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: .95"></li>
-            <li style="background-image: url('{% static "bird_amico.png" %}');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: .95"></li>
-            <li style="background-image: url('{% static "bird_amico.png" %}');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: .95"></li>
-            <li style="background-image: url('{% static "bird_amico.png" %}');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: .95"></li>
-            <li style="background-image: url('{% static "bird_amico.png" %}');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: .95"></li>
-            <li style="background-image: url('{% static "bird_amico.png" %}');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: .95"></li>
-            <li style="background-image: url('{% static "bird_amico.png" %}');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: .95"></li>
-            <li style="background-image: url('{% static "bird_amico.png" %}');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: .95"></li>
-        </ul>  
+
+<body class="hold-transition login-page">
+    <div class="auth-bg-container">
+        <canvas id="authBackground"></canvas>
     </div>
     {% block content %}
 
     {% endblock content %}
 
     {% block custom_js %}
-        <script>
-            function updateTable(month, year) {
-                const url = `?month=${month}&year=${year}`;
-                fetch(url)
-                    .then(response => response.text())
-                    .then(html => {
-                        const parser = new DOMParser();
-                        const newDoc = parser.parseFromString(html, 'text/html');
-                        const newTable = newDoc.querySelector('table'); // Remplace uniquement le tableau
-                        const oldTable = document.querySelector('table');
-                        if (newTable && oldTable) {
-                            oldTable.innerHTML = newTable.innerHTML; // Mise à jour des données
-                        }
-                    })
-                    .catch(err => console.error('Error updating table:', err));
-            }
-            function changeMonth(offset) {
-                let month = parseInt(document.getElementById('month').value);
-                let year = parseInt(document.getElementById('year').value);
-                month += offset;
-                if (month > 12) {
-                    month = 1;
-                    year++;
-                } else if (month < 1) {
-                    month = 12;
-                    year--;
-                }
-                document.getElementById('month').value = month;
-                document.getElementById('year').value = year;
-                updateTable(month, year);
-            }
-            function selectMonthYear() {
-                const month = document.getElementById('month').value;
-                const year = document.getElementById('year').value;
-                updateTable(month, year);
-            }
-        </script>
-    {% endblock custom_js %}
     <script>
-        document.getElementById("loginForm").addEventListener("submit", function(event) {
-            event.preventDefault(); 
-            let button = document.getElementById("loginButton");
-            let buttonText = document.getElementById("buttonText");
-            let spinner = document.getElementById("spinner");
-            buttonText.classList.add("d-none");
-            spinner.classList.remove("d-none");
-            setTimeout(() => {
-                this.submit();
-            }, 500);
-        });
+        function updateTable(month, year) {
+            const url = `?month=${month}&year=${year}`;
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const newDoc = parser.parseFromString(html, 'text/html');
+                    const newTable = newDoc.querySelector('table'); // Remplace uniquement le tableau
+                    const oldTable = document.querySelector('table');
+                    if (newTable && oldTable) {
+                        oldTable.innerHTML = newTable.innerHTML; // Mise à jour des données
+                    }
+                })
+                .catch(err => console.error('Error updating table:', err));
+        }
+
+        function changeMonth(offset) {
+            let month = parseInt(document.getElementById('month').value);
+            let year = parseInt(document.getElementById('year').value);
+            month += offset;
+            if (month > 12) {
+                month = 1;
+                year++;
+            } else if (month < 1) {
+                month = 12;
+                year--;
+            }
+            document.getElementById('month').value = month;
+            document.getElementById('year').value = year;
+            updateTable(month, year);
+        }
+
+        function selectMonthYear() {
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+            updateTable(month, year);
+        }
     </script>
+    {% endblock custom_js %}
     <script src="{% static 'pb/plugins/jquery/jquery.min.js' %} "></script>
+    <script>
+        var loginForm = document.getElementById("loginForm");
+        if (loginForm) {
+            loginForm.addEventListener("submit", function(event) {
+                event.preventDefault();
+                var button = document.getElementById("loginButton");
+                var buttonText = document.getElementById("buttonText");
+                var spinner = document.getElementById("spinner");
+                if (buttonText) buttonText.classList.add("d-none");
+                if (spinner) spinner.classList.remove("d-none");
+                setTimeout(function() { loginForm.submit(); }, 500);
+            });
+        }
+    </script>
+    <script>
+        (function() {
+            var canvas = document.getElementById('authBackground');
+            if (!canvas) return;
+            var ctx = canvas.getContext('2d');
+
+            function getSize() {
+                return {
+                    w: window.innerWidth || document.documentElement.clientWidth,
+                    h: window.innerHeight || document.documentElement.clientHeight
+                };
+            }
+
+            var size = getSize();
+            var ww = size.w;
+            var wh = size.h;
+            resizeCanvas();
+
+            var partCount = 120;
+            var particles = [];
+
+            function Particle() {
+                this.color = 'rgba(255,255,255,' + (0.3 + Math.random() * 0.7) + ')';
+                this.x = randomInt(0, ww);
+                this.y = randomInt(0, wh);
+                this.direction = { x: -1 + Math.random() * 2, y: -1 + Math.random() * 2 };
+                this.vx = 0.2 + 0.4 * Math.random();
+                this.vy = 0.2 + 0.4 * Math.random();
+                this.radius = randomInt(1, 3);
+                this.float = function() {
+                    this.x += this.vx * this.direction.x;
+                    this.y += this.vy * this.direction.y;
+                };
+                this.changeDirection = function(axis) { this.direction[axis] *= -1; };
+                this.boundaryCheck = function() {
+                    if (this.x >= ww) { this.x = ww; this.changeDirection('x'); } else if (this.x <= 0) { this.x = 0; this.changeDirection('x'); }
+                    if (this.y >= wh) { this.y = wh; this.changeDirection('y'); } else if (this.y <= 0) { this.y = 0; this.changeDirection('y'); }
+                };
+                this.draw = function() {
+                    ctx.beginPath();
+                    ctx.fillStyle = this.color;
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                    ctx.fill();
+                };
+            }
+
+            function drawBackground() {
+                // fond global très clair
+                var baseGradient = ctx.createLinearGradient(0, 0, ww, wh);
+                baseGradient.addColorStop(0, 'rgba(255, 255, 255, 0.98)');
+                baseGradient.addColorStop(1, 'rgba(230, 240, 255, 0.95)');
+                ctx.fillStyle = baseGradient;
+                ctx.fillRect(0, 0, ww, wh);
+
+                // halo bleu circulaire centré (autour du formulaire)
+                var radius = Math.min(ww, wh) * 0.55;
+                var radial = ctx.createRadialGradient(
+                    ww / 2, wh / 2, 0,
+                    ww / 2, wh / 2, radius
+                );
+                radial.addColorStop(0, 'rgba(201, 224, 253, 0.98)');   // centre bleu soutenu
+                radial.addColorStop(0.5, 'rgba(201, 224, 253, 0.98)');
+                radial.addColorStop(1, 'rgba(219, 233, 250, 0.98)');    // fondu vers transparent
+                ctx.fillStyle = radial;
+                ctx.fillRect(0, 0, ww, wh);
+            }
+
+            function clearCanvas() {
+                drawBackground();
+            }
+
+            function createParticles() {
+                particles = [];
+                for (var i = 0; i < partCount; i++) particles.push(new Particle());
+            }
+
+            function drawParticles() {
+                for (var i = 0; i < particles.length; i++) particles[i].draw();
+            }
+
+            function updateParticles() {
+                for (var i = particles.length - 1; i >= 0; i--) {
+                    particles[i].float();
+                    particles[i].boundaryCheck();
+                }
+            }
+
+            function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1) + min); }
+
+            function resizeCanvas() {
+                size = getSize();
+                ww = size.w;
+                wh = size.h;
+                var dpr = window.devicePixelRatio || 1;
+                canvas.width = ww * dpr;
+                canvas.height = wh * dpr;
+                canvas.style.width = ww + 'px';
+                canvas.style.height = wh + 'px';
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                clearCanvas();
+                createParticles();
+                drawParticles();
+            }
+
+            function animateParticles() {
+                clearCanvas();
+                drawParticles();
+                updateParticles();
+                requestAnimationFrame(animateParticles);
+            }
+
+            createParticles();
+            drawParticles();
+            requestAnimationFrame(animateParticles);
+
+            window.addEventListener('resize', resizeCanvas);
+        })();
+    </script>
     <script src="{% static 'pb/plugins/bootstrap/js/bootstrap.bundle.min.js' %} "></script>
     <script src="{% static 'pb/dists/js/adminlte.min.js' %} "></script>
     <script src="{% static 'pb/plugins/jsgrid/demos/db.js' %} "></script>
@@ -315,26 +290,40 @@ opacity:1">
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 2000
-            });
-            {% if messages %}
-                {% for msg in messages %}
-                    {% if msg.tags == "error" %}
-                        toastr.error('{{ msg|escapejs }}', '', {
-                            timeOut: 5000,
-                            progressBar: true,
-                            closeButton: false,
-                            positionClass: 'toast-top-center'
-                        });
-                    {% else %}
-                        toastr.success('{{ msg|escapejs }}', '', {
-                            timeOut: 5000,
-                            progressBar: true,
-                            closeButton: false,
-                            positionClass: 'toast-top-center'
-                        });
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
+            }); {
+                %
+                if messages %
+            } {
+                %
+                for msg in messages %
+            } {
+                %
+                if msg.tags == "error" %
+            }
+            toastr.error('{{ msg|escapejs }}', '', {
+                timeOut: 5000,
+                progressBar: true,
+                closeButton: false,
+                positionClass: 'toast-top-center'
+            }); {
+                %
+                else %
+            }
+            toastr.success('{{ msg|escapejs }}', '', {
+                timeOut: 5000,
+                progressBar: true,
+                closeButton: false,
+                positionClass: 'toast-top-center'
+            }); {
+                %
+                endif %
+            } {
+                %
+                endfor %
+            } {
+                %
+                endif %
+            }
         });
     </script>
 </body>

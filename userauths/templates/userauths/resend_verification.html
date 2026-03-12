@@ -1,0 +1,35 @@
+{% extends "perfect/bacompt.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="login-logo text-center mb-4" style="font-size: 30px;">
+        <img src="{% static 'site_assets/images/Maflot-f.png' %}" alt="MaFlot Logo" class="img-fluid" loading="eager" style="max-height: 70px;" />
+      </div>
+      <div class="card" style="border-radius: 18px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.35); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+        <div class="card-body login-card-body p-5" style="background: transparent; border-radius: 18px">
+          <h2 class="card-title mb-4 " style="font-size: 18px; font-weight: 500; color: rgba(2, 26, 78, 0.63);">Renvoyer l'email de vérification</h2>
+          <p class="card-text mb-4 text-center" style="color: rgba(2, 26, 78, 0.63);">Saisissez l'adresse email de votre compte pour recevoir un nouveau lien de vérification.</p>
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+          <form method="post" action="">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="email" class="form-label">Adresse email</label>
+              <input type="email" name="email" id="email" class="form-control" placeholder="votre@email.com" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Envoyer le lien</button>
+          </form>
+          <p class="mt-4 mb-0 text-center">
+            <a href="{% url 'login' %}">Retour à la connexion</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

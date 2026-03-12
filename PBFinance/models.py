@@ -2,55 +2,14 @@ from django.db import models
 from django.utils import timezone
 from userauths.models import CustomUser
 
-class CategorieOnglet(models.Model):
-    """Catégorie principale du menu (ex: MEDIA)."""
-    libelle = models.CharField(max_length=100, verbose_name="Catégorie")
-    lien = models.URLField(
-        max_length=500,
-        blank=True,
-        null=True,
-        verbose_name="Lien du contenu (optionnel)"
-    )
-    ordre = models.PositiveIntegerField(default=0, verbose_name="Ordre d'affichage")
-    actif = models.BooleanField(default=True)
-    class Meta:
-        verbose_name = "Catégorie onglet"
-        verbose_name_plural = "Catégories onglets"
-        ordering = ['ordre', 'libelle']
-    def __str__(self):
-        return self.libelle
-
-class SousCategorieOnglet(models.Model):
-    """Sous-catégorie d'un onglet (ex: Photo, Videos, Evènements sous MEDIA)."""
-    categorie = models.ForeignKey(
-        CategorieOnglet,
-        on_delete=models.CASCADE,
-        related_name='sous_categories',
-        verbose_name="Catégorie parente"
-    )
-    libelle = models.CharField(max_length=100, verbose_name="Sous-catégorie")
-    lien = models.URLField(
-        max_length=500,
-        blank=True,
-        null=True,
-        verbose_name="Lien du contenu"
-    )
-    ordre = models.PositiveIntegerField(default=0, verbose_name="Ordre d'affichage")
-    actif = models.BooleanField(default=True)
-    class Meta:
-        verbose_name = "Sous-catégorie onglet"
-        verbose_name_plural = "Sous-catégories onglets"
-        ordering = ['categorie', 'ordre', 'libelle']
-    def __str__(self):
-        return f"{self.categorie.libelle} › {self.libelle}"
-
 class PageAccueil(models.Model):
     """Configuration de la page d'accueil (libellé, style, fond)."""
     libelle = models.CharField(max_length=200, verbose_name="Libellé")
-    taille_texte = models.PositiveIntegerField(
-        default=16,
-        verbose_name="Taille du texte (px)",
-        help_text="Taille de police en pixels"
+    texte_accueil = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Texte de l'accueil",
+        help_text="Texte de l'accueil"
     )
     background = models.ImageField(
         upload_to='accueil/backgrounds',
@@ -58,14 +17,6 @@ class PageAccueil(models.Model):
         null=True,
         verbose_name="Image de fond"
     )
-    couleur_fond = models.CharField(
-        max_length=20,
-        blank=True,
-        default="#ffffff",
-        verbose_name="Couleur de fond (hex)"
-    )
-    ordre = models.PositiveIntegerField(default=0)
-    actif = models.BooleanField(default=True)
     date_creation = models.DateTimeField(auto_now_add=True)
     date_modification = models.DateTimeField(auto_now=True)
     class Meta:
@@ -227,19 +178,6 @@ class Footer(models.Model):
         return "Configuration du footer"
 
 # ============== Galerie & Équipe ==============
-class Photo(models.Model):
-    """Photo : image, libellé, date de poste automatique."""
-    libelle = models.CharField(max_length=200, verbose_name="Libellé")
-    image = models.ImageField(upload_to='photo/')
-    date_poste = models.DateTimeField(auto_now_add=True)
-    actif = models.BooleanField(default=True)
-    ordre = models.PositiveIntegerField(default=0)
-    class Meta:
-        verbose_name = "Photo"
-        verbose_name_plural = "Photos"
-        ordering = ['-date_poste', 'ordre']
-    def __str__(self):
-        return f"{self.libelle} - {self.date_poste.date()}"
 
 class PageContact(models.Model):
     """Configuration de la page Contact (texte, coordonnées, formulaire)."""
@@ -293,15 +231,6 @@ class Equipe(models.Model):
         return f"{self.nom} - {self.role}"
 
 # ============== Anciens modèles conservés ==============
-
-class Video(models.Model):
-    title = models.CharField(max_length=50)
-    video = models.FileField(upload_to='video/%y')
-    date = models.DateField(auto_now_add=True)
-    date_saisie = models.DateField()
-    def __str__(self):
-        return '%s - %s' % (self.title, self.video)
-
 class Evenement(models.Model):
     title = models.CharField(max_length=50)
     image = models.FileField(upload_to='evenement')
@@ -312,29 +241,9 @@ class Evenement(models.Model):
         return '%s - %s - %s' % (self.title, self.image, self.auteur)
 
 # ============== Statistiques (visites, clics, pages visitées) ==============
-class PageSiteSearch(models.Model):
-    nom = models.CharField(max_length=100, verbose_name="Nom de la page")
-    slug = models.SlugField(max_length=100, unique=True)
-    url_path = models.CharField(
-        max_length=300,
-        blank=True,
-        help_text="Chemin ou pattern d'URL (ex: /services/)"
-    )
-    class Meta:
-        verbose_name = "Page (référentiel)"
-        verbose_name_plural = "Pages (référentiel)"
-    def __str__(self):
-        return self.nom
 
 class Visite(models.Model):
     """Enregistrement d'une visite (pour stats journalières, mensuelles, annuelles)."""
-    page = models.ForeignKey(
-        PageSiteSearch,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='visites'
-    )
     url_visitee = models.CharField(max_length=500, verbose_name="URL visitée")
     titre_page = models.CharField(max_length=200, blank=True)
     date_visite = models.DateTimeField(auto_now_add=True)

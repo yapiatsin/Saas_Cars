@@ -5,7 +5,12 @@ from .views import PasswordChangeView
 name = "userauths"
 
 urlpatterns = [
-    
+    path("inscription/", entreprise_signup_view, name="signup_entreprise"),
+    path("inscription/<str:code>/", entreprise_signup_view, name="signup_entreprise_code"),
+    path("choix-formule/<str:code>/", choix_formule_view, name="choix_formule"),
+    path("verify-email/<str:token>/", verify_email_view, name="verify_email"),
+    path("renvoyer-verification-email/", resend_verification_email_view, name="resend_verification_email"),
+
     path("se connecter", loginview, name="login"),
     path("deconnexion", logout_view, name="log_out"),
     path("pb", pb_home, name="pb_holdind"),
@@ -13,7 +18,8 @@ urlpatterns = [
     path("liste des comptes", list_users, name="compte"),
     path('Utilisateur/<int:user_id>/permissions/', edit_user_permissions, name='edit_user_permissions'),
     
-    path('Créer admin', add_administrateur, name="addadministrateur"),
+    # path('Créer admin', add_administrateur, name="addadministrateur"),
+    # # path('supprimer compte admin/<int:pk>/delete', delete_admin, name="del_admins"),
     path('Créer chef exploitation', add_chefexploit, name="addchefexploit"),
     path('Créer comptable', add_comptable, name="addcomptable"),
     path('Créer gerant', add_gerant, name="addgerant"),
@@ -23,7 +29,6 @@ urlpatterns = [
     path('supprimer compte gerant/<int:pk>/delete', delete_gerant, name="del_gernt"),
     path('supprimer compte comptable/<int:pk>/delete', delete_comptable, name="del_comptable"),
     path('supprimer compte chefexploit/<int:pk>/delete', delete_chefexploit, name="del_chef_exploit"),
-    path('supprimer compte admin/<int:pk>/delete', delete_admin, name="del_admins"),
     
     path('mot de passe oublié', ForgotPasswordView.as_view(), name="mot_passe_oublie"),
     

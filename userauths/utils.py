@@ -7,8 +7,37 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.db.models import Q
+from django.urls import reverse
 
 logger = logging.getLogger(__name__)
+
+def send_verification_email(request, user, token):
+    """
+    Envoie un email de vérification avec le lien contenant le token.
+    request: HttpRequest (pour build_absolute_uri)
+    user: CustomUser
+    token: str (EmailVerificationToken.token)
+    Returns: True si l'email a été envoyé, False sinon.
+    """
+    try:
+        verification_url = request.build_absolute_uri(
+            reverse("verify_email", kwargs={"token": token})
+        )
+        context = {
+            "user": user,
+            "verification_url": verification_url,
+        }
+        subject = "MaFlot — Vérifiez votre adresse email"
+        return send_email_with_html_body(
+            subjet=subject,
+            receivers=[user.email],
+            template="userauths/email_verification.html",
+            context=context,
+        )
+    except Exception as e:
+        logger.error(f"Erreur envoi email vérification: {str(e)}")
+        return False
+
 
 def send_email_with_html_body(subjet:str, receivers:list, template:str, context:dict):
     ##la fonction qui aide a envoyer les email a des users specifique

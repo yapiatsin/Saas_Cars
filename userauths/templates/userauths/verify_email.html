@@ -1,0 +1,27 @@
+{% extends "perfect/bacompt.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="login-logo text-center mb-4" style="font-size: 30px;">
+        <img src="{% static 'site_assets/images/Maflot-f.png' %}" alt="MaFlot Logo" class="img-fluid" loading="eager" style="max-height: 70px;" />
+      </div>
+      <div class="card" style="border-radius: 18px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.35); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+        <div class="card-body login-card-body text-center p-5" style="background: transparent; border-radius: 18px">
+          <h2 class="card-title mb-4" style="font-size: 18px; font-weight: 500; color: rgba(2, 26, 78, 0.63);">{{ title }}</h2>
+          <p class="card-text mb-4" style="color: rgba(2, 26, 78, 0.63);">{{ message }}</p>
+          {% if success %}
+            <a href="{% url 'login' %}" class="btn btn-outline-primary px-4" style="border-radius: 50px; border-color: rgba(2, 26, 78, 0.63); color: rgba(2, 26, 78, 0.9);">Se connecter</a>
+          {% elif user %}
+            <a href="{% url 'resend_verification_email' %}" class="btn btn-outline-primary px-4" style="border-radius: 50px; border-color: rgba(2, 26, 78, 0.63); color: rgba(2, 26, 78, 0.9);">Renvoyer un lien de vérification</a>
+          {% endif %}
+          <hr class="my-4">
+          <a href="{% url 'login' %}" style="color: rgba(2, 26, 78, 0.63);">Retour à la connexion</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

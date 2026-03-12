@@ -9,6 +9,74 @@ from userauths.models import *
 from .models import GENDER_SELECTION
 from Gest_saas.models import Gerant, CategoVehi
 
+class EntrepriseSignupForm(forms.Form):
+    """Formulaire d'inscription SaaS pour une nouvelle entreprise + son propriétaire."""
+    plan_code = forms.CharField(widget=forms.HiddenInput(), required=False)
+    username = forms.CharField(
+        label="Nom complet",
+        widget=forms.TextInput(attrs={"placeholder": "Nom du responsable", "class": "form-control"})
+    )
+    email = forms.EmailField(
+        label="Email professionnel",
+        widget=forms.EmailInput(attrs={"placeholder": "email@entreprise.ci", "class": "form-control"})
+    )
+    gender = forms.ChoiceField(
+        label="Genre",
+        choices=GENDER_SELECTION,
+        widget=forms.Select(attrs={"class": "form-control"})
+    )
+    password1 = forms.CharField(
+        label="Mot de passe",
+        widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "Mot de passe"})
+    )
+    password2 = forms.CharField(
+        label="Confirmation du mot de passe",
+        widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "Confirmez le mot de passe"})
+    )
+    entreprise_nom = forms.CharField(
+        label="Nom de l'entreprise",
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Raison sociale"})
+    )
+    sigle = forms.CharField(
+        label="Sigle (optionnel)",
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Ex : MAFLOT"})
+    )
+    telephone = forms.CharField(
+        label="Téléphone",
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "+225 ..."})
+    )
+    ville = forms.CharField(
+        label="Ville",
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Abidjan"})
+    )
+    pays = forms.CharField(
+        label="Pays",
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Côte d'Ivoire"})
+    )
+    accepter_cgu = forms.BooleanField(
+        label="J'accepte les conditions générales d'utilisation",
+        required=True
+    )
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get("password1")
+        password2 = cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            self.add_error("password2", "Les mots de passe ne correspondent pas.")
+        return cleaned_data
+
+
+class ChoixFormuleForm(forms.Form):
+    """Formulaire de confirmation de formule de souscription."""
+    code = forms.CharField(widget=forms.HiddenInput())
+    accepter_cgu = forms.BooleanField(
+        label="J'accepte les conditions générales d'utilisation pour cette formule",
+        required=True,
+    )
+
 #forms pour changer le mot de passe
 class ChangePasswordForm(PasswordChangeForm):
     old_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Ancien mot de passe'}))

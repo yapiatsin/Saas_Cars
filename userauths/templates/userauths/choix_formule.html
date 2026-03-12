@@ -1,0 +1,38 @@
+{% extends "perfect/bacompt.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4 text-center">Choisissez votre formule</h2>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h4 class="card-title">{{ formule.nom }}</h4>
+      <p class="card-text">
+        {{ formule.description }}<br />
+        <strong>{{ formule.montant }} FCFA / {{ formule.get_type_facturation_display }}</strong>
+      </p>
+      <ul>
+        <li>Jusqu'à {{ formule.max_utilisateurs }} utilisateurs (sauf si illimités)</li>
+        <li>Jusqu'à {{ formule.max_vehicules }} véhicules (sauf si illimités)</li>
+        <li>{{ formule.max_categories_vehicule }} catégories de véhicules</li>
+      </ul>
+    </div>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.code }}
+    <div class="form-check mb-3">
+      {{ form.accepter_cgu }}
+      {{ form.accepter_cgu.label_tag }}
+      {{ form.accepter_cgu.errors }}
+    </div>
+    <div class="d-flex justify-content-center">
+      <button type="submit" class="btn btn-primary px-5">
+        Confirmer cette formule
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
