@@ -12,6 +12,8 @@ urlpatterns = [
     path("renvoyer-verification-email/", resend_verification_email_view, name="resend_verification_email"),
 
     path("se connecter", loginview, name="login"),
+    path("onboarding/", onboarding_view, name="onboarding"),
+    path("onboarding/termine/", onboarding_complete_view, name="onboarding_complete"),
     path("deconnexion", logout_view, name="log_out"),
     path("pb", pb_home, name="pb_holdind"),
 

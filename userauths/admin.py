@@ -8,12 +8,10 @@ class CustomUserAdmin(admin.ModelAdmin):
 class CustomPermissionAdmin(admin.ModelAdmin):
     list_display = ['name', 'categorie', 'url']
     list_filter = ['name', 'categorie', 'url']
-    
+
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(TypeCustomPermission)
 admin.site.register(CustomPermission, CustomPermissionAdmin)
 admin.site.register(Chefexploitation)
 admin.site.register(Comptable)
 admin.site.register(Administ)
-# admin.site.register(Gerant)
-

@@ -32,7 +32,8 @@ from .models import UserProfile, EmailVerificationToken
 from .models import *
 from userauths.forms import *
 from .models import CustomUser
-from Gest_saas.models import Gerant, Entreprise, FormuleSouscription, Souscription
+from Gest_saas.models import Gerant
+from Gest_saas.models import Entreprise, FormuleSouscription, Souscription
 # Create your views here.
 # from .utils import generate_greeting, generate_goodbye
 from django.core.mail import send_mail
@@ -45,7 +46,8 @@ from django.contrib.auth import get_user_model
 # Vue pour vérifier l'OTP envoyé par email
 from django.utils import timezone
 from .forms import ChangePasswordForm
-from django.db import transaction
+from django.db import transaction, IntegrityError
+from django.core.exceptions import ValidationError
 
 from userauths.forms import CustomPermissionForm, TypeCustomPermissionForm
 import openpyxl
@@ -74,61 +76,67 @@ def entreprise_signup_view(request, code=None):
                 except FormuleSouscription.DoesNotExist:
                     formule = None
 
-            with transaction.atomic():
-                user = CustomUser.objects.create_user(
-                    email=data["email"],
-                    username=data["username"],
-                    password=data["password1"],
-                    gender=data["gender"],
-                )
-                # Marquer comme administrateur de son entreprise
-                user.user_type = "admin"
-                user.is_active = True
-                user.save()
-                admin_profile = Administ.objects.create(
-                    user=user,
-                    nom=data["username"],
-                    prenom="",
-                    commune=data.get("ville") or "",
-                    tel1=data.get("telephone") or "",
-                )
-                entreprise = Entreprise.objects.create(
-                    proprietaire=admin_profile,
-                    nom=data["entreprise_nom"],
-                    sigle=data.get("sigle") or "",
-                    email=data["email"],
-                    telephone=data.get("telephone") or "",
-                    ville=data.get("ville") or "",
-                    pays=data.get("pays") or "",
-                )
-                user.entreprise = entreprise
-                user.save(update_fields=["entreprise"])
-                # Créer automatiquement une souscription active si une formule est connue
-                if formule:
-                    today = timezone.now().date()
-                    date_fin = today + timezone.timedelta(days=formule.duree_jours)
-                    Souscription.objects.create(
-                        entreprise=entreprise,
-                        formule=formule,
-                        date_debut=today,
-                        date_fin=date_fin,
-                        statut=Souscription.STATUT_ACTIVE,
+            try:
+                with transaction.atomic():
+                    user = CustomUser.objects.create_user(
+                        email=data["email"],
+                        username=data["username"],
+                        password=data["password1"],
+                        gender=data["gender"],
                     )
-            verification_token = EmailVerificationToken.objects.create(user=user)
-            email_sent = send_verification_email(request, user, verification_token.token)
-            if email_sent:
-                messages.success(
-                    request,
-                    f"Compte créé avec succès ! Un email de vérification a été envoyé à {user.email}. "
-                    "Veuillez vérifier votre boîte de réception puis vous connecter.",
+                    # Marquer comme administrateur de son entreprise
+                    user.user_type = "admin"
+                    user.is_active = True
+                    user.save()
+                    admin_profile = Administ.objects.create(
+                        user=user,
+                        nom=data["username"],
+                        prenom="",
+                        commune=data.get("ville") or "",
+                        tel1=data.get("telephone") or "",
+                    )
+                    entreprise = Entreprise.objects.create(
+                        proprietaire=admin_profile,
+                        nom=data["entreprise_nom"],
+                        sigle=data.get("sigle") or "",
+                        email=data["email"],
+                        telephone=data.get("telephone") or "",
+                        ville=data.get("ville") or "",
+                        pays=data.get("pays") or "",
+                    )
+                    user.entreprise = entreprise
+                    user.save(update_fields=["entreprise"])
+                    # Créer automatiquement une souscription active si une formule est connue
+                    if formule:
+                        today = timezone.now().date()
+                        date_fin = today + timezone.timedelta(days=formule.duree_jours)
+                        Souscription.objects.create(
+                            entreprise=entreprise,
+                            formule=formule,
+                            date_debut=today,
+                            date_fin=date_fin,
+                            statut=Souscription.STATUT_ACTIVE,
+                        )
+                verification_token = EmailVerificationToken.objects.create(user=user)
+                email_sent = send_verification_email(request, user, verification_token.token)
+                if email_sent:
+                    messages.success(
+                        request,
+                        f"Compte créé avec succès ! Un email de vérification a été envoyé à {user.email}. "
+                        "Veuillez vérifier votre boîte de réception puis vous connecter.",
+                    )
+                else:
+                    messages.warning(
+                        request,
+                        "Compte créé avec succès, mais l'email de vérification n'a pas pu être envoyé. "
+                        "Veuillez contacter l'administrateur.",
+                    )
+                return redirect("login")
+            except (IntegrityError, ValidationError):
+                form.add_error(
+                    None,
+                    "Une erreur s'est produite lors de la création du compte. Veuillez réessayer ou contacter l'administrateur.",
                 )
-            else:
-                messages.warning(
-                    request,
-                    "Compte créé avec succès, mais l'email de vérification n'a pas pu être envoyé. "
-                    "Veuillez contacter l'administrateur.",
-                )
-            return redirect("login")
     else:
         form = EntrepriseSignupForm(initial=initial)
     context = {
@@ -865,21 +873,24 @@ def loginview(request):
                     )
                     return render(request, "perfect/logins.html")
                 login(request, user)
-                user_type=user.user_type
-                if user_type == 'admin':
+                if not getattr(user, "onboarding_completed", False):
+                    messages.success(request, f"Bienvenue {user.username}")
+                    return redirect("onboarding")
+                user_type = user.user_type
+                if user_type == "admin":
                     messages.success(request, f"Bienvenue Administrateur {user.username}")
-                    return redirect('dash')
-                elif user_type == '2':
+                    return redirect("dash")
+                elif user_type == "gestionnaire":
                     messages.success(request, f"Bienvenue Chef d'exploitation {user.username}")
-                    return redirect('dash')
-                elif user_type == '3':
+                    return redirect("dash")
+                elif user_type == "comptable":
                     messages.success(request, f"Bienvenue Comptable {user.username}")
-                    return redirect('dash')
-                elif user_type == '4':
-                    messages.success(request,  f"Bienvenue Gérant {user.username}")
-                    return redirect('dashgarage')
+                    return redirect("dash")
+                elif user_type == "gerant":
+                    messages.success(request, f"Bienvenue Gérant {user.username}")
+                    return redirect("dashgarage")
                 else:
-                   return redirect('login')
+                    return redirect("login")
             else:
                 messages.error(request,  f"Mot de passe ou email invalide")
         except:
@@ -891,6 +902,29 @@ def logout_view(request):
     logout(request)
     messages.success(request, f"Vous êtes deconnecté {user.username}")
     return redirect("home")
+
+def _dashboard_redirect_for_user(user):
+    """Redirect to dash or dashgarage according to user_type."""
+    if getattr(user, "user_type", None) == "gerant":
+        return redirect("dashgarage")
+    return redirect("dash")
+
+@login_required(login_url="login")
+def onboarding_view(request):
+    if getattr(request.user, "onboarding_completed", False):
+        return _dashboard_redirect_for_user(request.user)
+    return render(
+        request,
+        "userauths/onboarding.html",
+        {"username": request.user.username},
+    )
+
+@login_required(login_url="login")
+def onboarding_complete_view(request):
+    user = request.user
+    user.onboarding_completed = True
+    user.save(update_fields=["onboarding_completed"])
+    return _dashboard_redirect_for_user(user)
 
 @require_POST
 @login_required(login_url="login")

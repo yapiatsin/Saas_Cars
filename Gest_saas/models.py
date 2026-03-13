@@ -19,7 +19,7 @@ class CategoVehi(models.Model):
         related_name='user_add_categovehi'
     )
     entreprise = models.ForeignKey(
-        'Entreprise',
+        'Gest_saas.Entreprise',
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -44,7 +44,7 @@ class CategoVehi(models.Model):
 class Vehicule(models.Model):
     auteur = models.ForeignKey(CustomUser,on_delete=models.SET_NULL, null=True, blank=True, related_name='user_add_veh')
     entreprise = models.ForeignKey(
-        'Entreprise',
+        'Gest_saas.Entreprise',
         on_delete=models.CASCADE,
         null=True,
         blank=True,

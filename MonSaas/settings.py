@@ -133,10 +133,10 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS')
 
 ########################---o---#######################---o---######################---o---###################
 JAZZMIN_SETTINGS = {
-    "site_header": "P&BEntrepprise",
-    "site_brand": "P&BEntreprise",
+    "site_header": "Maflot",
+    "site_brand": "Maflot",
     #"site_logo": "assetts/img/icon.png",
-    "copyright" : "P&BEntreprise 2025", 
+    "copyright" : "Maflot", 
     "topmenu_links": [
         # Url that gets reversed (Permissions can be added)
         {"name": "Tableau de bord", "url": "dash", "permissions": ["userauths.User"]},

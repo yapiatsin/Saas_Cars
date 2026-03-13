@@ -96,6 +96,42 @@ class SoldeJourAdmin(admin.ModelAdmin):
     list_display = ['montant', 'date', 'date_saisie', 'auteur']
     list_filter = ['montant', 'date']
 
+class EntrepriseAdmin(admin.ModelAdmin):
+    list_display = ['nom', 'adresse', 'telephone', 'email', 'site_web', 'date_creation']
+    list_filter = ['nom', 'adresse', 'telephone', 'email', 'site_web', 'date_creation']
+    search_fields = ['nom', 'adresse', 'telephone', 'email', 'site_web']
+    ordering = ['date_creation']
+    date_hierarchy = 'date_creation'
+    list_per_page = 10
+    list_max_show_all = 100
+    list_editable = ['adresse', 'telephone', 'email', 'site_web']
+    list_display_links = ['nom']
+    list_filter = ['nom', 'adresse', 'telephone', 'email', 'site_web', 'date_creation']
+    search_fields = ['nom', 'adresse', 'telephone', 'email', 'site_web']
+
+class FormuleSouscriptionAdmin(admin.ModelAdmin):
+    list_display = ['nom', 'montant', 'type_facturation', 'max_utilisateurs', 'est_active']
+    list_filter = ['type_facturation', 'est_active', 'est_illimitee']
+    search_fields = ['nom', 'code', 'description']
+    ordering = ['date_creation']
+    date_hierarchy = 'date_creation'
+    list_per_page = 10
+    list_editable = ['est_active']
+    list_display_links = ['nom']
+
+
+class SouscriptionAdmin(admin.ModelAdmin):
+    list_display = ['entreprise', 'formule', 'date_creation']
+    list_filter = ['entreprise', 'formule', 'date_creation']
+    search_fields = ['entreprise', 'formule']
+    ordering = ['date_creation']
+    date_hierarchy = 'date_creation'
+    list_per_page = 10
+    list_max_show_all = 100
+    list_editable = ['formule']
+    list_display_links = ['entreprise']
+
+
 admin.site.register(Autrarret, AutrarretAdmin)
 admin.site.register(SoldeJour, SoldeJourAdmin)
 admin.site.register(Billetage, BilletageAdmin)
@@ -119,8 +155,8 @@ admin.site.register(ChargeFixe, ChargeFixeAdmin)
 admin.site.register(Assurance, AssuranceAdmin)
 admin.site.register(ChargeVariable, ChargeVariableAdmin)
 admin.site.register(Gerant)
-admin.site.register(Entreprise)
-admin.site.register(FormuleSouscription)
-admin.site.register(Souscription)
+admin.site.register(Entreprise, EntrepriseAdmin)
+admin.site.register(FormuleSouscription, FormuleSouscriptionAdmin)
+admin.site.register(Souscription, SouscriptionAdmin)
 
 

@@ -68,20 +68,12 @@
                 <li><a href="#pricing">Tarifs</a></li>
                 <li><a href="#faq">FAQ</a></li>
                 <li><a href="#blog">Blog</a></li>
-                <li>
-                  <a href="javascript:void(0);" class="header-action search-trigger">
-                    <i class="fa-light fa-magnifying-glass"></i>
-                  </a>
-                </li>
               </ul>
             </nav>
             <div class="header-right d-flex align-items-center">
-              <a href="{% url 'login' %}" class="btn-outline header-btn text-uppercase btn-sm">Connexion</a>
-              <a href="javascript:void(0);" class="header-action menu-grid-trigger rounded-circle ms-2">
+              <a href="{% url 'login' %}" class="btn-outline header-btn text-uppercase btn-sm hero-car-voir-plus">Connexion</a>
+              <a href="javascript:void(0);" class="header-action menu-grid-trigger rounded-circle ms-2 hero-car-voir-plus">
                 <span><i></i><i></i><i></i><i></i></span>
-              </a>
-              <a href="javascript:void(0);" class="header-action menu-trigger d-none flex-column justify-content-center align-items-center position-relative" aria-label="Toggle Menu">
-                <span></span><span></span><span></span>
               </a>
             </div>
           </div>
@@ -90,55 +82,52 @@
     </header>
     <!-- ===== HERO ===== -->
     <section class="hero-banner-style3 w-100 position-relative" id="home">
+      <!-- Canvas d'arrière-plan pour l'animation de particules -->
+      <canvas id="heroBackground" class="hero-canvas"></canvas>
       <div class="container">
         <div class="hero-banner-inner w-100 position-relative">
           <div class="hero-content-style3">
-            <span class="hero-subtitle wow fadeInUp" data-wow-duration=".5s" data-wow-delay=".2s">
-              Commencez dès aujourd'hui — 14 jours d'essai gratuit, sans carte bancaire
-            </span>
             <h1 class="hero-title wow fadeInUp" data-wow-duration=".5s" data-wow-delay=".4s">
-              Pilotez votre <span class="highlight">flotte de véhicules</span><br/>
+              Pilotez votre <span class="highlight">flotte de véhicules</span>
               en toute sérénité.
             </h1>
-          </div>
-          <div class="hero-dashboard-wrapper wow fadeInUp tilt position-relative"
-            data-wow-duration=".5s" data-wow-delay=".6s"
-            data-max_tilt="10" data-perspective="1000" data-scale="1" data-speed="700">
-            <img src="{% static 'car.png' %}" alt="Tableau de bord MaFlot" />
-            <a href="#hero-bottom" class="hero-car-voir-plus btn position-absolute rounded-pill px-5 py-3 text-white text-decoration-none fw-semibold shadow">
+            <span class="hero-subtitle wow fadeInUp" data-wow-duration=".5s" data-wow-delay=".2s">
+              MaFlot centralise la gestion de vos véhicules, dépenses, documents et alertes en une seule plateforme intuitive, accessible partout, à tout moment.
+            </span>
+            <a href="#hero-bottom" class="hero-car-voir-plus btn wow fadeInUp rounded-pill px-5 py-3 text-white text-decoration-none fw-semibold shadow" data-wow-duration=".5s" data-wow-delay=".6s">
               Découvrir
             </a>
           </div>
         </div>
       </div>
-      <div class="hero-bottom-wrap w-100 position-relative" id="hero-bottom">
-        <div class="container">
-          <div class="hero-bottom-content position-relative">
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="hero-bottom-left ms-lg-auto">
-                  <span class="hero-section-label">BIENTOT DISPONIBLE SUR MOBILE</span>
-                  <h1 class="hero-bottom-title">Gérez votre flotte<br/>où que vous soyez.</h1>
-                </div>
+    </section>
+
+    <section class="hero-bottom-wrap w-100 position-relative overflow-hidden" id="hero-bottom">
+      <div class="container">
+        <div class="hero-bottom-content position-relative">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="hero-bottom-left ms-lg-auto">
+                <span class="hero-section-label">BIENTOT DISPONIBLE SUR MOBILE</span>
+                <h1 class="hero-bottom-title">Gérez votre flotte<br/>où que vous soyez.</h1>
               </div>
-              <div class="col-lg-3">
-                <div class="hero-bottom-right">
-                  <a href="javascript:void(0);" class="app-store-btn">
-                    <img src="{% static 'site_assets/images/ressources/googleplay.png' %}" alt="Disponible sur Google Play" />
-                  </a>
-                  <a href="javascript:void(0);" class="app-store-btn">
-                    <img src="{% static 'site_assets/images/ressources/appstore.png' %}" alt="Télécharger sur l'App Store" />
-                  </a>
-                </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="hero-bottom-right">
+                <a href="javascript:void(0);" class="app-store-btn">
+                  <img src="{% static 'site_assets/images/ressources/googleplay.png' %}" alt="Disponible sur Google Play" />
+                </a>
+                <a href="javascript:void(0);" class="app-store-btn">
+                  <img src="{% static 'site_assets/images/ressources/appstore.png' %}" alt="Télécharger sur l'App Store" />
+                </a>
               </div>
-              <div class="col-lg-3">
-                <div class="hero-mobile-hand">
-                  <img src="{% static 'site_assets/images/ressources/ftr-1.png' %}" alt="Application mobile MaFlot" />
-                </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="hero-mobile-hand">
+                <img src="{% static 'site_assets/images/ressources/ftr-1.png' %}" alt="Application mobile MaFlot" />
               </div>
             </div>
           </div>
-        </div>
       </div>
     </section>
     <!-- ===== FONCTIONNALITÉS ===== -->
@@ -202,8 +191,6 @@
         </div>
       </div>
     </section>
-
-
     <!-- ===== À PROPOS ===== -->
     <section class="about-section w-100 position-relative overflow-hidden">
       <div class="fixed-bg pattern-bg" style="background-image: url(images/bg-shape.png)"></div>
@@ -534,8 +521,7 @@
           <div class="row mt-50">
             <div class="col-12 text-center">
               <a href="{% url 'signup_entreprise' %}?plan=STANDARD" title="" class="btn-outline">
-                Essayer MaFlot gratuitement
-                <i class="fas fa-long-arrow-alt-right"></i>
+                Commencer maintenant
               </a>
             </div>
           </div>
@@ -807,7 +793,6 @@
                 <div class="pricing-footer">
                   <a href="{% url 'signup_entreprise_code' 'STANDARD' %}" class="btn-outline">
                     Commencer
-                    <i class="fas fa-long-arrow-alt-right"></i>
                   </a>
                 </div>
               </div>
@@ -835,7 +820,6 @@
                 <div class="pricing-footer">
                   <a href="{% url 'signup_entreprise_code' 'PRO' %}" class="btn-outline">
                     Commencer
-                    <i class="fas fa-long-arrow-alt-right"></i>
                   </a>
                 </div>
               </div>
@@ -863,7 +847,6 @@
                 <div class="pricing-footer">
                   <a href="{% url 'signup_entreprise_code' 'ENTERPRISE' %}" class="btn-outline">
                     Commencer
-                    <i class="fas fa-long-arrow-alt-right"></i>
                   </a>
                 </div>
               </div>
@@ -1064,7 +1047,6 @@
       </div>
     </section>
 
-
     <!-- ===== PARTENAIRES ===== -->
     <section class="brands-section pb-160 w-100 position-relative overflow-hidden">
       <div class="brands-inner d-flex flex-column align-items-center justify-content-center position-relative w-100">
@@ -1098,7 +1080,6 @@
         </div>
       </div>
     </section>
-
 
     <!-- ===== BLOG ===== -->
     <section class="blog-section pb-160 w-100 position-relative overflow-hidden" id="blog">
@@ -1159,11 +1140,9 @@
       </div>
     </section>
 
-
     <!-- ===== FOOTER ===== -->
     <footer class="footer-section pt-70 w-100 position-relative" id="footer">
       <div class="container">
-
         <div class="footer-cta-wrapper position-relative w-100">
           <div class="row align-items-end g-1">
             <div class="col-xl-6 col-lg-12">
@@ -1183,9 +1162,9 @@
             </div>
             <div class="col-xl-6 col-lg-12">
               <div class="footer-cta-content d-flex flex-column">
-                <h3 class="footer-cta-title">GÉREZ VOTRE FLOTTE COMPLÈTE DÈS AUJOURD'HUI — 14 JOURS OFFERTS</h3>
-                <a href="{% url 'login' %}" class="btn-outline align-self-start">
-                  Démarrer l'essai gratuit
+                <h3 class="footer-cta-title">GÉREZ VOTRE FLOTTE COMPLÈTE DÈS AUJOURD'HUI</h3>
+                <a href="{% url 'login' %}" class="btn-outline text-white align-self-start hero-car-voir-plus">
+                  Démarrer maintenant
                   <i class="fas fa-long-arrow-alt-right"></i>
                 </a>
               </div>
@@ -1199,11 +1178,11 @@
               <div class="footer-about w-100 position-relative pt-60">
                 <a href="#home" class="footer-logo"><img src="images/Logo.png" alt="MaFlot" /></a>
                 <p class="footer-desc">MaFlot est la solution SaaS de référence pour la gestion de flotte de véhicules en Côte d'Ivoire et en Afrique de l'Ouest.</p>
-                <div class="footer-social">
-                  <a href="https://www.youtube.com/"><i class="fab fa-youtube"></i></a>
-                  <a href="https://x.com/"><i class="fab fa-x-twitter"></i></a>
-                  <a href="https://www.facebook.com/"><i class="fa-brands fa-square-facebook"></i></a>
-                  <a href="https://www.linkedin.com/"><i class="fa-brands fa-linkedin"></i></a>
+                <div class="footer-social ">
+                  <a class="hero-car-voir-plus" href="https://www.youtube.com/"><i class="fab fa-youtube"></i></a>
+                  <a class="hero-car-voir-plus" href="https://x.com/"><i class="fab fa-x-twitter"></i></a>
+                  <a class="hero-car-voir-plus" href="https://www.facebook.com/"><i class="fa-brands fa-square-facebook"></i></a>
+                  <a class="hero-car-voir-plus" href="https://www.linkedin.com/"><i class="fa-brands fa-linkedin"></i></a>
                 </div>
               </div>
             </div>
@@ -1363,6 +1342,132 @@
   <script src="{% static 'site_assets/js/wow.min.js' %}"></script>
   <script src="{% static 'site_assets/js/fancybox.js' %}"></script>
   <script src="{% static 'site_assets/js/scripts.js' %}"></script>
+
+  <!-- Animation de particules pour le hero -->
+  <script>
+    (function () {
+      var canvas = document.getElementById('heroBackground');
+      if (!canvas) return;
+
+      var heroSection = document.getElementById('home');
+      if (!heroSection) return;
+
+      var ctx = canvas.getContext('2d');
+
+      function getSize() {
+        var rect = heroSection.getBoundingClientRect();
+        return {
+          w: rect.width,
+          h: rect.height
+        };
+      }
+
+      var size = getSize();
+      var ww = size.w;
+      var wh = size.h;
+      resizeCanvas();
+
+      var partCount = 110;
+      var particles = [];
+
+      function Particle() {
+        this.color = 'rgba(255,255,255,' + (0.25 + Math.random() * 0.6) + ')';
+        this.x = randomInt(0, ww);
+        this.y = randomInt(0, wh);
+        this.direction = { x: -1 + Math.random() * 2, y: -1 + Math.random() * 2 };
+        this.vx = 0.2 + 0.4 * Math.random();
+        this.vy = 0.2 + 0.4 * Math.random();
+        this.radius = randomInt(1, 3);
+        this.float = function () {
+          this.x += this.vx * this.direction.x;
+          this.y += this.vy * this.direction.y;
+        };
+        this.changeDirection = function (axis) { this.direction[axis] *= -1; };
+        this.boundaryCheck = function () {
+          if (this.x >= ww) { this.x = ww; this.changeDirection('x'); } else if (this.x <= 0) { this.x = 0; this.changeDirection('x'); }
+          if (this.y >= wh) { this.y = wh; this.changeDirection('y'); } else if (this.y <= 0) { this.y = 0; this.changeDirection('y'); }
+        };
+        this.draw = function () {
+          ctx.beginPath();
+          ctx.fillStyle = this.color;
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+          ctx.fill();
+        };
+      }
+
+      function drawBackground() {
+        // Fond principal sombre bleu/violet
+        var baseGradient = ctx.createLinearGradient(0, 0, 0, wh);
+        baseGradient.addColorStop(0, 'rgba(7, 11, 40, 1)');
+        baseGradient.addColorStop(0.45, 'rgba(12, 19, 68, 1)');
+        baseGradient.addColorStop(1, 'rgba(2, 6, 23, 1)');
+        ctx.fillStyle = baseGradient;
+        ctx.fillRect(0, 0, ww, wh);
+
+        // Halo lumineux au centre derrière le contenu
+        var radius = Math.min(ww, wh) * 0.8;
+        var radial = ctx.createRadialGradient(
+          ww * 0.5, wh * 0.35, 0,
+          ww * 0.5, wh * 0.35, radius
+        );
+        radial.addColorStop(0, 'rgba(32, 78, 206, 0.9)');    // violet vif au centre
+        radial.addColorStop(0.35, 'rgba(94, 136, 252, 0.9)'); // indigo
+        radial.addColorStop(1, 'rgb(209, 233, 253)');      // fondu vers le bleu nuit
+        ctx.fillStyle = radial;
+        ctx.fillRect(0, 0, ww, wh);
+      }
+
+      function clearCanvas() {
+        drawBackground();
+      }
+
+      function createParticles() {
+        particles = [];
+        for (var i = 0; i < partCount; i++) particles.push(new Particle());
+      }
+
+      function drawParticles() {
+        for (var i = 0; i < particles.length; i++) particles[i].draw();
+      }
+
+      function updateParticles() {
+        for (var i = particles.length - 1; i >= 0; i--) {
+          particles[i].float();
+          particles[i].boundaryCheck();
+        }
+      }
+
+      function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1) + min); }
+
+      function resizeCanvas() {
+        size = getSize();
+        ww = size.w;
+        wh = size.h;
+        var dpr = window.devicePixelRatio || 1;
+        canvas.width = ww * dpr;
+        canvas.height = wh * dpr;
+        canvas.style.width = ww + 'px';
+        canvas.style.height = wh + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        clearCanvas();
+        createParticles();
+        drawParticles();
+      }
+
+      function animateParticles() {
+        clearCanvas();
+        drawParticles();
+        updateParticles();
+        requestAnimationFrame(animateParticles);
+      }
+
+      createParticles();
+      drawParticles();
+      requestAnimationFrame(animateParticles);
+
+      window.addEventListener('resize', resizeCanvas);
+    })();
+  </script>
 
 </body>
 </html>

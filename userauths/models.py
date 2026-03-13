@@ -7,6 +7,8 @@ from django.utils.crypto import get_random_string
 from django.conf import settings
 from datetime import timedelta
 from django.utils import timezone
+from django.core.validators import RegexValidator
+from simple_history.models import HistoricalRecords
 
 USER=(
     ("admin","Administrateur"),
@@ -21,7 +23,7 @@ GENDER_SELECTION = (
 )
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True, null= False)
-    username = models.CharField(max_length=100)
+    username = models.CharField(max_length=100, unique=True)
     gender = models.CharField(max_length=20, choices=GENDER_SELECTION)
     user_type=models.CharField(default="1", choices=USER, max_length=20)
     is_active = models.BooleanField(default=False)
@@ -51,6 +53,7 @@ class CustomUser(AbstractUser):
     )
     email_verified = models.BooleanField(default=False, verbose_name="Email vérifié")
     email_verified_at = models.DateTimeField(null=True, blank=True, verbose_name="Email vérifié le")
+    onboarding_completed = models.BooleanField(default=False, verbose_name="Onboarding effectué")
     def __str__(self):
         return '%s - %s ' %(self.username, self.email,)
 
@@ -254,4 +257,3 @@ class UserProfile(models.Model):
     commune = models.CharField(max_length=50, null=True, blank="True")
     def __str__(self):
         return f'{self.user.username}'
-    
