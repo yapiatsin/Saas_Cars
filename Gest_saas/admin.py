@@ -158,5 +158,3 @@ admin.site.register(Gerant)
 admin.site.register(Entreprise, EntrepriseAdmin)
 admin.site.register(FormuleSouscription, FormuleSouscriptionAdmin)
 admin.site.register(Souscription, SouscriptionAdmin)
-
-

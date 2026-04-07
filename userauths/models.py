@@ -25,7 +25,7 @@ class CustomUser(AbstractUser):
     email = models.EmailField(unique=True, null= False)
     username = models.CharField(max_length=100, unique=True)
     gender = models.CharField(max_length=20, choices=GENDER_SELECTION)
-    user_type=models.CharField(default="1", choices=USER, max_length=20)
+    user_type=models.CharField(default="gestionnaire", choices=USER, max_length=20)
     is_active = models.BooleanField(default=False)
     # Rattachement multi-tenant : chaque utilisateur appartient à une entreprise (optionnel)
     entreprise = models.ForeignKey(
@@ -204,7 +204,7 @@ class CustomPermission(models.Model):
         return self.name
 
 class Administ(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,related_name='administs')
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='administ')
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=30)
     commune = models.CharField(max_length=255, null=True, blank=True)
@@ -216,7 +216,7 @@ class Administ(models.Model):
         return '%s - %s' % (self.user.username, self.nom)
     
 class Chefexploitation(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,related_name='ads')
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='chefexploitation')
     create_by = models.ForeignKey(Administ, on_delete=models.CASCADE, related_name="adminchef")
     nom = models.CharField(max_length=255, null=True, blank=True)
     prenom = models.CharField(max_length=30)
@@ -229,7 +229,7 @@ class Chefexploitation(models.Model):
         return '%s - %s - %s ' %(self.nom, self.user.user_type,  self.user.username)
     
 class Comptable(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,related_name='cmpt')
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='comptable')
     create_by = models.ForeignKey(Administ, on_delete=models.CASCADE, related_name="admincomptables")
     nom = models.CharField(max_length=255, null=True, blank=True)
     prenom = models.CharField(max_length=30)

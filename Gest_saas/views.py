@@ -50,11 +50,13 @@ def custom_404_view(request, exception):
 
 def temp_arr(request):
     # return render(request, 'perfect/dashboard.html')
-    return render(request, 'perfect/tmp_arr.html')
+    # return render(request, 'perfect/tmp_arr.html')
+    return render(request, 'perfect/bacompt.html')
+
 
 def base(request):
     # return render(request, 'perfect/dashboard.html')
-    return render(request, 'perfect/base.html')
+    return render(request, 'perfect/bacompt.html')
 
 class ResumeView(TemplateView):
     template_name = 'pbent/resume_to_day.html'
@@ -70,8 +72,11 @@ class Bilanday(TemplateView):
         mois_fr = ('', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre')
         month_choices = [(i, mois_fr[i]) for i in range(1, 13)]
         form = self.form_class(self.request.GET)
+        entreprise = getattr(self.request.user, 'entreprise', None)
+        entreprise_filter = {'entreprise': entreprise} if entreprise else {}
+        vehicule_entreprise_filter = {'vehicule__entreprise': entreprise} if entreprise else {}
         # Catégories dynamiques (comme AllVehiculeView) : nb véhicules avec car_statut=True
-        catego_vehi = CategoVehi.objects.all().annotate(
+        catego_vehi = CategoVehi.objects.filter(**entreprise_filter).annotate(
             vehicule_count=Count('catego_vehicule', filter=Q(catego_vehicule__car_statut=True))
         ).order_by('id')
         date_debut = date_fin = today
@@ -84,7 +89,7 @@ class Bilanday(TemplateView):
         recettes_par_categorie = []
         total_recettes = 0
         for cat in catego_vehi:
-            qs = Recette.objects.filter(vehicule__category=cat, **date_filter)
+            qs = Recette.objects.filter(vehicule__category=cat, **vehicule_entreprise_filter, **date_filter)
             total_cat = qs.aggregate(somme=Sum('montant'))['somme'] or 0
             total_recettes += total_cat
             recettes_par_categorie.append({
@@ -92,7 +97,7 @@ class Bilanday(TemplateView):
                 'total': total_cat,
                 'list': qs,
             })
-        list_recettes = Recette.objects.filter(**date_filter)
+        list_recettes = Recette.objects.filter(**vehicule_entreprise_filter, **date_filter)
 
         # Compatibilité template : 1ère et 2ème catégorie (si existantes)
         total_recettes_vtc = recettes_par_categorie[0]['total'] if len(recettes_par_categorie) > 0 else 0
@@ -395,18 +400,19 @@ class TableaustopView(CustomPermissionRequiredMixin,TemplateView):
         month_name = mois_fr[month] if 1 <= month <= 12 else datetime(year, month, 1).strftime("%B")
         month_choices = [(i, mois_fr[i]) for i in range(1, 13)]
         user = self.request.user
-        if user.user_type == "4":
+        entreprise = getattr(user, 'entreprise', None)
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
-                if categories_gerant.exists():  
-                    vehicules = Vehicule.objects.filter(category__in=categories_gerant, car_statut=True)
+                if categories_gerant.exists():
+                    vehicules = Vehicule.objects.filter(category__in=categories_gerant, car_statut=True, entreprise=entreprise)
                 else:
                     vehicules = Vehicule.objects.none()
             except Gerant.DoesNotExist:
                 vehicules = Vehicule.objects.none()
         else:
-            vehicules = Vehicule.objects.filter(car_statut=True)
+            vehicules = Vehicule.objects.filter(car_statut=True, entreprise=entreprise) if entreprise else Vehicule.objects.none()
 
         # Filtre par catégorie si sélectionnée
         selected_categorie_id = self.request.GET.get('categorie', '').strip()
@@ -418,7 +424,7 @@ class TableaustopView(CustomPermissionRequiredMixin,TemplateView):
                 selected_categorie_id = None
         else:
             selected_categorie_id = None
-        categories_list = CategoVehi.objects.all().order_by('category')
+        categories_list = CategoVehi.objects.filter(entreprise=entreprise).order_by('category') if entreprise else CategoVehi.objects.none()
 
         context['current_date'] = date.today()
         total_actions_sum = total_cost_parts_sum = total_income_sum = total_piece_sum = total_visit_sum = total_panne_sum = total_accident_sum = total_autrarret_sum = total_visitechique_sum = total_entretien_sum = total_repairs_by_motifs = total_motif_arrets = 0
@@ -431,9 +437,9 @@ class TableaustopView(CustomPermissionRequiredMixin,TemplateView):
                     date_saisie__month=month,
                     date_saisie__year=year
                 )
-                if user.user_type == "4":
+                if user.user_type == "gerant":
                     try:
-                        gerant = user.gerants.get()
+                        gerant = user.gerant
                         categories_gerant = gerant.gerant_voiture.all()
                         if categories_gerant.exists():
                             count = count.filter(vehicule__category__in=categories_gerant)
@@ -575,9 +581,9 @@ class ExportTempsArretExcelView(LoginRequiredMixin, View):
         month_name = datetime(year, month, 1).strftime("%B")
         
         user = request.user
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():  
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant)
@@ -817,11 +823,17 @@ class AnalytiqueFicheView(LoginRequiredMixin, CustomPermissionRequiredMixin,Temp
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         today = now().date()
+        entreprise = getattr(self.request.user, 'entreprise', None)
         # Mois et année par défaut (mois en cours)
         month = int(self.request.GET.get('month', today.month))
         year = int(self.request.GET.get('year', today.year))
-        # Véhicules de base
-        vehicules = Vehicule.objects.select_related('category').filter(car_statut=True).order_by('immatriculation')
+        # Véhicules de base filtrés par entreprise
+        vehicules = Vehicule.objects.select_related('category').filter(car_statut=True)
+        if entreprise:
+            vehicules = vehicules.filter(entreprise=entreprise)
+        else:
+            vehicules = vehicules.none()
+        vehicules = vehicules.order_by('immatriculation')
         form = self.form_class(self.request.GET)
         date_debut = None
         date_fin = None
@@ -1163,7 +1175,12 @@ class MyRecetteView(CustomPermissionRequiredMixin, LoginRequiredMixin, TemplateV
             if datetime(year, month, day).weekday() == SUNDAY
         ]
         jours_ouvrables = days_in_month - len(dimanches)
+        entreprise = getattr(self.request.user, 'entreprise', None)
         vehicules = Vehicule.objects.select_related('category').filter(car_statut=True)
+        if entreprise:
+            vehicules = vehicules.filter(entreprise=entreprise)
+        else:
+            vehicules = vehicules.none()
         # Filtre par catégorie si sélectionnée
         selected_categorie_id = self.request.GET.get('categorie', '').strip()
         if selected_categorie_id:
@@ -1174,7 +1191,7 @@ class MyRecetteView(CustomPermissionRequiredMixin, LoginRequiredMixin, TemplateV
                 selected_categorie_id = None
         else:
             selected_categorie_id = None
-        categories_list = CategoVehi.objects.all().order_by('category')
+        categories_list = CategoVehi.objects.filter(entreprise=entreprise).order_by('category') if entreprise else CategoVehi.objects.none()
         recette_details = []
         total_recette_mensuelle = 0
         total_recette_annuelle = 0
@@ -1525,15 +1542,16 @@ class DashboardView(LoginRequiredMixin,TemplateView):
         marge_cont, best_recets, best_marge, best_taux, labelscat, datacat, datasets, best_recets, best_marge, best_taux = [],[],[],[],[],[],[],[],[],[]
         
         jours_semaine = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
-        categories = CategoVehi.objects.all()
-        vehicules = Vehicule.objects.filter(car_statut=True)
+        entreprise = getattr(self.request.user, 'entreprise', None)
+        categories = CategoVehi.objects.filter(entreprise=entreprise) if entreprise else CategoVehi.objects.none()
+        vehicules = Vehicule.objects.filter(car_statut=True, entreprise=entreprise) if entreprise else Vehicule.objects.none()
 
-        recette_queryset = Recette.objects.all()
-        chargfix_queryset = ChargeFixe.objects.all()
-        chargvar_queryset = ChargeVariable.objects.all()
-        reparation_queryset = Reparation.objects.all()
-        piechan_queryset = PiecEchange.objects.all()
-        piece_queryset = Piece.objects.all()
+        recette_queryset = Recette.objects.filter(vehicule__entreprise=entreprise) if entreprise else Recette.objects.none()
+        chargfix_queryset = ChargeFixe.objects.filter(vehicule__entreprise=entreprise) if entreprise else ChargeFixe.objects.none()
+        chargvar_queryset = ChargeVariable.objects.filter(vehicule__entreprise=entreprise) if entreprise else ChargeVariable.objects.none()
+        reparation_queryset = Reparation.objects.filter(vehicule__entreprise=entreprise) if entreprise else Reparation.objects.none()
+        piechan_queryset = PiecEchange.objects.filter(vehicule__entreprise=entreprise) if entreprise else PiecEchange.objects.none()
+        piece_queryset = Piece.objects.filter(reparation__vehicule__entreprise=entreprise) if entreprise else Piece.objects.none()
 
         today = date.today()
         start_of_week = today - timedelta(days=today.weekday())
@@ -1804,9 +1822,9 @@ class DashboardGaragView(LoginRequiredMixin, CustomPermissionRequiredMixin, Temp
         categorie_filter = None
         immatriculation = None
         # Gestion des véhicules selon le type d'utilisateur
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():  
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant)
@@ -2855,9 +2873,9 @@ class GestionalerteView(LoginRequiredMixin, CustomPermissionRequiredMixin, Templ
         mois_en_cours =date.today().month
         libelle_mois_en_cours = calendar.month_name[mois_en_cours]
         user = self.request.user
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():  
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant, car_statut=True)
@@ -3092,45 +3110,54 @@ class GestionalerteView(LoginRequiredMixin, CustomPermissionRequiredMixin, Templ
         }
         return context 
 
-class AddCategoriVehi(LoginRequiredMixin, CustomPermissionRequiredMixin, CreateView):  
+class AddCategoriVehi(LoginRequiredMixin, CustomPermissionRequiredMixin, CreateView):
+    from Gest_saas.mixins import SubscriptionLimitMixin
     login_url = 'login'
     permission_url = 'add_catego_vehi'
-    model = CategoVehi      
-    form_class = CategorieForm      
+    model = CategoVehi
+    form_class = CategorieForm
     template_name = 'perfect/add_categorie.html'
-    success_message = 'Categorie enregistré avec succès✓✓'
-    error_message = "Erreur de saisie, cette categorie ou cet identifiant existe✘✘"
+    success_message = 'Categorie enregistrée avec succès'
+    error_message = "Erreur de saisie, cette catégorie ou cet identifiant existe déjà"
     success_url= reverse_lazy('add_catego_vehi')
-    timeout_minutes = 120
+    subscription_resource_type = 'categorie'
+
     def dispatch(self, request, *args, **kwargs):
-        last_activity = request.session.get('last_activity')
-        if last_activity:
-            last_activity = datetime.strptime(last_activity, '%Y-%m-%d %H:%M:%S')
-            if datetime.now() - last_activity > timedelta(minutes=self.timeout_minutes):
-                logout(request)
-                messages.warning(request, "Vous avez été déconnecté ")
-                return redirect("login")
+        # Vérification limite souscription
+        if request.method == 'POST':
+            from Gest_saas.mixins import SubscriptionLimitMixin
+            mixin = SubscriptionLimitMixin()
+            mixin.request = request
+            ok, message = mixin.check_subscription_limit('categorie')
+            if not ok:
+                messages.error(request, message)
+                return redirect(request.META.get('HTTP_REFERER', reverse_lazy('add_catego_vehi')))
         return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
-        messages.success(self.request,self.success_message)
+        form.instance.auteur = self.request.user
+        form.instance.entreprise = getattr(self.request.user, 'entreprise', None)
+        messages.success(self.request, self.success_message)
         return super().form_valid(form)
+
     def form_invalid(self, form):
-        messages.success(self.request,self.error_message)
+        messages.error(self.request, self.error_message)
         return super().form_invalid(form)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        catego_vehi = CategoVehi.objects.all()
+        entreprise = getattr(self.request.user, 'entreprise', None)
+        catego_vehi = CategoVehi.objects.filter(entreprise=entreprise) if entreprise else CategoVehi.objects.none()
         categories = catego_vehi.annotate(
             nb_vehicules=Count('catego_vehicule', filter=Q(catego_vehicule__car_statut=True))
         ).order_by('id')
-        total_veh = Vehicule.objects.filter(car_statut=True).order_by('id').count()
-        forms = self.get_form()
-        context = {
-            'form':forms,
-            'catego_vehi':catego_vehi,
-            'categories':categories,
-            'total_veh':total_veh,
-        }
+        total_veh = Vehicule.objects.filter(car_statut=True, entreprise=entreprise).count() if entreprise else 0
+        context.update({
+            'form': self.get_form(),
+            'catego_vehi': catego_vehi,
+            'categories': categories,
+            'total_veh': total_veh,
+        })
         return context
 
 class UpdateCategoView(LoginRequiredMixin, CustomPermissionRequiredMixin, UpdateView):
@@ -3178,7 +3205,7 @@ class AllVehiculeView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
     template_name = 'perfect/add_vehicule.html'
     def get(self, request, pk=None):
         user = request.user
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
                 gerant = Gerant.objects.get(user=user)
                 categories_gerant = gerant.gerant_voiture.all()
@@ -3204,7 +3231,7 @@ class AllVehiculeView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
         total_veh = cars.count()
         # Véhicules hors parc (même filtres catégorie / gérant) pour l’affichage du compteur
         cars_hors_parc = Vehicule.objects.filter(car_statut=False)
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
                 gerant = Gerant.objects.get(user=user)
                 categories_gerant = gerant.gerant_voiture.all()
@@ -3233,7 +3260,7 @@ class AllVehiculeHorsParrcView(LoginRequiredMixin, CustomPermissionRequiredMixin
     def get(self, request, pk=None):
         user = request.user
         # Vue « hors parc » : n’afficher que les véhicules avec car_statut=False
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
                 gerant = Gerant.objects.get(user=user)
                 categories_gerant = gerant.gerant_voiture.all()
@@ -3258,7 +3285,7 @@ class AllVehiculeHorsParrcView(LoginRequiredMixin, CustomPermissionRequiredMixin
         cout_total = '{:,}'.format(cout_totals).replace(',', ' ')
         # Nombre de véhicules au parc (car_statut=True) avec le même périmètre que la liste hors parc
         cars_in_parc = Vehicule.objects.filter(car_statut=True)
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
                 gerant = Gerant.objects.get(user=user)
                 categories_gerant = gerant.gerant_voiture.all()
@@ -3391,7 +3418,7 @@ class ExportVehiculeExcelView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         user = request.user
         # Gestion des permissions pour les gérants
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
                 gerant = Gerant.objects.get(user=user)
                 categories_gerant = gerant.gerant_voiture.all()
@@ -3470,7 +3497,7 @@ class ExportVehiculeHorsParcExcelView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         user = request.user
         # Gestion des permissions pour les gérants
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
                 gerant = Gerant.objects.get(user=user)
                 categories_gerant = gerant.gerant_voiture.all()
@@ -3922,9 +3949,9 @@ class CarFinanceView(LoginRequiredMixin, CustomPermissionRequiredMixin,TemplateV
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():  
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant)
@@ -4127,9 +4154,9 @@ class SaisieGaragView(LoginRequiredMixin, CustomPermissionRequiredMixin, Templat
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():  
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant)
@@ -4245,9 +4272,9 @@ class TempsArretsView(LoginRequiredMixin, CustomPermissionRequiredMixin, Templat
         mois = date.today().month
         user = self.request.user
 
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():  
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant)
@@ -4339,9 +4366,9 @@ class SaisiComptaView(LoginRequiredMixin, CustomPermissionRequiredMixin,Template
         annee = date.today().year
         mois = date.today().month
         user = self.request.user
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():  
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant)
@@ -4513,7 +4540,8 @@ class ListRecetView(LoginRequiredMixin, CustomPermissionRequiredMixin, ListView)
     permission_url = 'list_recet'
     model = Recette
     template_name = 'perfect/liste_recette.html'
-    context_object = 'listrecet'
+    context_object_name = 'listrecet'
+    paginate_by = 50
     timeout_minutes = 500
     form_class = DateFormMJR
     def dispatch(self, request, *args, **kwargs):
@@ -4535,7 +4563,8 @@ class ListRecetView(LoginRequiredMixin, CustomPermissionRequiredMixin, ListView)
         categorie_filter = None
         immatriculation = None
         
-        recette_queryset = Recette.objects.all()
+        entreprise = getattr(self.request.user, 'entreprise', None)
+        recette_queryset = Recette.objects.filter(vehicule__entreprise=entreprise).select_related('vehicule', 'vehicule__category') if entreprise else Recette.objects.none()
         form = self.form_class(self.request.GET)
         if form.is_valid():
             categorie_filter = form.cleaned_data.get('categorie')
@@ -4548,7 +4577,7 @@ class ListRecetView(LoginRequiredMixin, CustomPermissionRequiredMixin, ListView)
 
             if date_debut and date_fin:
                 recette_queryset = recette_queryset.filter(date_saisie__range=[date_debut, date_fin])
-            
+
             if immatriculation:
                 recette_queryset = recette_queryset.filter(vehicule__immatriculation=immatriculation)
         # Appliquer le filtre par date : si dates fournies, les utiliser, sinon filtrer par mois en cours
@@ -4987,9 +5016,9 @@ class AddAutrarretView(LoginRequiredMixin, CustomPermissionRequiredMixin, Create
         form = DateForm(self.request.GET)
         forms = self.get_form()
         user = self.request.user
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():  
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant)
@@ -5049,6 +5078,8 @@ class ListarretView(LoginRequiredMixin, CustomPermissionRequiredMixin, ListView)
     permission_url = 'liste_aut_arrets'
     model = Autrarret
     template_name = 'perfect/liste_arret.html'
+    context_object_name = 'autarrets'
+    paginate_by = 50
     timeout_minutes = 500
     form_class = DateFormMJR
     def dispatch(self, request, *args, **kwargs):
@@ -5492,9 +5523,9 @@ class AddChargeFixView(LoginRequiredMixin, CustomPermissionRequiredMixin, Create
         forms = self.get_form()
         user = self.request.user
         date_debut = date_fin = None
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():  
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant)
@@ -5555,7 +5586,8 @@ class ListChargeFixView(LoginRequiredMixin, CustomPermissionRequiredMixin, ListV
     permission_url = 'list_charg_fix'
     model = ChargeFixe
     template_name = 'perfect/liste_charg_fix.html'
-    context_object = 'list_charg_fix'
+    context_object_name = 'list_charg_fix'
+    paginate_by = 50
     form_class = DateFormMJR
     timeout_minutes = 500
     def dispatch(self, request, *args, **kwargs):
@@ -5851,9 +5883,9 @@ class AddChargeVarView(LoginRequiredMixin, CustomPermissionRequiredMixin, Create
         forms = self.get_form()
         user = self.request.user
         date_debut = date_fin = None
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.filter(category="VTC").exists():
                     vehicules = Vehicule.objects.filter(category__category="VTC")
@@ -5914,6 +5946,7 @@ class ListChargeVarView(LoginRequiredMixin, CustomPermissionRequiredMixin, ListV
     permission_url = 'list_charg_var'
     model = ChargeVariable
     template_name = 'perfect/liste_charg_var.html'
+    paginate_by = 50
     context_object = 'list_charg_var'
     timeout_minutes = 500
     form_class = DateFormMJR
@@ -6603,9 +6636,9 @@ class AddCartStationnementView(LoginRequiredMixin, CustomPermissionRequiredMixin
         user = self.request.user
         date_debut = date_fin = None
 
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant)
@@ -6676,6 +6709,7 @@ class ListCartStationView(LoginRequiredMixin, CustomPermissionRequiredMixin, Lis
     permission_url = 'liste_station'
     model = Stationnement
     template_name = 'perfect/liste_station.html'
+    paginate_by = 50
     timeout_minutes = 500
     form_class = DateFormMJR
     def dispatch(self, request, *args, **kwargs):
@@ -6878,9 +6912,9 @@ class AddPatenteView(LoginRequiredMixin, CustomPermissionRequiredMixin, CreateVi
         user = self.request.user
         date_debut = date_fin = None
 
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():  
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant)
@@ -6950,6 +6984,7 @@ class ListPatenteView(LoginRequiredMixin, CustomPermissionRequiredMixin, ListVie
     permission_url = 'liste_patente'
     model = Patente
     template_name = 'perfect/liste_patente.html'
+    paginate_by = 50
     timeout_minutes = 500
     form_class = DateFormMJR
     def dispatch(self, request, *args, **kwargs):
@@ -7120,9 +7155,9 @@ class AddVignetteView(LoginRequiredMixin, CustomPermissionRequiredMixin, CreateV
         user = self.request.user
         date_debut = date_fin = None
 
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():  
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant)
@@ -7178,11 +7213,12 @@ class AddVignetteView(LoginRequiredMixin, CustomPermissionRequiredMixin, CreateV
     def get_success_url(self):
         return reverse('add_vignet', kwargs={'pk': self.kwargs['pk']})
 
-class ListVignetteView(LoginRequiredMixin, CustomPermissionRequiredMixin,ListView):
+class ListVignetteView(LoginRequiredMixin, CustomPermissionRequiredMixin, ListView):
     login_url = 'login'
     permission_url = 'liste_vignette'
     model = Vignette
     template_name = 'perfect/liste_vignette.html'
+    paginate_by = 50
     timeout_minutes = 500
     form_class = DateFormMJR
     def dispatch(self, request, *args, **kwargs):
@@ -7384,9 +7420,9 @@ class AddVisitView(LoginRequiredMixin, CustomPermissionRequiredMixin, CreateView
         forms = self.get_form()
         user = self.request.user
         date_debut = date_fin = None
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.filter(category="VTC").exists():
                     vehicules = Vehicule.objects.filter(category__category="VTC")
@@ -7452,6 +7488,7 @@ class ListVisitTechniqueView(LoginRequiredMixin, CustomPermissionRequiredMixin, 
     permission_url = 'list_visit'
     model = VisiteTechnique
     template_name = 'perfect/liste_visites.html'
+    paginate_by = 50
     timeout_minutes = 500
     form_class = DateFormMJR
     def dispatch(self, request, *args, **kwargs):
@@ -7652,9 +7689,9 @@ class AddAssuranceView(LoginRequiredMixin, CustomPermissionRequiredMixin, Create
         user = self.request.user
         date_debut = date_fin = None
 
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()  
+                gerant = user.gerant  
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():  
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant)
@@ -7716,6 +7753,7 @@ class ListAssuranceView(LoginRequiredMixin, CustomPermissionRequiredMixin, ListV
     permission_url = 'liste_assurance'
     model = Assurance
     template_name = 'perfect/liste_assurance.html'
+    paginate_by = 50
     timeout_minutes = 500
     form_class = DateFormMJR
     def dispatch(self, request, *args, **kwargs):
@@ -7907,9 +7945,9 @@ class AddReparationView(LoginRequiredMixin, CustomPermissionRequiredMixin, Creat
             piece_formset = PieceFormSet(instance=self.object)
         forms = self.get_form()
         user = self.request.user
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()  
+                gerant = user.gerant  
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():  
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant)
@@ -8175,9 +8213,9 @@ class AddPiecEchangeView(LoginRequiredMixin, CustomPermissionRequiredMixin, Crea
         date_debut = date_fin = None
 
         # 🔹 Gestion des véhicules par rôle
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()  
+                gerant = user.gerant  
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():  
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant)
@@ -8295,9 +8333,9 @@ class DetailReparatView(LoginRequiredMixin, CustomPermissionRequiredMixin, Detai
         list_piece= reparation.pieces.all()
         vehicule = reparation.vehicule
         user = self.request.user
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()  
+                gerant = user.gerant  
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():  
                     vehicules = Vehicule.objects.filter(category__in=categories_gerant)
@@ -8449,6 +8487,7 @@ class ListPiechangeView(LoginRequiredMixin, CustomPermissionRequiredMixin, ListV
     permission_url = 'list_piechange'
     model = PiecEchange
     template_name = 'perfect/liste_piechange.html'
+    paginate_by = 50
     ordering = ['date_saisie']
     timeout_minutes = 500
     form_class = DateFormMJR
@@ -8536,6 +8575,7 @@ class ListPieceView(LoginRequiredMixin, CustomPermissionRequiredMixin, ListView)
     permission_url = 'list_piece'
     model = Piece
     template_name = 'perfect/liste_pieces.html'
+    paginate_by = 50
     ordering = ['date_saisie']
     timeout_minutes = 500
     form_class = DateFormPiece
@@ -8744,6 +8784,7 @@ class ListReparationView(LoginRequiredMixin, CustomPermissionRequiredMixin, List
     permission_url = 'list_repa'
     model = Reparation
     template_name = 'perfect/liste_reparations.html'
+    paginate_by = 50
     ordering = ['date_saisie']
     context_object = 'listereparation'
     timeout_minutes = 300
@@ -9134,9 +9175,9 @@ class AddEntretienView(LoginRequiredMixin, CustomPermissionRequiredMixin, Create
         user = self.request.user
         date_debut = date_fin = None
 
-        if user.user_type == "4":
+        if user.user_type == "gerant":
             try:
-                gerant = user.gerants.get()
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.filter(category="VTC").exists():
                     vehicules = Vehicule.objects.filter(category__category="VTC")
@@ -9199,6 +9240,7 @@ class ListEntretienView(LoginRequiredMixin, CustomPermissionRequiredMixin, ListV
     permission_url = 'list_entretien'
     model = Entretien
     template_name = 'perfect/liste_entretien.html'
+    paginate_by = 50
     ordering = ['date_saisie']
     timeout_minutes = 500
     form_class = DateFormMJR

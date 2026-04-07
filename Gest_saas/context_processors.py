@@ -28,20 +28,25 @@ def alertes_count(request):
         total_alertes = 0
         alertes_list = []
         
-        # Filtrer les véhicules selon le type d'utilisateur - TOUJOURS filtrer par car_statut=True
-        if user.user_type == "4":
+        # Filtrer les véhicules selon le type d'utilisateur et l'entreprise
+        entreprise = getattr(user, 'entreprise', None)
+        if user.user_type == "gerant":
             try:
-                gerant = Gerant.objects.get(user=user)
+                gerant = user.gerant
                 categories_gerant = gerant.gerant_voiture.all()
                 if categories_gerant.exists():
-                    vehicules = Vehicule.objects.filter(category__in=categories_gerant, car_statut=True)
+                    vehicules = Vehicule.objects.filter(
+                        category__in=categories_gerant, car_statut=True, entreprise=entreprise
+                    )
                 else:
                     vehicules = Vehicule.objects.none()
             except (Gerant.DoesNotExist, Exception):
                 vehicules = Vehicule.objects.none()
         else:
-            # Filtrer aussi par car_statut=True pour tous les utilisateurs
-            vehicules = Vehicule.objects.filter(car_statut=True)
+            vehicules = (
+                Vehicule.objects.filter(car_statut=True, entreprise=entreprise)
+                if entreprise else Vehicule.objects.none()
+            )
         # Parcourir tous les véhicules et compter les alertes critiques
         for vehicule in vehicules:
             try:

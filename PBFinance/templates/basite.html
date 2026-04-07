@@ -20,7 +20,7 @@
 <body>
   <main class="main-wrapper">
     <!-- ===== HEADER ===== -->
-    <header class="header-style2 w-100">
+    <header class="header-style2 header-modern w-100">
       <div class="top-bar top-bar-style2 w-100">
         <div class="container">
           <div class="top-bar-inner w-100 d-flex align-items-center justify-content-between g-2">
@@ -50,7 +50,7 @@
         </div>
       </div>
 
-      <div class="header-main brd-b-color12">
+      <div class="header-main brd-b-color12 header-main-modern">
         <div class="container">
           <div class="header-inner d-flex align-items-center justify-content-between position-relative">
             <div class="logo-wrapper">
@@ -58,19 +58,20 @@
                 <img src="{% static 'site_assets/images/Maflot-f.png' %}" alt="MaFlot Logo" class="img-fluid" loading="eager" />
               </a>
             </div>
-            <nav class="main-nav bg-gradient" style="background: linear-gradient(135deg, rgba(2, 39, 117, 0.45) 0%, rgba(1, 27, 58, 0.5) 100%) !important;">
+            <nav class="main-nav bg-gradient nav-modern">
               <a href="javascript:void(0);" class="menu-close-trigger d-none" title="Fermer"><i class="fa-solid fa-times"></i></a>
               <ul>
                 <li><a href="#home">Accueil</a></li>
                 <li><a href="#services">Fonctionnalités</a></li>
                 <li><a href="#projects">Aperçu</a></li>
-                <li><a href="#showcase">Formules</a></li>
-                <li><a href="#pricing">Tarifs</a></li>
+                <li><a href="#showcase">Capacités</a></li>
+                <li><a href="#pricing">Souscription</a></li>
+                {% comment %} <li><a href="#pricing">Formules de souscription</a></li> {% endcomment %}
                 <li><a href="#faq">FAQ</a></li>
                 <li><a href="#blog">Blog</a></li>
               </ul>
             </nav>
-            <div class="header-right d-flex align-items-center">
+            <div class="header-right header-right-modern d-flex align-items-center">
               <a href="{% url 'login' %}" class="btn-outline header-btn text-uppercase btn-sm hero-car-voir-plus">Connexion</a>
               <a href="javascript:void(0);" class="header-action menu-grid-trigger rounded-circle ms-2 hero-car-voir-plus">
                 <span><i></i><i></i><i></i><i></i></span>
@@ -81,21 +82,21 @@
       </div>
     </header>
     <!-- ===== HERO ===== -->
-    <section class="hero-banner-style3 w-100 position-relative" id="home">
+    <section class="hero-banner-style3 hero-banner-modern w-100 position-relative" id="home">
       <!-- Canvas d'arrière-plan pour l'animation de particules -->
       <canvas id="heroBackground" class="hero-canvas"></canvas>
       <div class="container">
-        <div class="hero-banner-inner w-100 position-relative">
-          <div class="hero-content-style3">
+        <div class="hero-banner-inner hero-banner-inner-modern w-100 position-relative">
+          <div class="hero-content-style3 hero-content-modern">
             <h1 class="hero-title wow fadeInUp" data-wow-duration=".5s" data-wow-delay=".4s">
-              Pilotez votre <span class="highlight">flotte de véhicules</span>
-              en toute sérénité.
+              Prenez le contrôle total de votre <span class="highlight">flotte de véhicules</span>
             </h1>
             <span class="hero-subtitle wow fadeInUp" data-wow-duration=".5s" data-wow-delay=".2s">
-              MaFlot centralise la gestion de vos véhicules, dépenses, documents et alertes en une seule plateforme intuitive, accessible partout, à tout moment.
+              La plateforme SaaS n°1 en Côte d'Ivoire pour centraliser véhicules, recettes, charges, documents et alertes. Décidez plus vite, dépensez moins, gagnez en sérénité.
             </span>
             <a href="#hero-bottom" class="hero-car-voir-plus btn wow fadeInUp rounded-pill px-5 py-3 text-white text-decoration-none fw-semibold shadow" data-wow-duration=".5s" data-wow-delay=".6s">
-              Découvrir
+              Découvrir la plateforme
+              <i class="fas fa-long-arrow-alt-right ms-2"></i>
             </a>
           </div>
         </div>
@@ -108,26 +109,27 @@
           <div class="row">
             <div class="col-lg-6">
               <div class="hero-bottom-left ms-lg-auto">
-                <span class="hero-section-label">BIENTOT DISPONIBLE SUR MOBILE</span>
-                <h1 class="hero-bottom-title">Gérez votre flotte<br/>où que vous soyez.</h1>
+                <span class="hero-section-label">BIENTÔT DISPONIBLE SUR MOBILE</span>
+                <h1 class="hero-bottom-title">Votre flotte dans la poche,<br/>où que vous soyez.</h1>
               </div>
             </div>
             <div class="col-lg-3">
               <div class="hero-bottom-right">
                 <a href="javascript:void(0);" class="app-store-btn">
-                  <img src="{% static 'site_assets/images/ressources/googleplay.png' %}" alt="Disponible sur Google Play" />
+                  <img src="{% static 'site_assets/images/resources/googleplay.png' %}" alt="Disponible sur Google Play" />
                 </a>
                 <a href="javascript:void(0);" class="app-store-btn">
-                  <img src="{% static 'site_assets/images/ressources/appstore.png' %}" alt="Télécharger sur l'App Store" />
+                  <img src="{% static 'site_assets/images/resources/appstore.png' %}" alt="Télécharger sur l'App Store" />
                 </a>
               </div>
             </div>
             <div class="col-lg-3">
               <div class="hero-mobile-hand">
-                <img src="{% static 'site_assets/images/ressources/ftr-1.png' %}" alt="Application mobile MaFlot" />
+                <img src="{% static 'site_assets/images/resources/ftr-1.png' %}" alt="Application mobile MaFlot" />
               </div>
             </div>
           </div>
+        </div>
       </div>
     </section>
     <!-- ===== FONCTIONNALITÉS ===== -->
@@ -136,54 +138,54 @@
         <div class="features-inner d-flex flex-column align-items-center justify-content-center position-relative w-100">
           <div class="section-title-wrap text-center">
             <div class="section-badge d-inline-flex align-items-center gap-1 mb-4">
-              <img src="images/resources/blockchain.svg" alt="Icône" />
+              <img src="{% static 'site_assets/images/resources/blockchain.svg' %}" alt="Icône" />
               <span>Tout ce dont vous avez besoin</span>
             </div>
-            <h2 class="section-title">Une plateforme complète pour votre flotte</h2>
+            <h2 class="section-title">Des outils puissants pour chaque aspect de votre exploitation</h2>
           </div>
 
           <div class="row features-row justify-content-center">
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 wow fadeIn" data-wow-duration=".5s" data-wow-delay=".2s">
               <div class="feature-card position-relative">
                 <div class="feature-icon-wrapper d-flex align-items-center justify-content-center">
-                  <img src="images/resources/service-icon-1.png" alt="Véhicules" class="feature-icon" />
+                  <img src="{% static 'site_assets/images/resources/service-icon-1.png' %}" alt="Véhicules" class="feature-icon" />
                 </div>
                 <div class="feature-content">
                   <h3 class="feature-title">Gestion des véhicules</h3>
-                  <p class="feature-desc mb-0">Centralisez immatriculation, carte grise, catégorie, statut et l'historique complet de chaque véhicule de votre flotte.</p>
+                  <p class="feature-desc mb-0">Immatriculation, carte grise, catégorie, statut — chaque véhicule est répertorié avec un historique complet et des fiches détaillées accessibles en un clic.</p>
                 </div>
               </div>
             </div>
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 wow fadeIn" data-wow-duration=".5s" data-wow-delay=".4s">
               <div class="feature-card position-relative">
                 <div class="feature-icon-wrapper d-flex align-items-center justify-content-center">
-                  <img src="images/resources/service-icon-2.png" alt="Finances" class="feature-icon" />
+                  <img src="{% static 'site_assets/images/resources/service-icon-2.png' %}" alt="Finances" class="feature-icon" />
                 </div>
                 <div class="feature-content">
                   <h3 class="feature-title">Recettes & Charges</h3>
-                  <p class="feature-desc mb-0">Suivez les recettes journalières, charges fixes, variables et administratives par véhicule pour une rentabilité en temps réel.</p>
+                  <p class="feature-desc mb-0">Billetage quotidien, charges fixes et variables, prévisions budgétaires — maîtrisez la rentabilité de chaque véhicule en temps réel.</p>
                 </div>
               </div>
             </div>
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 wow fadeIn" data-wow-duration=".5s" data-wow-delay=".6s">
               <div class="feature-card position-relative">
                 <div class="feature-icon-wrapper d-flex align-items-center justify-content-center">
-                  <img src="images/resources/service-icon-3.png" alt="Maintenance" class="feature-icon" />
+                  <img src="{% static 'site_assets/images/resources/service-icon-3.png' %}" alt="Maintenance" class="feature-icon" />
                 </div>
                 <div class="feature-content">
                   <h3 class="feature-title">Maintenance & Réparations</h3>
-                  <p class="feature-desc mb-0">Planifiez entretiens, réparations et visites techniques. Gérez les pièces et recevez des alertes avant chaque échéance.</p>
+                  <p class="feature-desc mb-0">Pannes, accidents, entretiens périodiques — planifiez les interventions, suivez les pièces de rechange et réduisez les temps d'immobilisation.</p>
                 </div>
               </div>
             </div>
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 wow fadeIn" data-wow-duration=".5s" data-wow-delay=".8s">
               <div class="feature-card position-relative">
                 <div class="feature-icon-wrapper d-flex align-items-center justify-content-center">
-                  <img src="images/resources/service-icon-4.png" alt="Documents" class="feature-icon" />
+                  <img src="{% static 'site_assets/images/resources/service-icon-4.png' %}" alt="Documents" class="feature-icon" />
                 </div>
                 <div class="feature-content">
                   <h3 class="feature-title">Gestion des Alertes</h3>
-                  <p class="feature-desc mb-0">Gérez assurances, vignettes, patentes et stationnements. Alertes automatiques avant chaque expiration de document.</p>
+                  <p class="feature-desc mb-0">Assurances, vignettes, patentes, visites techniques — recevez des alertes automatiques avant chaque expiration et évitez les pénalités.</p>
                 </div>
               </div>
             </div>
@@ -193,12 +195,12 @@
     </section>
     <!-- ===== À PROPOS ===== -->
     <section class="about-section w-100 position-relative overflow-hidden">
-      <div class="fixed-bg pattern-bg" style="background-image: url(images/bg-shape.png)"></div>
+      <div class="fixed-bg pattern-bg" style="background-image: url({% static 'site_assets/images/bg-shape.png' %})"></div>
       <div class="about-inner position-relative w-100">
         <div class="row align-items-center">
           <div class="col-xl-6 col-lg-8 about-img-col wow fadeInLeft" data-wow-duration="3s" data-wow-delay=".2s">
             <div class="about-img">
-              <img src="images/resources/laptop-mobile.png" alt="MaFlot sur ordinateur et mobile" class="img-fluid" />
+              <img src="{% static 'site_assets/images/resources/laptop-mobile.png' %}" alt="MaFlot sur ordinateur et mobile" class="img-fluid" />
             </div>
           </div>
         </div>
@@ -209,24 +211,21 @@
                 <div class="about-content position-relative">
                   <div class="section-title-wrap mb-40">
                     <div class="section-badge d-inline-flex align-items-center gap-1 mb-2 wow fadeInUp" data-wow-duration=".5s" data-wow-delay=".2s">
-                      <img src="images/resources/blockchain.svg" alt="Icône" />
+                      <img src="{% static 'site_assets/images/resources/blockchain.svg' %}" alt="Icône" />
                       <span>Conçu pour les professionnels du transport</span>
                     </div>
                     <h2 class="section-title wow fadeInUp" data-wow-duration=".5s" data-wow-delay=".4s">
-                      Toute votre flotte, pilotée depuis un seul écran.
+                      Un cockpit unique pour piloter toute votre exploitation
                     </h2>
                     <p class="section-desc wow fadeInUp" data-wow-duration=".5s" data-wow-delay=".6s">
-                      MaFlot centralise l'ensemble des opérations de votre flotte : véhicules, documents, finances, maintenance et équipes — pour vous permettre de vous concentrer sur votre cœur de métier.
+                      Fini les fichiers Excel dispersés et les oublis coûteux. MaFlot réunit véhicules, finances, documents, maintenance et équipes dans une interface claire et intuitive — pour que vous puissiez vous concentrer sur la croissance de votre activité.
                     </p>
                   </div>
                   <ul class="check-list list-unstyled wow fadeInUp" data-wow-duration=".5s" data-wow-delay=".8s">
-                    <li class="d-flex align-items-center">Tableau de bord personnalisable par entreprise</li>
-                    <li class="d-flex align-items-center">Alertes automatiques sur les échéances documents</li>
-                    <li class="d-flex align-items-center">Historique complet et traçabilité de chaque véhicule</li>
+                    <li class="d-flex align-items-center">Tableau de bord en temps réel, personnalisé par entreprise</li>
+                    <li class="d-flex align-items-center">Alertes intelligentes avant chaque expiration de document</li>
+                    <li class="d-flex align-items-center">Traçabilité complète de chaque véhicule depuis son ajout</li>
                   </ul>
-                  <div class="d-flex align-items-center gap-2 wow fadeInUp" data-wow-duration=".5s" data-wow-delay="1s">
-                    <a href="{% url 'signup_entreprise' %}?plan=STANDARD" class="btn-outline">Demander une démo</a>
-                  </div>
                 </div>
               </div>
             </div>
@@ -241,7 +240,7 @@
       <div class="container">
         <div class="mini-cta-inner pt-60 pb-60 d-flex align-items-center flex-column w-100">
           <div class="mini-cta-content d-flex align-items-center gap-2 flex-wrap justify-content-center">
-            <span>Administrateurs, gestionnaires, comptables et gérants de flotte</span>
+            <span>Administrateurs, gestionnaires, comptables, gérants de flotte — une seule plateforme pour tous vos profils</span>
               <a href="{% url 'signup_entreprise' %}?plan=STANDARD" class="professionals-badge d-inline-flex align-items-center rounded-pill">
               Tous couverts par MaFlot
               <i class="fa-regular fa-arrow-up-right"></i>
@@ -258,7 +257,7 @@
             <div class="col-xxl-6 col-lg-12">
               <div class="section-title-wrap text-center text-xxl-start">
                 <div class="section-badge d-inline-flex align-items-center gap-1 mb-3">
-                  <img src="images/resources/blockchain.svg" alt="Icône" />
+                  <img src="{% static 'site_assets/images/resources/blockchain.svg' %}" alt="Icône" />
                   <span>Ce que vous pouvez faire avec MaFlot</span>
                 </div>
                 <h2 class="section-title mb-0">Chaque aspect de votre flotte, sous contrôle.</h2>
@@ -291,11 +290,11 @@
                 <div class="col-lg-6 col-md-6">
                   <div class="project-card box-grad-hover position-relative d-flex flex-column w-100">
                     <div class="project-img-wrapper position-relative overflow-hidden">
-                      <a href="javascript:void(0);"><img src="images/resources/design-1.jpg" alt="Tableau de bord flotte" class="img-fluid w-100" /></a>
+                      <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/design-1.jpg' %}" alt="Tableau de bord flotte" class="img-fluid w-100" /></a>
                       <a href="javascript:void(0);" class="project-arrow position-absolute d-flex align-items-center justify-content-center rounded-circle"><i class="fas fa-long-arrow-alt-right"></i></a>
                     </div>
                     <div class="project-content d-flex align-items-start">
-                      <img src="images/resources/design-1-icon.png" alt="Icône" class="project-icon" />
+                      <img src="{% static 'site_assets/images/resources/design-1-icon.png' %}" alt="Icône" class="project-icon" />
                       <div class="project-info d-flex flex-column">
                         <h3 class="project-title"><a href="javascript:void(0);">Tableau de bord flotte en temps réel</a></h3>
                         <p class="project-desc mb-0">Visualisez l'état de chaque véhicule, les recettes du jour et les alertes actives depuis une interface unique.</p>
@@ -306,11 +305,11 @@
                 <div class="col-lg-6 col-md-6">
                   <div class="project-card box-grad-hover position-relative d-flex flex-column w-100">
                     <div class="project-img-wrapper position-relative overflow-hidden">
-                      <a href="javascript:void(0);"><img src="images/resources/design-2.jpg" alt="Gérants de flotte" class="img-fluid w-100" /></a>
+                      <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/design-1.jpg' %}" alt="Gérants de flotte" class="img-fluid w-100" /></a>
                       <a href="javascript:void(0);" class="project-arrow position-absolute d-flex align-items-center justify-content-center rounded-circle"><i class="fas fa-long-arrow-alt-right"></i></a>
                     </div>
                     <div class="project-content d-flex align-items-start">
-                      <img src="images/resources/design-2-icon.png" alt="Icône" class="project-icon" />
+                      <img src="{% static 'site_assets/images/resources/design-2-icon.png' %}" alt="Icône" class="project-icon" />
                       <div class="project-info d-flex flex-column">
                         <h3 class="project-title"><a href="javascript:void(0);">Gestion des gérants de flotte</a></h3>
                         <p class="project-desc mb-0">Assignez des catégories de véhicules à chaque gérant et suivez leurs opérations en toute autonomie.</p>
@@ -321,11 +320,11 @@
                 <div class="col-lg-6 col-md-6">
                   <div class="project-card box-grad-hover position-relative d-flex flex-column w-100">
                     <div class="project-img-wrapper position-relative overflow-hidden">
-                      <a href="javascript:void(0);"><img src="images/resources/design-3.jpg" alt="Statut véhicule" class="img-fluid w-100" /></a>
+                      <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/design-3.jpg' %}" alt="Statut véhicule" class="img-fluid w-100" /></a>
                       <a href="javascript:void(0);" class="project-arrow position-absolute d-flex align-items-center justify-content-center rounded-circle"><i class="fas fa-long-arrow-alt-right"></i></a>
                     </div>
                     <div class="project-content d-flex align-items-start">
-                      <img src="images/resources/design-3-icon.png" alt="Icône" class="project-icon" />
+                      <img src="{% static 'site_assets/images/resources/design-3-icon.png' %}" alt="Icône" class="project-icon" />
                       <div class="project-info d-flex flex-column">
                         <h3 class="project-title"><a href="javascript:void(0);">Suivi du statut des véhicules</a></h3>
                         <p class="project-desc mb-0">Actifs, en réparation, en arrêt ou sortis de flotte — chaque statut est tracé avec son motif et ses dates.</p>
@@ -336,11 +335,11 @@
                 <div class="col-lg-6 col-md-6">
                   <div class="project-card box-grad-hover position-relative d-flex flex-column w-100">
                     <div class="project-img-wrapper position-relative overflow-hidden">
-                      <a href="javascript:void(0);"><img src="images/resources/design-4.jpg" alt="Multi-entreprises" class="img-fluid w-100" /></a>
+                      <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/design-3.jpg' %}" alt="Multi-entreprises" class="img-fluid w-100" /></a>
                       <a href="javascript:void(0);" class="project-arrow position-absolute d-flex align-items-center justify-content-center rounded-circle"><i class="fas fa-long-arrow-alt-right"></i></a>
                     </div>
                     <div class="project-content d-flex align-items-start">
-                      <img src="images/resources/design-4-icon.png" alt="Icône" class="project-icon" />
+                      <img src="{% static 'site_assets/images/resources/design-4-icon.png' %}" alt="Icône" class="project-icon" />
                       <div class="project-info d-flex flex-column">
                         <h3 class="project-title"><a href="javascript:void(0);">Architecture multi-entreprises SaaS</a></h3>
                         <p class="project-desc mb-0">Chaque entreprise dispose de son espace isolé, ses utilisateurs et sa souscription indépendante.</p>
@@ -356,11 +355,11 @@
                 <div class="col-lg-6 col-md-6">
                   <div class="project-card box-grad-hover position-relative d-flex flex-column w-100">
                     <div class="project-img-wrapper position-relative overflow-hidden">
-                      <a href="javascript:void(0);"><img src="images/resources/design-4.jpg" alt="Recettes" class="img-fluid w-100" /></a>
+                      <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/design-3.jpg' %}" alt="Recettes" class="img-fluid w-100" /></a>
                       <a href="javascript:void(0);" class="project-arrow position-absolute d-flex align-items-center justify-content-center rounded-circle"><i class="fas fa-long-arrow-alt-right"></i></a>
                     </div>
                     <div class="project-content d-flex align-items-start">
-                      <img src="images/resources/design-4-icon.png" alt="Icône" class="project-icon" />
+                      <img src="{% static 'site_assets/images/resources/design-4-icon.png' %}" alt="Icône" class="project-icon" />
                       <div class="project-info d-flex flex-column">
                         <h3 class="project-title"><a href="javascript:void(0);">Enregistrement des recettes journalières</a></h3>
                         <p class="project-desc mb-0">Saisissez les recettes par véhicule, par chauffeur, avec numéro de pièce et compte comptable associé.</p>
@@ -371,11 +370,11 @@
                 <div class="col-lg-6 col-md-6">
                   <div class="project-card box-grad-hover position-relative d-flex flex-column w-100">
                     <div class="project-img-wrapper position-relative overflow-hidden">
-                      <a href="javascript:void(0);"><img src="images/resources/design-2.jpg" alt="Caisse et billetage" class="img-fluid w-100" /></a>
+                      <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/design-1.jpg' %}" alt="Caisse et billetage" class="img-fluid w-100" /></a>
                       <a href="javascript:void(0);" class="project-arrow position-absolute d-flex align-items-center justify-content-center rounded-circle"><i class="fas fa-long-arrow-alt-right"></i></a>
                     </div>
                     <div class="project-content d-flex align-items-start">
-                      <img src="images/resources/design-2-icon.png" alt="Icône" class="project-icon" />
+                      <img src="{% static 'site_assets/images/resources/design-2-icon.png' %}" alt="Icône" class="project-icon" />
                       <div class="project-info d-flex flex-column">
                         <h3 class="project-title"><a href="javascript:void(0);">Caisse, billetage & solde journalier</a></h3>
                         <p class="project-desc mb-0">Gérez encaissements, décaissements, billetage détaillé et solde de caisse quotidien en temps réel.</p>
@@ -386,11 +385,11 @@
                 <div class="col-lg-6 col-md-6">
                   <div class="project-card box-grad-hover position-relative d-flex flex-column w-100">
                     <div class="project-img-wrapper position-relative overflow-hidden">
-                      <a href="javascript:void(0);"><img src="images/resources/design-3.jpg" alt="Prévisions" class="img-fluid w-100" /></a>
+                      <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/design-3.jpg' %}" alt="Prévisions" class="img-fluid w-100" /></a>
                       <a href="javascript:void(0);" class="project-arrow position-absolute d-flex align-items-center justify-content-center rounded-circle"><i class="fas fa-long-arrow-alt-right"></i></a>
                     </div>
                     <div class="project-content d-flex align-items-start">
-                      <img src="images/resources/design-3-icon.png" alt="Icône" class="project-icon" />
+                      <img src="{% static 'site_assets/images/resources/design-3-icon.png' %}" alt="Icône" class="project-icon" />
                       <div class="project-info d-flex flex-column">
                         <h3 class="project-title"><a href="javascript:void(0);">Charges & prévisions budgétaires</a></h3>
                         <p class="project-desc mb-0">Comparez recettes réelles versus prévisions mensuelles. Suivez charges fixes, variables et administratives.</p>
@@ -407,11 +406,11 @@
                 <div class="col-lg-6 col-md-6">
                   <div class="project-card box-grad-hover position-relative d-flex flex-column w-100">
                     <div class="project-img-wrapper position-relative overflow-hidden">
-                      <a href="javascript:void(0);"><img src="images/resources/design-3.jpg" alt="Réparations" class="img-fluid w-100" /></a>
+                      <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/design-3.jpg' %}" alt="Réparations" class="img-fluid w-100" /></a>
                       <a href="javascript:void(0);" class="project-arrow position-absolute d-flex align-items-center justify-content-center rounded-circle"><i class="fas fa-long-arrow-alt-right"></i></a>
                     </div>
                     <div class="project-content d-flex align-items-start">
-                      <img src="images/resources/design-3-icon.png" alt="Icône" class="project-icon" />
+                      <img src="{% static 'site_assets/images/resources/design-3-icon.png' %}" alt="Icône" class="project-icon" />
                       <div class="project-info d-flex flex-column">
                         <h3 class="project-title"><a href="javascript:void(0);">Réparations — Visite, Panne, Accident</a></h3>
                         <p class="project-desc mb-0">Enregistrez chaque réparation avec motif, durée d'immobilisation, pièces remplacées et coût total.</p>
@@ -422,11 +421,11 @@
                 <div class="col-lg-6 col-md-6">
                   <div class="project-card box-grad-hover position-relative d-flex flex-column w-100">
                     <div class="project-img-wrapper position-relative overflow-hidden">
-                      <a href="javascript:void(0);"><img src="images/resources/design-4.jpg" alt="Entretiens" class="img-fluid w-100" /></a>
+                      <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/design-3.jpg' %}" alt="Entretiens" class="img-fluid w-100" /></a>
                       <a href="javascript:void(0);" class="project-arrow position-absolute d-flex align-items-center justify-content-center rounded-circle"><i class="fas fa-long-arrow-alt-right"></i></a>
                     </div>
                     <div class="project-content d-flex align-items-start">
-                      <img src="images/resources/design-4-icon.png" alt="Icône" class="project-icon" />
+                      <img src="{% static 'site_assets/images/resources/design-4-icon.png' %}" alt="Icône" class="project-icon" />
                       <div class="project-info d-flex flex-column">
                         <h3 class="project-title"><a href="javascript:void(0);">Entretiens périodiques programmés</a></h3>
                         <p class="project-desc mb-0">Planifiez les entretiens à venir et recevez une alerte automatique à l'approche de chaque prochaine date.</p>
@@ -437,11 +436,11 @@
                 <div class="col-lg-6 col-md-6">
                   <div class="project-card box-grad-hover position-relative d-flex flex-column w-100">
                     <div class="project-img-wrapper position-relative overflow-hidden">
-                      <a href="javascript:void(0);"><img src="images/resources/design-2.jpg" alt="Pièces" class="img-fluid w-100" /></a>
+                      <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/design-1.jpg' %}" alt="Pièces" class="img-fluid w-100" /></a>
                       <a href="javascript:void(0);" class="project-arrow position-absolute d-flex align-items-center justify-content-center rounded-circle"><i class="fas fa-long-arrow-alt-right"></i></a>
                     </div>
                     <div class="project-content d-flex align-items-start">
-                      <img src="images/resources/design-2-icon.png" alt="Icône" class="project-icon" />
+                      <img src="{% static 'site_assets/images/resources/design-2-icon.png' %}" alt="Icône" class="project-icon" />
                       <div class="project-info d-flex flex-column">
                         <h3 class="project-title"><a href="javascript:void(0);">Gestion des pièces de rechange</a></h3>
                         <p class="project-desc mb-0">Gérez pièces internes et externes par réparation avec quantité, montant unitaire et coût total automatique.</p>
@@ -458,11 +457,11 @@
                 <div class="col-lg-6 col-md-6">
                   <div class="project-card box-grad-hover position-relative d-flex flex-column w-100">
                     <div class="project-img-wrapper position-relative overflow-hidden">
-                      <a href="javascript:void(0);"><img src="images/resources/design-1.jpg" alt="Assurances" class="img-fluid w-100" /></a>
+                      <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/design-1.jpg' %}" alt="Assurances" class="img-fluid w-100" /></a>
                       <a href="javascript:void(0);" class="project-arrow position-absolute d-flex align-items-center justify-content-center rounded-circle"><i class="fas fa-long-arrow-alt-right"></i></a>
                     </div>
                     <div class="project-content d-flex align-items-start">
-                      <img src="images/resources/design-1-icon.png" alt="Icône" class="project-icon" />
+                      <img src="{% static 'site_assets/images/resources/design-1-icon.png' %}" alt="Icône" class="project-icon" />
                       <div class="project-info d-flex flex-column">
                         <h3 class="project-title"><a href="javascript:void(0);">Assurances & Vignettes</a></h3>
                         <p class="project-desc mb-0">Enregistrez et suivez assurances et vignettes. Alertes automatiques avant chaque date d'expiration.</p>
@@ -473,11 +472,11 @@
                 <div class="col-lg-6 col-md-6">
                   <div class="project-card box-grad-hover position-relative d-flex flex-column w-100">
                     <div class="project-img-wrapper position-relative overflow-hidden">
-                      <a href="javascript:void(0);"><img src="images/resources/design-2.jpg" alt="Patentes" class="img-fluid w-100" /></a>
+                      <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/design-1.jpg' %}" alt="Patentes" class="img-fluid w-100" /></a>
                       <a href="javascript:void(0);" class="project-arrow position-absolute d-flex align-items-center justify-content-center rounded-circle"><i class="fas fa-long-arrow-alt-right"></i></a>
                     </div>
                     <div class="project-content d-flex align-items-start">
-                      <img src="images/resources/design-2-icon.png" alt="Icône" class="project-icon" />
+                      <img src="{% static 'site_assets/images/resources/design-2-icon.png' %}" alt="Icône" class="project-icon" />
                       <div class="project-info d-flex flex-column">
                         <h3 class="project-title"><a href="javascript:void(0);">Patentes & Cartes de stationnement</a></h3>
                         <p class="project-desc mb-0">Centralisez patentes et cartes de stationnement. Visualisez les jours restants avant chaque renouvellement.</p>
@@ -488,11 +487,11 @@
                 <div class="col-lg-6 col-md-6">
                   <div class="project-card box-grad-hover position-relative d-flex flex-column w-100">
                     <div class="project-img-wrapper position-relative overflow-hidden">
-                      <a href="javascript:void(0);"><img src="images/resources/design-3.jpg" alt="Visites techniques" class="img-fluid w-100" /></a>
+                      <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/design-3.jpg' %}" alt="Visites techniques" class="img-fluid w-100" /></a>
                       <a href="javascript:void(0);" class="project-arrow position-absolute d-flex align-items-center justify-content-center rounded-circle"><i class="fas fa-long-arrow-alt-right"></i></a>
                     </div>
                     <div class="project-content d-flex align-items-start">
-                      <img src="images/resources/design-3-icon.png" alt="Icône" class="project-icon" />
+                      <img src="{% static 'site_assets/images/resources/design-3-icon.png' %}" alt="Icône" class="project-icon" />
                       <div class="project-info d-flex flex-column">
                         <h3 class="project-title"><a href="javascript:void(0);">Visites techniques planifiées</a></h3>
                         <p class="project-desc mb-0">Archivez chaque visite technique avec dates d'entrée, sortie, prochaine visite et coût associé.</p>
@@ -503,11 +502,11 @@
                 <div class="col-lg-6 col-md-6">
                   <div class="project-card box-grad-hover position-relative d-flex flex-column w-100">
                     <div class="project-img-wrapper position-relative overflow-hidden">
-                      <a href="javascript:void(0);"><img src="images/resources/design-4.jpg" alt="Archivage" class="img-fluid w-100" /></a>
+                      <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/design-3.jpg' %}" alt="Archivage" class="img-fluid w-100" /></a>
                       <a href="javascript:void(0);" class="project-arrow position-absolute d-flex align-items-center justify-content-center rounded-circle"><i class="fas fa-long-arrow-alt-right"></i></a>
                     </div>
                     <div class="project-content d-flex align-items-start">
-                      <img src="images/resources/design-4-icon.png" alt="Icône" class="project-icon" />
+                      <img src="{% static 'site_assets/images/resources/design-4-icon.png' %}" alt="Icône" class="project-icon" />
                       <div class="project-info d-flex flex-column">
                         <h3 class="project-title"><a href="javascript:void(0);">Archivage de tous les documents véhicule</a></h3>
                         <p class="project-desc mb-0">Stockez et consultez tous les documents liés à chaque véhicule : carte grise, photos, fiches techniques.</p>
@@ -536,18 +535,18 @@
             <div class="col-lg-5">
               <div class="about-top-left-col position-relative">
                 <div class="about-img-top">
-                  <img src="images/resources/about-1.jpg" alt="Équipe MaFlot" class="img-fluid" />
+                  <img src="{% static 'site_assets/images/resources/about-1.jpg' %}" alt="Équipe MaFlot" class="img-fluid" />
                 </div>
               </div>
             </div>
             <div class="col-lg-7">
               <div class="section-title-wrap">
                 <div class="section-badge d-inline-flex align-items-center gap-1 mb-3">
-                  <img src="images/resources/blockchain.svg" alt="Icône" />
+                  <img src="{% static 'site_assets/images/resources/blockchain.svg' %}" alt="Icône" />
                   <span>Notre mission</span>
                 </div>
                 <h2 class="section-title mb-0">
-                  Chaque entreprise de transport mérite des outils à la hauteur de ses ambitions.
+                  Donner à chaque transporteur les outils qu'il mérite, sans compromis.
                 </h2>
               </div>
             </div>
@@ -559,16 +558,16 @@
                 <div class="about-stats-wrap d-flex flex-column">
                   <div class="active-user-circle position-relative d-flex flex-column align-items-center justify-content-center text-center">
                     <div class="user-avatar user-avatar-top position-absolute">
-                      <img src="images/resources/active-user-1.png" alt="Utilisateur" />
+                      <img src="{% static 'site_assets/images/resources/active-user-1.png' %}" alt="Utilisateur" />
                     </div>
                     <div class="user-avatar user-avatar-bottom position-absolute">
-                      <img src="images/resources/active-user-2.png" alt="Utilisateur" />
+                      <img src="{% static 'site_assets/images/resources/active-user-2.png' %}" alt="Utilisateur" />
                     </div>
                     <div class="stat-number"><span class="counter">500</span>+</div>
                     <p class="stat-text mb-0">Entreprises actives sur MaFlot</p>
                   </div>
                   <div class="rating-review d-flex align-items-start gap-2">
-                    <img src="images/resources/review-img.png" alt="Avis clients" class="review-logo" />
+                    <img src="{% static 'site_assets/images/resources/review-img.png' %}" alt="Avis clients" class="review-logo" />
                     <div class="rating-info">
                       <div class="stars text-black">
                         <i class="fas fa-star"></i><i class="fas fa-star"></i>
@@ -580,19 +579,19 @@
                   </div>
                 </div>
                 <div class="about-img-bottom">
-                  <img src="images/resources/about-2.jpg" alt="Équipe MaFlot" class="img-fluid" />
+                  <img src="{% static 'site_assets/images/resources/about-2.jpg' %}" alt="Équipe MaFlot" class="img-fluid" />
                 </div>
               </div>
             </div>
             <div class="col-lg-5">
               <div class="about-content-style3 position-relative">
                 <p class="section-desc">
-                  MaFlot est né d'un constat simple : les entreprises de transport en Afrique de l'Ouest manquent d'outils modernes. Notre solution SaaS est 100% adaptée aux réalités locales — multi-entreprises, multi-utilisateurs, accessible depuis n'importe quel appareil.
+                  MaFlot est né d'un constat terrain : trop d'entreprises de transport gèrent encore leur flotte sur papier ou avec des fichiers dispersés. Notre plateforme 100% cloud est pensée pour les réalités africaines — multi-entreprises, multi-utilisateurs, accessible depuis un téléphone comme un ordinateur.
                 </p>
                 <ul class="check-list list-unstyled">
-                  <li class="d-flex align-items-center">Conçu pour le marché ivoirien et ouest-africain</li>
-                  <li class="d-flex align-items-center">Architecture SaaS multi-tenant sécurisée</li>
-                  <li class="d-flex align-items-center">Support client réactif basé à Abidjan</li>
+                  <li class="d-flex align-items-center">Pensé et développé pour le marché ivoirien et ouest-africain</li>
+                  <li class="d-flex align-items-center">Architecture cloud sécurisée, données isolées par entreprise</li>
+                  <li class="d-flex align-items-center">Équipe support réactive basée à Abidjan, disponible en français</li>
                 </ul>
                 <div class="about-cta">
               <a href="{% url 'signup_entreprise' %}?plan=STANDARD" class="btn-outline">
@@ -606,68 +605,6 @@
         </div>
       </div>
     </section>
-    <!-- ===== SHOWCASE ===== -->
-    <section class="app-showcase-section pt-160 pb-130 w-100 position-relative" id="showcase">
-      <div class="container-fluid">
-        <div class="section-title-wrap text-center mb-40">
-          <div class="section-badge d-inline-flex align-items-center gap-2 mb-3">
-            <img src="images/resources/blockchain.svg" alt="Icône" />
-            <span>Adapté à chaque taille de flotte</span>
-          </div>
-          <h2 class="section-title">Découvrez ce que MaFlot peut faire pour vous</h2>
-        </div>
-
-        <div class="app-showcase-slider-wrapper position-relative w-100">
-          <button class="app-showcase-nav prev" aria-label="Précédent"><i class="fas fa-arrow-left"></i></button>
-          <button class="app-showcase-nav next" aria-label="Suivant"><i class="fas fa-arrow-right"></i></button>
-
-          <div class="app-showcase-slider">
-            <div class="app-showcase-card">
-              <div class="app-showcase-image-wrapper bg-color8">
-                <img src="images/resources/app-1.png" alt="Suivi des recettes" class="app-showcase-image" />
-                <a href="javascript:void(0);" class="app-showcase-arrow"><i class="fas fa-long-arrow-alt-right"></i></a>
-                <div class="app-showcase-dot"></div><div class="app-showcase-line"></div>
-              </div>
-              <div class="app-showcase-info"><h3 class="app-showcase-title">Suivi des recettes en temps réel</h3></div>
-            </div>
-            <div class="app-showcase-card">
-              <div class="app-showcase-image-wrapper bg-color9">
-                <img src="images/resources/app-2.png" alt="Alertes documents" class="app-showcase-image" />
-                <a href="javascript:void(0);" class="app-showcase-arrow"><i class="fas fa-long-arrow-alt-right"></i></a>
-                <div class="app-showcase-dot"></div><div class="app-showcase-line"></div>
-              </div>
-              <div class="app-showcase-info"><h3 class="app-showcase-title">Alertes automatiques sur les documents</h3></div>
-            </div>
-            <div class="app-showcase-card">
-              <div class="app-showcase-image-wrapper">
-                <img src="images/resources/app-3.png" alt="Réparations" class="app-showcase-image" />
-                <a href="javascript:void(0);" class="app-showcase-arrow"><i class="fas fa-long-arrow-alt-right"></i></a>
-                <div class="app-showcase-dot"></div><div class="app-showcase-line"></div>
-              </div>
-              <div class="app-showcase-info"><h3 class="app-showcase-title">Gestion complète des réparations</h3></div>
-            </div>
-            <div class="app-showcase-card">
-              <div class="app-showcase-image-wrapper bg-color10">
-                <img src="images/resources/app-4.png" alt="Rapports" class="app-showcase-image" />
-                <a href="javascript:void(0);" class="app-showcase-arrow"><i class="fas fa-long-arrow-alt-right"></i></a>
-                <div class="app-showcase-dot"></div><div class="app-showcase-line"></div>
-              </div>
-              <div class="app-showcase-info"><h3 class="app-showcase-title">Rapports financiers détaillés par véhicule</h3></div>
-            </div>
-            <div class="app-showcase-card">
-              <div class="app-showcase-image-wrapper">
-                <img src="images/resources/app-1.png" alt="Rôles" class="app-showcase-image" />
-                <a href="javascript:void(0);" class="app-showcase-arrow"><i class="fas fa-long-arrow-alt-right"></i></a>
-                <div class="app-showcase-dot"></div><div class="app-showcase-line"></div>
-              </div>
-              <div class="app-showcase-info"><h3 class="app-showcase-title">Rôles & permissions par utilisateur</h3></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
     <!-- ===== COMMENT ÇA MARCHE ===== -->
     <section class="how-we-work-section pt-130 w-100 position-relative overflow-hidden">
       <div class="container">
@@ -678,10 +615,10 @@
               <div class="how-we-work-left">
                 <div class="section-title-wrap mb-4">
                   <div class="section-badge d-inline-flex align-items-center gap-1 mb-3">
-                    <img src="images/resources/blockchain.svg" alt="Icône" />
+                    <img src="{% static 'site_assets/images/resources/blockchain.svg' %}" alt="Icône" />
                     <span>Simple et rapide</span>
                   </div>
-                  <h2 class="section-title mb-0">Opérationnel en moins de 10 minutes.</h2>
+                  <h2 class="section-title mb-0">Démarrez en 3 étapes, opérationnel en 10 minutes.</h2>
                 </div>
                 <div class="work-rating mb-40">
                   <div class="rating-number">4.8/5</div>
@@ -696,10 +633,10 @@
                 </div>
                 <div class="app-buttons d-flex flex-column gap-2">
                   <a href="javascript:void(0);" class="app-btn">
-                    <img src="images/resources/googleplay.png" alt="Disponible sur Google Play" class="img-fluid" />
+                    <img src="{% static 'site_assets/images/resources/googleplay.png' %}" alt="Disponible sur Google Play" class="img-fluid" />
                   </a>
                   <a href="javascript:void(0);" class="app-btn">
-                    <img src="images/resources/appstore.png" alt="Télécharger sur l'App Store" class="img-fluid" />
+                    <img src="{% static 'site_assets/images/resources/appstore.png' %}" alt="Télécharger sur l'App Store" class="img-fluid" />
                   </a>
                 </div>
               </div>
@@ -708,7 +645,7 @@
             <div class="col-xl-5 col-lg-12 col-md-12 work-img-col">
               <div class="how-we-work-center position-relative text-center">
                 <div class="mobile-hand-image">
-                  <img src="images/resources/app.png" alt="Application MaFlot mobile" class="img-fluid" />
+                  <img src="{% static 'site_assets/images/resources/app.png' %}" alt="Application MaFlot mobile" class="img-fluid" />
                 </div>
               </div>
             </div>
@@ -719,7 +656,7 @@
                   <div class="work-service-item d-flex align-items-start">
                     <div class="service-icon-wrapper flex-shrink-0">
                       <div class="service-icon d-flex align-items-center justify-content-center rounded-circle">
-                        <img src="images/resources/srv-1.png" alt="Inscription" />
+                        <img src="{% static 'site_assets/images/resources/srv-1.png' %}" alt="Inscription" />
                       </div>
                     </div>
                     <div class="service-content">
@@ -730,7 +667,7 @@
                   <div class="work-service-item d-flex align-items-start">
                     <div class="service-icon-wrapper flex-shrink-0">
                       <div class="service-icon d-flex align-items-center justify-content-center rounded-circle">
-                        <img src="images/resources/srv-2.png" alt="Véhicules" />
+                        <img src="{% static 'site_assets/images/resources/srv-2.png' %}" alt="Véhicules" />
                       </div>
                     </div>
                     <div class="service-content">
@@ -741,7 +678,7 @@
                   <div class="work-service-item d-flex align-items-start">
                     <div class="service-icon-wrapper flex-shrink-0">
                       <div class="service-icon d-flex align-items-center justify-content-center rounded-circle">
-                        <img src="images/resources/srv-3.png" alt="Équipe" />
+                        <img src="{% static 'site_assets/images/resources/srv-3.png' %}" alt="Équipe" />
                       </div>
                     </div>
                     <div class="service-content">
@@ -757,26 +694,25 @@
         </div>
       </div>
     </section>
-
-
     <!-- ===== TARIFS ===== -->
-    <section class="pricing-section pt-160 pb-160 w-100 position-relative overflow-hidden" id="pricing">
+    <section class="pricing-section pricing-section-modern pt-160 pb-160 w-100 position-relative overflow-hidden" id="pricing">
       <div class="container">
         <div class="pricing-inner position-relative w-100">
-          <div class="section-title-wrap text-center mb-40">
+          <div class="section-title-wrap text-center mb-40 pricing-title-wrap wow fadeInUp" data-wow-duration=".6s" data-wow-delay=".1s">
             <div class="section-badge d-inline-flex align-items-center gap-2 mb-3">
-              <img src="images/resources/blockchain.svg" alt="Icône" />
+              <img src="{% static 'site_assets/images/resources/blockchain.svg' %}" alt="Icône" />
               <span>Adapté à chaque taille de flotte</span>
             </div>
-            <h2 class="section-title">Choisissez la formule qui vous convient</h2>
+            <h2 class="section-title">Des formules transparentes, sans engagement, adaptées à votre flotte</h2>
           </div>
 
           <div class="row pricing-row justify-content-center">
-            <div class="col-lg-4 col-md-6 wow fadeIn" data-wow-duration=".5s" data-wow-delay=".2s">
-              <div class="pricing-card standard">
+            <div class="col-lg-4 col-md-6 wow fadeInUp pricing-col pricing-col-standard" data-wow-duration=".7s" data-wow-delay=".15s">
+              <article class="pricing-card pricing-card-modern pricing-tier-standard standard">
+                <div class="pricing-card-glow"></div>
                 <div class="pricing-header">
                   <h3 class="pricing-price">100 000 FCFA<small>/mois</small></h3>
-                  <p class="pricing-period">Par mois — résiliable à tout moment</p>
+                  <p class="pricing-period">Par mois — sans engagement, résiliable à tout moment</p>
                   <span class="pricing-label">Standard</span>
                 </div>
                 <hr class="pricing-divider" />
@@ -785,25 +721,27 @@
                     <li>Jusqu'à 5 utilisateurs</li>
                     <li>Jusqu'à 20 véhicules</li>
                     <li>3 catégories de véhicules</li>
-                    <li>Recettes, charges & documents</li>
-                    <li>Alertes d'expiration automatiques</li>
-                    <li>Support par email</li>
+                    <li>Recettes, charges & suivi documents</li>
+                    <li>Alertes d'expiration intelligentes</li>
+                    <li>Support par email sous 24h</li>
                   </ul>
                 </div>
                 <div class="pricing-footer">
-                  <a href="{% url 'signup_entreprise_code' 'STANDARD' %}" class="btn-outline">
-                    Commencer
+                  <a href="{% url 'signup_entreprise_code' 'STANDARD' %}" class="pricing-btn">
+                    Commencer <i class="fas fa-long-arrow-alt-right"></i>
                   </a>
                 </div>
-              </div>
+              </article>
             </div>
 
-            <div class="col-lg-4 col-md-6 wow fadeIn" data-wow-duration=".5s" data-wow-delay=".4s">
-              <div class="pricing-card popular">
+            <div class="col-lg-4 col-md-6 wow fadeInUp pricing-col pricing-col-pro" data-wow-duration=".7s" data-wow-delay=".3s">
+              <article class="pricing-card pricing-card-modern pricing-tier-pro popular">
+                <div class="pricing-popular-badge">Le plus populaire</div>
+                <div class="pricing-card-glow"></div>
                 <div class="pricing-header">
                   <h3 class="pricing-price">180 000 FCFA<small>/mois</small></h3>
-                  <p class="pricing-period">Par mois — résiliable à tout moment</p>
-                  <span class="pricing-label">Pro ⭐</span>
+                  <p class="pricing-period">Par mois — le choix le plus populaire</p>
+                  <span class="pricing-label">Pro</span>
                 </div>
                 <hr class="pricing-divider" />
                 <div class="pricing-features">
@@ -811,45 +749,46 @@
                     <li>Jusqu'à 15 utilisateurs</li>
                     <li>Jusqu'à 80 véhicules</li>
                     <li>10 catégories de véhicules</li>
-                    <li>Toutes les fonctionnalités Standard</li>
-                    <li>Caisse, billetage & prévisions</li>
-                    <li>Rapports avancés par véhicule</li>
-                    <li>Support prioritaire</li>
+                    <li>Tout le plan Standard inclus</li>
+                    <li>Caisse, billetage & prévisions budgétaires</li>
+                    <li>Rapports financiers avancés par véhicule</li>
+                    <li>Support prioritaire par téléphone</li>
                   </ul>
                 </div>
                 <div class="pricing-footer">
-                  <a href="{% url 'signup_entreprise_code' 'PRO' %}" class="btn-outline">
-                    Commencer
+                  <a href="{% url 'signup_entreprise_code' 'PRO' %}" class="pricing-btn">
+                    Commencer <i class="fas fa-long-arrow-alt-right"></i>
                   </a>
                 </div>
-              </div>
+              </article>
             </div>
 
-            <div class="col-lg-4 col-md-6 wow fadeIn" data-wow-duration=".5s" data-wow-delay=".6s">
-              <div class="pricing-card enterprise">
+            <div class="col-lg-4 col-md-6 wow fadeInUp pricing-col pricing-col-enterprise" data-wow-duration=".7s" data-wow-delay=".45s">
+              <article class="pricing-card pricing-card-modern pricing-tier-enterprise enterprise">
+                <div class="pricing-card-glow"></div>
                 <div class="pricing-header">
                   <h3 class="pricing-price">250 000 FCFA<small>/mois</small></h3>
-                  <p class="pricing-period">Contactez notre équipe commerciale</p>
+                  <p class="pricing-period">Pour les grandes flottes — accompagnement sur mesure</p>
                   <span class="pricing-label">Enterprise</span>
                 </div>
                 <hr class="pricing-divider" />
                 <div class="pricing-features">
                   <ul class="bullet-list">
                     <li>Utilisateurs illimités</li>
-                    <li>Véhicules illimités</li>
-                    <li>Catégories illimitées</li>
-                    <li>Toutes les fonctionnalités Pro</li>
-                    <li>Rapports personnalisés</li>
+                    <li>Véhicules & catégories illimités</li>
+                    <li>Tout le plan Pro inclus</li>
+                    <li>Rapports personnalisés & exports avancés</li>
                     <li>API & intégrations sur mesure</li>
-                    <li>Support dédié 24h/7j</li>
+                    <li>Gestionnaire de compte dédié</li>
+                    <li>Support premium 24h/7j par téléphone</li>
                   </ul>
                 </div>
                 <div class="pricing-footer">
-                  <a href="{% url 'signup_entreprise_code' 'ENTERPRISE' %}" class="btn-outline">
-                    Commencer
+                  <a href="{% url 'signup_entreprise_code' 'ENTERPRISE' %}" class="pricing-btn">
+                    Commencer <i class="fas fa-long-arrow-alt-right"></i>
                   </a>
                 </div>
-              </div>
+              </article>
             </div>
           </div>
         </div>
@@ -861,17 +800,17 @@
         <div class="testimonials-inner position-relative w-100">
           <div class="section-title-wrap text-center mb-section-title">
             <div class="section-badge d-inline-flex align-items-center gap-2 mb-3">
-              <img src="images/resources/blockchain.svg" alt="Icône" />
+              <img src="{% static 'site_assets/images/resources/blockchain.svg' %}" alt="Icône" />
               <span>Ils nous font confiance</span>
             </div>
-            <h2 class="section-title">Des entreprises ivoiriennes<br />qui ont choisi MaFlot.</h2>
+            <h2 class="section-title">Ce que disent les professionnels<br />qui utilisent MaFlot au quotidien</h2>
           </div>
 
           <div class="testimonials-slider position-relative">
 
             <div class="testimonial-card">
               <div class="testimonial-header">
-                <div class="testimonial-avatar"><img src="images/resources/person-1.jpg" alt="Kouadio Didier" /></div>
+                <div class="testimonial-avatar"><img src="{% static 'site_assets/images/resources/about-1.jpg' %}" alt="Kouadio Didier" /></div>
                 <div class="testimonial-info">
                   <h3 class="testimonial-name">Kouadio Didier</h3>
                   <p class="testimonial-role">DG — Transport Abidjan Plus</p>
@@ -887,7 +826,7 @@
 
             <div class="testimonial-card">
               <div class="testimonial-header">
-                <div class="testimonial-avatar"><img src="images/resources/person-2.jpg" alt="Awa Fofana" /></div>
+                <div class="testimonial-avatar"><img src="{% static 'site_assets/images/resources/about-2.jpg' %}" alt="Awa Fofana" /></div>
                 <div class="testimonial-info">
                   <h3 class="testimonial-name">Awa Fofana</h3>
                   <p class="testimonial-role">Responsable flotte — LogiCIV</p>
@@ -903,7 +842,7 @@
 
             <div class="testimonial-card">
               <div class="testimonial-header">
-                <div class="testimonial-avatar"><img src="images/resources/person-3.jpg" alt="Marc Tano" /></div>
+                <div class="testimonial-avatar"><img src="{% static 'site_assets/images/resources/about-1.jpg' %}" alt="Marc Tano" /></div>
                 <div class="testimonial-info">
                   <h3 class="testimonial-name">Marc Tano</h3>
                   <p class="testimonial-role">Gérant — Auto Express CI</p>
@@ -919,7 +858,7 @@
 
             <div class="testimonial-card">
               <div class="testimonial-header">
-                <div class="testimonial-avatar"><img src="images/resources/person-1.jpg" alt="Adjoua Bamba" /></div>
+                <div class="testimonial-avatar"><img src="{% static 'site_assets/images/resources/about-1.jpg' %}" alt="Adjoua Bamba" /></div>
                 <div class="testimonial-info">
                   <h3 class="testimonial-name">Adjoua Bamba</h3>
                   <p class="testimonial-role">Comptable — FlotteCIV Sarl</p>
@@ -935,7 +874,7 @@
 
             <div class="testimonial-card">
               <div class="testimonial-header">
-                <div class="testimonial-avatar"><img src="images/resources/person-2.jpg" alt="Sékou Konaté" /></div>
+                <div class="testimonial-avatar"><img src="{% static 'site_assets/images/resources/about-2.jpg' %}" alt="Sékou Konaté" /></div>
                 <div class="testimonial-info">
                   <h3 class="testimonial-name">Sékou Konaté</h3>
                   <p class="testimonial-role">Directeur — TransSud Transport</p>
@@ -951,7 +890,7 @@
 
             <div class="testimonial-card">
               <div class="testimonial-header">
-                <div class="testimonial-avatar"><img src="images/resources/person-3.jpg" alt="Reine Koffi" /></div>
+                <div class="testimonial-avatar"><img src="{% static 'site_assets/images/resources/about-1.jpg' %}" alt="Reine Koffi" /></div>
                 <div class="testimonial-info">
                   <h3 class="testimonial-name">Reine Koffi</h3>
                   <p class="testimonial-role">Chef d'exploitation — RKTransport</p>
@@ -980,22 +919,22 @@
               <div class="faq-holder d-flex flex-column mx-auto">
                 <div class="section-title-wrap text-center mb-section-title">
                   <div class="section-badge d-inline-flex align-items-center gap-1 mb-2">
-                    <img src="images/resources/blockchain.svg" alt="Icône" />
+                    <img src="{% static 'site_assets/images/resources/blockchain.svg' %}" alt="Icône" />
                     <span>Questions fréquentes</span>
                   </div>
-                  <h2 class="section-title">Vous avez des questions ? Nous avons les réponses.</h2>
+                  <h2 class="section-title">Tout ce que vous devez savoir avant de vous lancer</h2>
                 </div>
 
                 <div class="accordion" id="faqAccordion">
                   <div class="accordion-item">
                     <h2 class="accordion-header">
                       <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne" aria-expanded="true" aria-controls="faqOne">
-                        Comment gérer mon entreprises ?
+                        Comment démarrer avec MaFlot ?
                       </button>
                     </h2>
                     <div id="faqOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
                       <div class="accordion-body">
-                        <p>Depuis votre espace administrateur, vous pouvez gérer votre entreprises. MaFlot est une plateforme qui a pour objectif de vous aider à gagner du temps et à optimiser votre flotte.</p>
+                        <p>C'est simple : créez votre compte entreprise, choisissez votre formule et ajoutez vos véhicules. En moins de 10 minutes, votre tableau de bord est opérationnel. Vous pouvez ensuite inviter vos collaborateurs et commencer à enregistrer recettes et charges dès le premier jour.</p>
                         
                       </div>
                     </div>
@@ -1053,29 +992,29 @@
         <div class="container">
           <div class="section-title-wrap text-center mb-40">
             <div class="section-badge d-inline-flex align-items-center gap-1 mb-2">
-              <img src="images/resources/blockchain.svg" alt="Icône" />
+              <img src="{% static 'site_assets/images/resources/blockchain.svg' %}" alt="Icône" />
               <span>Ils utilisent MaFlot</span>
             </div>
-            <h2 class="section-title">Des entreprises de toutes tailles nous font confiance</h2>
+            <h2 class="section-title">Des centaines d'entreprises nous font déjà confiance</h2>
           </div>
         </div>
         <div class="brands-marquee d-flex position-relative w-100">
           <div class="brands-track">
-            <div class="brand-item rounded-circle"><img src="images/resources/brand-1.png" alt="Partenaire" /></div>
-            <div class="brand-item rounded-circle"><img src="images/resources/brand-2.png" alt="Partenaire" /></div>
-            <div class="brand-item rounded-circle"><img src="images/resources/brand-3.png" alt="Partenaire" /></div>
-            <div class="brand-item rounded-circle"><img src="images/resources/brand-4.png" alt="Partenaire" /></div>
-            <div class="brand-item rounded-circle"><img src="images/resources/brand-5.png" alt="Partenaire" /></div>
-            <div class="brand-item rounded-circle"><img src="images/resources/brand-1.png" alt="Partenaire" /></div>
-            <div class="brand-item rounded-circle"><img src="images/resources/brand-2.png" alt="Partenaire" /></div>
-            <div class="brand-item rounded-circle"><img src="images/resources/brand-3.png" alt="Partenaire" /></div>
-            <div class="brand-item rounded-circle"><img src="images/resources/brand-4.png" alt="Partenaire" /></div>
-            <div class="brand-item rounded-circle"><img src="images/resources/brand-5.png" alt="Partenaire" /></div>
-            <div class="brand-item rounded-circle"><img src="images/resources/brand-1.png" alt="Partenaire" /></div>
-            <div class="brand-item rounded-circle"><img src="images/resources/brand-2.png" alt="Partenaire" /></div>
-            <div class="brand-item rounded-circle"><img src="images/resources/brand-3.png" alt="Partenaire" /></div>
-            <div class="brand-item rounded-circle"><img src="images/resources/brand-4.png" alt="Partenaire" /></div>
-            <div class="brand-item rounded-circle"><img src="images/resources/brand-5.png" alt="Partenaire" /></div>
+            <div class="brand-item rounded-circle"><img src="{% static 'site_assets/images/resources/brand-1.png' %}" alt="Partenaire" /></div>
+            <div class="brand-item rounded-circle"><img src="{% static 'site_assets/images/resources/brand-2.png' %}" alt="Partenaire" /></div>
+            <div class="brand-item rounded-circle"><img src="{% static 'site_assets/images/resources/brand-3.png' %}" alt="Partenaire" /></div>
+            <div class="brand-item rounded-circle"><img src="{% static 'site_assets/images/resources/brand-4.png' %}" alt="Partenaire" /></div>
+            <div class="brand-item rounded-circle"><img src="{% static 'site_assets/images/resources/brand-4.png' %}" alt="Partenaire" /></div>
+            <div class="brand-item rounded-circle"><img src="{% static 'site_assets/images/resources/brand-1.png' %}" alt="Partenaire" /></div>
+            <div class="brand-item rounded-circle"><img src="{% static 'site_assets/images/resources/brand-2.png' %}" alt="Partenaire" /></div>
+            <div class="brand-item rounded-circle"><img src="{% static 'site_assets/images/resources/brand-3.png' %}" alt="Partenaire" /></div>
+            <div class="brand-item rounded-circle"><img src="{% static 'site_assets/images/resources/brand-4.png' %}" alt="Partenaire" /></div>
+            <div class="brand-item rounded-circle"><img src="{% static 'site_assets/images/resources/brand-4.png' %}" alt="Partenaire" /></div>
+            <div class="brand-item rounded-circle"><img src="{% static 'site_assets/images/resources/brand-1.png' %}" alt="Partenaire" /></div>
+            <div class="brand-item rounded-circle"><img src="{% static 'site_assets/images/resources/brand-2.png' %}" alt="Partenaire" /></div>
+            <div class="brand-item rounded-circle"><img src="{% static 'site_assets/images/resources/brand-3.png' %}" alt="Partenaire" /></div>
+            <div class="brand-item rounded-circle"><img src="{% static 'site_assets/images/resources/brand-4.png' %}" alt="Partenaire" /></div>
+            <div class="brand-item rounded-circle"><img src="{% static 'site_assets/images/resources/brand-4.png' %}" alt="Partenaire" /></div>
           </div>
         </div>
       </div>
@@ -1087,10 +1026,10 @@
         <div class="blog-inner d-flex flex-column position-relative w-100">
           <div class="section-title-wrap text-center mb-section-title">
             <div class="section-badge d-inline-flex align-items-center gap-2 mb-2">
-              <img src="images/resources/blockchain.svg" alt="Icône" />
+              <img src="{% static 'site_assets/images/resources/blockchain.svg' %}" alt="Icône" />
               <span>Conseils & actualités</span>
             </div>
-            <h2 class="section-title">Ressources pour gérer votre flotte efficacement</h2>
+            <h2 class="section-title">Guides pratiques et conseils pour optimiser votre flotte</h2>
           </div>
 
           <div class="row blog-row align-items-stretch">
@@ -1098,7 +1037,7 @@
               <div class="blog-featured d-flex flex-column">
                 <div class="blog-image-wrapper">
                   <a href="javascript:void(0);">
-                    <img src="images/resources/blog-1.jpg" alt="Réduire les coûts d'entretien" />
+                    <img src="{% static 'site_assets/images/resources/about-1.jpg' %}" alt="Réduire les coûts d'entretien" />
                   </a>
                   <span class="blog-date">Mars 2026</span>
                 </div>
@@ -1111,7 +1050,7 @@
               <div class="blog-list">
                 <div class="blog-item wow fadeIn" data-wow-duration=".5s" data-wow-delay=".4s">
                   <div class="blog-image-wrapper">
-                    <a href="javascript:void(0);"><img src="images/resources/blog-2.jpg" alt="Documents véhicule" /></a>
+                    <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/about-2.jpg' %}" alt="Documents véhicule" /></a>
                   </div>
                   <div class="blog-content">
                     <span class="blog-date">Février 2026</span>
@@ -1123,7 +1062,7 @@
                 </div>
                 <div class="blog-item wow fadeIn" data-wow-duration=".5s" data-wow-delay=".6s">
                   <div class="blog-image-wrapper">
-                    <a href="javascript:void(0);"><img src="images/resources/blog-3.jpg" alt="Rentabilité flotte" /></a>
+                    <a href="javascript:void(0);"><img src="{% static 'site_assets/images/resources/about-1.jpg' %}" alt="Rentabilité flotte" /></a>
                   </div>
                   <div class="blog-content">
                     <span class="blog-date">Janvier 2026</span>
@@ -1147,7 +1086,7 @@
           <div class="row align-items-end g-1">
             <div class="col-xl-6 col-lg-12">
               <div class="footer-image-wrapper position-relative">
-                <img src="images/resources/ft-image.png" alt="Tableau de bord MaFlot" />
+                <img src="{% static 'site_assets/images/resources/ft-image.png' %}" alt="Tableau de bord MaFlot" />
                 <a href="https://www.youtube.com/watch?v=4SCjXcBeW1E" class="play-button" data-fancybox data-width="800" data-height="450">
                   <div class="circular-text">
                     <svg viewBox="0 0 200 200" class="circular-svg">
@@ -1157,13 +1096,13 @@
                   </div>
                   <i class="fa-sharp fa-solid fa-play"></i>
                 </a>
-                <div class="footer-arrow"><img src="images/resources/arrow.png" alt="Flèche" /></div>
+                <div class="footer-arrow"><img src="{% static 'site_assets/images/resources/arrow.png' %}" alt="Flèche" /></div>
               </div>
             </div>
             <div class="col-xl-6 col-lg-12">
               <div class="footer-cta-content d-flex flex-column">
-                <h3 class="footer-cta-title">GÉREZ VOTRE FLOTTE COMPLÈTE DÈS AUJOURD'HUI</h3>
-                <a href="{% url 'login' %}" class="btn-outline text-white align-self-start hero-car-voir-plus">
+                <h3 class="footer-cta-title">PRÊT À TRANSFORMER LA GESTION DE VOTRE FLOTTE ?</h3>
+                <a href="{% url 'login' %}" class="btn-outline footer-cta-button align-self-start">
                   Démarrer maintenant
                   <i class="fas fa-long-arrow-alt-right"></i>
                 </a>
@@ -1172,25 +1111,25 @@
           </div>
         </div>
 
-        <div class="footer-main w-100">
+        <div class="footer-main footer-main-modern w-100">
           <div class="row footer-row">
             <div class="col-lg-3 col-md-12 wow fadeIn" data-wow-duration=".5s" data-wow-delay=".2s">
-              <div class="footer-about w-100 position-relative pt-60">
-                <a href="#home" class="footer-logo"><img src="images/Logo.png" alt="MaFlot" /></a>
-                <p class="footer-desc">MaFlot est la solution SaaS de référence pour la gestion de flotte de véhicules en Côte d'Ivoire et en Afrique de l'Ouest.</p>
-                <div class="footer-social ">
-                  <a class="hero-car-voir-plus" href="https://www.youtube.com/"><i class="fab fa-youtube"></i></a>
-                  <a class="hero-car-voir-plus" href="https://x.com/"><i class="fab fa-x-twitter"></i></a>
-                  <a class="hero-car-voir-plus" href="https://www.facebook.com/"><i class="fa-brands fa-square-facebook"></i></a>
-                  <a class="hero-car-voir-plus" href="https://www.linkedin.com/"><i class="fa-brands fa-linkedin"></i></a>
+              <div class="footer-about footer-about-card w-100 position-relative pt-60">
+                <a href="#home" class="footer-logo"><img src="{% static 'site_assets/images/Maflot-f.png' %}" alt="MaFlot" /></a>
+                <p class="footer-desc">La solution SaaS de référence pour piloter votre flotte de véhicules en Côte d'Ivoire et en Afrique de l'Ouest. Simple, fiable, accessible.</p>
+                <div class="footer-social">
+                  <a class="footer-social-link" href="https://www.youtube.com/"><i class="fab fa-youtube"></i></a>
+                  <a class="footer-social-link" href="https://x.com/"><i class="fab fa-x-twitter"></i></a>
+                  <a class="footer-social-link" href="https://www.facebook.com/"><i class="fa-brands fa-square-facebook"></i></a>
+                  <a class="footer-social-link" href="https://www.linkedin.com/"><i class="fa-brands fa-linkedin"></i></a>
                 </div>
               </div>
             </div>
             <div class="col-lg-9 col-md-12 footer-links-col">
-              <div class="widget-boxes position-relative w-100 pt-60 pb-50">
+              <div class="widget-boxes footer-links-panel position-relative w-100 pt-60 pb-50">
                 <div class="row">
                   <div class="col-lg-3 col-md-4 col-sm-6 col-sx-6 wow fadeIn" data-wow-duration=".5s" data-wow-delay=".4s">
-                    <div class="widget-box d-flex flex-column align-items-start position-relative w-100">
+                    <div class="widget-box footer-widget-card d-flex flex-column align-items-start position-relative w-100">
                       <h4 class="footer-links-title">Plateforme</h4>
                       <ul class="footer-links d-flex flex-column list-unstyled mb-0">
                         <li><a href="#pricing">Tarifs</a></li>
@@ -1202,7 +1141,7 @@
                     </div>
                   </div>
                   <div class="col-lg-3 col-md-4 col-sm-6 col-sx-6 wow fadeIn" data-wow-duration=".5s" data-wow-delay=".6s">
-                    <div class="widget-box d-flex flex-column align-items-start position-relative w-100">
+                    <div class="widget-box footer-widget-card d-flex flex-column align-items-start position-relative w-100">
                       <h4 class="footer-links-title">Ressources</h4>
                       <ul class="footer-links d-flex flex-column list-unstyled mb-0">
                         <li><a href="javascript:void(0);">Documentation</a></li>
@@ -1214,7 +1153,7 @@
                     </div>
                   </div>
                   <div class="col-lg-3 col-md-4 col-sm-6 col-sx-6 wow fadeIn" data-wow-duration=".5s" data-wow-delay=".8s">
-                    <div class="widget-box d-flex flex-column align-items-start position-relative w-100">
+                    <div class="widget-box footer-widget-card d-flex flex-column align-items-start position-relative w-100">
                       <h4 class="footer-links-title">Communauté</h4>
                       <ul class="footer-links d-flex flex-column list-unstyled mb-0">
                         <li><a href="javascript:void(0);">Support communautaire</a></li>
@@ -1225,7 +1164,7 @@
                     </div>
                   </div>
                   <div class="col-lg-3 col-md-4 col-sm-6 col-sx-6 wow fadeIn" data-wow-duration=".5s" data-wow-delay="1s">
-                    <div class="widget-box d-flex flex-column align-items-start align-items-lg-center position-relative w-100">
+                    <div class="widget-box footer-widget-card d-flex flex-column align-items-start align-items-lg-center position-relative w-100">
                       <h4 class="footer-links-title">Entreprise</h4>
                       <ul class="footer-links d-flex flex-column list-unstyled mb-0">
                         <li><a href="javascript:void(0);">À propos de MaFlot</a></li>
@@ -1240,21 +1179,7 @@
               </div>
             </div>
           </div>
-
-          <div class="footer-team-section w-100">
-            <h4 class="footer-team-title">L'équipe derrière MaFlot</h4>
-            <div class="team-slider">
-              <div class="team-member"><img src="images/resources/team-mb-1.jpg" alt="Membre équipe" /></div>
-              <div class="team-member"><img src="images/resources/team-mb-2.jpg" alt="Membre équipe" /></div>
-              <div class="team-member"><img src="images/resources/team-mb-3.jpg" alt="Membre équipe" /></div>
-              <div class="team-member"><img src="images/resources/team-mb-4.jpg" alt="Membre équipe" /></div>
-              <div class="team-member"><img src="images/resources/team-mb-5.jpg" alt="Membre équipe" /></div>
-              <div class="team-member"><img src="images/resources/team-mb-1.jpg" alt="Membre équipe" /></div>
-              <div class="team-member"><img src="images/resources/team-mb-2.jpg" alt="Membre équipe" /></div>
-              <div class="team-member"><img src="images/resources/team-mb-3.jpg" alt="Membre équipe" /></div>
-            </div>
-          </div>
-          <div class="footer-bottom w-100">
+          <div class="footer-bottom footer-bottom-modern w-100">
             <p class="footer-copyright">&copy; 2026 MaFlot — Tous droits réservés | Abidjan, Côte d'Ivoire</p>
           </div>
         </div>

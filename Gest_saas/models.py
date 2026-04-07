@@ -150,6 +150,13 @@ class ChargeVariable(models.Model):
     
 class ChargeAdminis(models.Model):
     auteur = models.ForeignKey(CustomUser,on_delete=models.SET_NULL, null=True, blank=True, related_name='user_add_chadm')
+    entreprise = models.ForeignKey(
+        'Gest_saas.Entreprise',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='charges_adminis'
+    )
     libelle = models.CharField(max_length=100)
     montant = models.IntegerField(default=0.0)
     cpte_comptable = models.CharField(max_length=100)
@@ -158,69 +165,139 @@ class ChargeAdminis(models.Model):
     date_saisie = models.DateField()
     date = models.DateTimeField(auto_now_add=True)
     history = HistoricalRecords()
-    def __str__(self) : 
+
+    def save(self, *args, **kwargs):
+        if not self.entreprise_id and self.auteur_id and getattr(self.auteur, 'entreprise_id', None):
+            self.entreprise_id = self.auteur.entreprise_id
+        super().save(*args, **kwargs)
+
+    def __str__(self) :
         return '%s ' % (self.libelle)
 
 class Prevision(models.Model):
+    entreprise = models.ForeignKey(
+        'Gest_saas.Entreprise',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='previsions'
+    )
     mois = models.DateField()
     montant_previs= models.IntegerField(default=0)
     def __str__(self):
         return '%s - %s' % (self.mois, self.montant_previs)
     def calculer_difference(self):
-        recettes_du_mois = Recette.objects.filter(date__year=self.mois.year, date__month=self.mois.month)
-        somme_recettes_du_mois = recettes_du_mois.aggregate(models.Sum('montant'))['montant__sum'] or 0
+        qs = Recette.objects.filter(date__year=self.mois.year, date__month=self.mois.month)
+        if self.entreprise_id:
+            qs = qs.filter(vehicule__entreprise=self.entreprise)
+        somme_recettes_du_mois = qs.aggregate(models.Sum('montant'))['montant__sum'] or 0
         difference = self.montant_previs - somme_recettes_du_mois
         return somme_recettes_du_mois, difference
 
 class Billetage(models.Model):
-    valeur = models.IntegerField(choices=[(10000, '10000'),  
-                                          (5000, '5000'),     
-                                          (2000, '2000'),    
-                                          (1000, '1000'),    
-                                          (500, '500'),      
+    valeur = models.IntegerField(choices=[(10000, '10000'),
+                                          (5000, '5000'),
+                                          (2000, '2000'),
+                                          (1000, '1000'),
+                                          (500, '500'),
                                           (200, '200'),
-                                          (100, '100'), 
-                                          (50, '50'), 
+                                          (100, '100'),
+                                          (50, '50'),
                                           (25, '25'),
-                                          (10, '10'),           
+                                          (10, '10'),
                                           (5, '5')]
-                                        )        
+                                        )
     nombre = models.IntegerField(default=0)
     auteur = models.ForeignKey(CustomUser,on_delete=models.SET_NULL, null=True, blank=True, related_name='bielletages')
+    entreprise = models.ForeignKey(
+        'Gest_saas.Entreprise',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='billetages'
+    )
     type = models.CharField(max_length=10, choices=[('Billet', 'Billet'), ('Pièce', 'Pièce')])
     date_saisie = models.DateField(auto_now_add=True)
     history = HistoricalRecords()
+
+    def save(self, *args, **kwargs):
+        if not self.entreprise_id and self.auteur_id and getattr(self.auteur, 'entreprise_id', None):
+            self.entreprise_id = self.auteur.entreprise_id
+        super().save(*args, **kwargs)
+
     def calculer_produit(self):
         return self.valeur * self.nombre
 
 class SoldeJour(models.Model):
-    date_saisie = models.DateField(unique=True)
+    date_saisie = models.DateField()
     montant = models.IntegerField(default=0)
     auteur = models.ForeignKey(CustomUser,on_delete=models.SET_NULL, null=True, blank=True, related_name='user_add_sold')
+    entreprise = models.ForeignKey(
+        'Gest_saas.Entreprise',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='soldes_jour'
+    )
     date = models.DateField(auto_now_add=True)
     history = HistoricalRecords()
+
+    class Meta:
+        unique_together = [['entreprise', 'date_saisie']]
+
+    def save(self, *args, **kwargs):
+        if not self.entreprise_id and self.auteur_id and getattr(self.auteur, 'entreprise_id', None):
+            self.entreprise_id = self.auteur.entreprise_id
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return '%s - %s' % (self.date_saisie, self.montant)
     
 class Encaissement(models.Model):
     auteur = models.ForeignKey(CustomUser,on_delete=models.SET_NULL, null=True, blank=True, related_name='user_add_enc')
+    entreprise = models.ForeignKey(
+        'Gest_saas.Entreprise',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='encaissements'
+    )
     Num_piece = models.CharField(max_length=100)
     libelle = models.CharField(max_length=100)
     montant = models.IntegerField(default=0)
     date_saisie = models.DateField(auto_now_add=True)
     date = models.DateTimeField(auto_now_add=True)
     history = HistoricalRecords()
+
+    def save(self, *args, **kwargs):
+        if not self.entreprise_id and self.auteur_id and getattr(self.auteur, 'entreprise_id', None):
+            self.entreprise_id = self.auteur.entreprise_id
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return '%s - %s' % (self.libelle, self.montant)
 
 class Decaissement(models.Model):
     auteur = models.ForeignKey(CustomUser,on_delete=models.SET_NULL, null=True, blank=True, related_name='user_dec')
+    entreprise = models.ForeignKey(
+        'Gest_saas.Entreprise',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='decaissements'
+    )
     Num_piece = models.CharField(max_length=100)
     libelle = models.CharField(max_length=200)
     montant = models.IntegerField(default=0)
     date_saisie = models.DateField(auto_now_add=True)
     date = models.DateTimeField(auto_now_add=True)
     history = HistoricalRecords()
+
+    def save(self, *args, **kwargs):
+        if not self.entreprise_id and self.auteur_id and getattr(self.auteur, 'entreprise_id', None):
+            self.entreprise_id = self.auteur.entreprise_id
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return '%s - %s' % (self.libelle, self.montant)
   
@@ -401,7 +478,7 @@ class Assurance(models.Model):
         return jours_assu_restant
 
 class Gerant(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,related_name='gerants')
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='gerant')
     create_by = models.ForeignKey(Administ, on_delete=models.CASCADE, related_name="admingerants")
     gerant_voiture = models.ManyToManyField(CategoVehi, blank=True, related_name="gerants")
     nom = models.CharField(max_length=255,)

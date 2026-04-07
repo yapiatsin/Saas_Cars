@@ -234,7 +234,7 @@ class GerantEditForm(forms.Form):
                     # C'est une instance de CustomUser
                     user = instance
                     try:
-                        gerant = user.gerants.get()
+                        gerant = user.gerant
                         self.fields['username'].initial = user.username if user.username else ''
                         self.fields['email'].initial = user.email if user.email else ''
                         self.fields['gender'].initial = user.gender if user.gender else ''

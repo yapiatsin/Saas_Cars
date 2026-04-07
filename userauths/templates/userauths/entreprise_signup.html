@@ -1,26 +1,49 @@
 {% extends "perfect/bacompt.html" %}
 {% load static %}
 
+{% block title %}Créer votre compte MaFlot{% endblock %}
+
+{% block after_bg %}
+<div class="signup-bg-overlay"></div>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-  <div class="login-logo text-center mb-4" style="font-size: 30px;">
-    <img src="{% static 'site_assets/images/Maflot-f.png' %}" alt="MaFlot Logo" class="img-fluid" loading="eager" style="max-height: 70px;" />
+<div class="container py-5" style="position: relative; z-index: 2;">
+
+  <!-- Logo -->
+  <div class="text-center mb-4">
+    <img src="{% static 'site_assets/images/Maflot-f.png' %}" alt="MaFlot Logo"
+         class="img-fluid" loading="eager"
+         style="max-height: 62px; filter: drop-shadow(0 4px 14px rgba(99,78,210,0.28));" />
   </div>
-  <div class="card" style="border-radius: 18px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.35); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
-    <div class="card-body login-card-body" style="background: transparent; border-radius: 18px">
-      <div class="login-logo text-center mb-4" style="font-size: 30px;">
-        <img src="{% static 'site_assets/images/Maflot-f.png' %}" alt="MaFlot Logo" class="img-fluid" loading="eager" style="max-height: 70px;" />
+
+  <!-- Main card -->
+  <div class="signup-card mx-auto" style="max-width: 920px;">
+    <div class="p-4 p-md-5">
+
+      <!-- Heading -->
+      <div class="text-center mb-4">
+        <h2 class="signup-title mb-2">Créer votre compte MaFlot</h2>
+        <p class="signup-subtitle">
+          Remplissez les informations ci-dessous pour créer votre entreprise et votre accès administrateur.
+        </p>
       </div>
-      <h2 class="mb-4 text-center">Créer votre compte MaFlot</h2>
-      <p class="text-center mb-4">
-        Remplissez les informations ci-dessous pour créer votre entreprise et votre accès administrateur.
-      </p>
-      <form method="post" novalidate>
+
+      <form method="post" novalidate class="signup-form">
         {% csrf_token %}
         {{ form.plan_code }}
+
         <div class="row">
-          <div class="col-md-6">
-            <h5 class="mb-3 p-2" style="background-color: rgba(2, 26, 78, 0.63); color: white; font-weight: 500; border-radius: 20px;">Informations du responsable</h5>
+
+          <!-- ── Colonne responsable ── -->
+          <div class="col-md-6 col-left pr-md-4 mb-4 mb-md-0">
+            <div class="section-header mb-3">
+              <i class="fas fa-user-tie"></i> Informations du responsable
+            </div>
+
             <div class="mb-3">
               {{ form.username.label_tag }}
               {{ form.username }}
@@ -47,8 +70,13 @@
               {{ form.password2.errors }}
             </div>
           </div>
-          <div class="col-md-6">
-            <h5 class="mb-3 p-2" style="background-color: rgba(2, 26, 78, 0.63); color: white; font-weight: 500; border-radius: 20px;">Informations sur l'entreprise</h5>
+
+          <!-- ── Colonne entreprise ── -->
+          <div class="col-md-6 pl-md-4">
+            <div class="section-header mb-3">
+              <i class="fas fa-building"></i> Informations sur l'entreprise
+            </div>
+
             <div class="mb-3">
               {{ form.entreprise_nom.label_tag }}
               {{ form.entreprise_nom }}
@@ -77,21 +105,107 @@
           </div>
         </div>
 
-        <div class="col-md-6">
+        <!-- ── CGU ── -->
+        <div class="cgu-row mt-3">
           {{ form.accepter_cgu }}
-          {{ form.accepter_cgu.label_tag }}
+          <label for="{{ form.accepter_cgu.id_for_label }}" class="mb-0">
+            J'ai lu et j'accepte les
+            <button type="button" class="cgu-link" data-toggle="modal" data-target="#cguModal">
+              conditions générales d'utilisation
+            </button>
+          </label>
           {{ form.accepter_cgu.errors }}
         </div>
 
-        <div class="d-flex justify-content-center mt-4">
-          <a class="btn btn-outline-primary px-5 mr-2" href="{% url 'basite' %}" style="border-radius: 50px; border-color: rgba(2, 26, 78, 0.63); color: rgba(2, 26, 78, 0.9); font-weight: 500;">Retour à l'Accueil</a>
-          <button type="submit" class="btn btn-outline-primary px-5 py-2" style="border-radius: 50px; border-color: rgba(2, 26, 78, 0.63); color: rgba(2, 26, 78, 0.9); font-weight: 500;">
-            Créer mon compte
+        <!-- ── Actions ── -->
+        <div class="d-flex justify-content-center mt-4" style="gap: 1rem;">
+          <a class="btn btn-back" href="{% url 'basite' %}">
+            <i class="fas fa-arrow-left mr-1"></i> Retour à l'Accueil
+          </a>
+          <button type="submit" id="submitBtn" class="btn btn-submit" disabled>
+            <i class="fas fa-check-circle mr-1"></i> Créer mon compte
           </button>
         </div>
       </form>
     </div>
   </div>
 </div>
-{% endblock %}
 
+<!-- ════════════ Modal CGU ════════════ -->
+<div class="modal fade modal-cgu" id="cguModal" tabindex="-1" role="dialog"
+     aria-labelledby="cguModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="cguModalLabel">
+          <i class="fas fa-file-contract mr-2"></i>Conditions Générales d'Utilisation — MaFlot
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <h6>1. Objet</h6>
+        <p>Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation de la plateforme SaaS <strong>MaFlot</strong>, solution de gestion de flotte de véhicules, éditée et exploitée par la société MaFlot CI.</p>
+
+        <h6>2. Accès au service</h6>
+        <p>L'accès à MaFlot est réservé aux entreprises et professionnels ayant procédé à leur inscription et souscrit à l'une des formules proposées. Chaque compte est strictement personnel et non transmissible.</p>
+
+        <h6>3. Responsabilités de l'utilisateur</h6>
+        <p>L'utilisateur s'engage à fournir des informations exactes lors de son inscription, à maintenir la confidentialité de ses identifiants de connexion et à utiliser la plateforme dans le respect des lois en vigueur en Côte d'Ivoire.</p>
+
+        <h6>4. Protection des données personnelles</h6>
+        <p>MaFlot collecte et traite des données personnelles conformément à la réglementation applicable. Les données sont utilisées exclusivement pour le fonctionnement du service et ne sont jamais revendues à des tiers.</p>
+
+        <h6>5. Disponibilité du service</h6>
+        <p>MaFlot s'engage à assurer la continuité du service dans la limite du raisonnable. Des maintenances programmées peuvent être effectuées, avec notification préalable des utilisateurs.</p>
+
+        <h6>6. Propriété intellectuelle</h6>
+        <p>L'ensemble des contenus, marques, logos et éléments graphiques de la plateforme MaFlot sont la propriété exclusive de MaFlot CI. Toute reproduction sans autorisation est interdite.</p>
+
+        <h6>7. Modifications des CGU</h6>
+        <p>MaFlot se réserve le droit de modifier les présentes CGU à tout moment. Les utilisateurs seront informés de tout changement significatif par email.</p>
+
+        <h6>8. Loi applicable</h6>
+        <p>Les présentes CGU sont régies par le droit ivoirien. Tout litige sera soumis à la juridiction compétente d'Abidjan, Côte d'Ivoire.</p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-back" data-dismiss="modal">
+          <i class="fas fa-times mr-1"></i> Fermer
+        </button>
+        <button type="button" class="btn btn-submit" id="acceptCguBtn" data-dismiss="modal">
+          <i class="fas fa-check mr-1"></i> J'accepte les CGU
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var checkbox  = document.getElementById('id_accepter_cgu');
+  var submitBtn = document.getElementById('submitBtn');
+  var acceptBtn = document.getElementById('acceptCguBtn');
+
+  function syncSubmit() {
+    if (submitBtn) submitBtn.disabled = !(checkbox && checkbox.checked);
+  }
+
+  if (checkbox) {
+    checkbox.addEventListener('change', syncSubmit);
+    syncSubmit();
+  }
+
+  /* Clicking "J'accepte les CGU" inside the modal auto-ticks the checkbox */
+  if (acceptBtn) {
+    acceptBtn.addEventListener('click', function () {
+      if (checkbox) { checkbox.checked = true; syncSubmit(); }
+    });
+  }
+})();
+</script>
+{% endblock %}

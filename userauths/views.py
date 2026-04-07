@@ -48,7 +48,8 @@ from django.utils import timezone
 from .forms import ChangePasswordForm
 from django.db import transaction, IntegrityError
 from django.core.exceptions import ValidationError
-
+CustomUser = get_user_model()
+from django.utils import timezone
 from userauths.forms import CustomPermissionForm, TypeCustomPermissionForm
 import openpyxl
 from openpyxl.utils import get_column_letter
@@ -254,8 +255,13 @@ def resend_verification_email_view(request):
             messages.error(request, f"Une erreur est survenue : {str(e)}")
     return render(request, "userauths/resend_verification.html")
 
+@login_required(login_url='/login/')
 def list_users(request):
-    users = CustomUser.objects.filter(is_superuser=False)
+    entreprise = getattr(request.user, 'entreprise', None)
+    if entreprise:
+        users = CustomUser.objects.filter(is_superuser=False, entreprise=entreprise)
+    else:
+        users = CustomUser.objects.none()
     return render(request, 'liste_compte.html', {'users': users})
 
 @login_required
@@ -296,85 +302,13 @@ def generate_random_password(length=8):
     characters = string.ascii_letters + string.digits 
     return ''.join(random.choice(characters) for i in range(length))
 
-# @login_required(login_url='/login/')
-# def add_administrateur(request):
-#     cxt = {}
-#     adm = Administ.objects.all()
-#     if request.method == 'POST':
-#         userform = CustomUserCreationForm(request.POST)
-#         adminform = AdministForm(request.POST)
-#         permission_form = UserPermissionForm(request.POST)
-#         if userform.is_valid() and adminform.is_valid() and permission_form.is_valid():
-#             try:
-#                 user = userform.save(commit=False)
-#                 password = generate_random_password()
-#                 user.set_password(password)
-#                 user.user_type = "1"
-#                 user.save()
-#                 adminst = adminform.save(commit=False)
-#                 adminst.user = user
-#                 adminst.save()
-#                 permissions = permission_form.cleaned_data['permissions']
-#                 user.custom_permissions.set(permissions)
-#                 subjet = 'Création de Compte Administrateur'
-#                 receivers = [user.email]
-#                 template = 'compte_success.html'
-#                 context = {
-#                     'username': user.username,
-#                     'password': password,
-#                     'date': datetime.today().date,
-#                     'user_email':user.email
-#                 }
-#                 has_send=send_email_with_html_body(
-#                     subjet=subjet, 
-#                     receivers= receivers, 
-#                     template= template, 
-#                     context=context
-#                 )
-#                 if has_send:
-#                     messages.success(request, 'Compte créé avec succès. Un email a été envoyé.')
-#                 else:
-#                     messages.error(request, 'Centre de santé enregistré avec succès, mais l\'email n\'a pas pu être envoyé.')
-#                 return redirect('addadministrateur')
-#             except Exception as e:
-#                 messages.error(request, f"Erreur: {str(e)}")
-#         else:
-#             for field, errors in userform.errors.items():
-#                 for error in errors:
-#                     messages.error(request, f"Erreur dans {field}: {error}")
-#             for field, errors in adminform.errors.items():
-#                 for error in errors:
-#                     messages.error(request, f"Erreur dans {field}: {error}")
-#     else:
-#         userform = CustomUserCreationForm()
-#         adminform = AdministForm()
-#         permission_form = UserPermissionForm()
-#     return render(request, 'add_admin.html', {
-#         'user_form': userform,
-#         'admin_form': adminform,
-#         'cxt': cxt,
-#         'admins': adm,
-#         'permission_form': permission_form,
-#     })
-# def delete_admin(request, pk):
-#     try:
-#         admin = get_object_or_404(Administ, id=pk)
-#         user = admin.user  
-#         admin.delete()
-#         user.delete()
-#         messages.success(request, f"le compte administrateur de {admin.user.username} et le profile associé ont été supprimés avec succès.")
-#     except Exception as e:
-#         messages.error(request, f"Erreur lors de la suppression : {str(e)}")
-#     return redirect('addadministrateur')
-
 @login_required(login_url='/login/')
 def add_chefexploit(request):
     user=request.user
     # Vérifier que l'utilisateur connecté est un administrateur
-    if user.user_type != "1":
+    if user.user_type != "admin":
         messages.error(request, "Seuls les administrateurs peuvent créer des comptes de chef d'exploitation.")
         return redirect('home')
-    
     # S'assurer que l'utilisateur connecté a un profil Administ
     # Si le profil n'existe pas, le créer avec des valeurs par défaut
     admin_profile, created = Administ.objects.get_or_create(
@@ -387,13 +321,13 @@ def add_chefexploit(request):
     )
     if created:
         messages.info(request, f"Votre profil administrateur a été créé automatiquement. Veuillez le compléter dans votre profil.")
-    
+    entreprise = getattr(request.user, 'entreprise', None)
     try:
-        chefexp = Chefexploitation.objects.all()
+        chefexp = Chefexploitation.objects.filter(user__entreprise=entreprise) if entreprise else Chefexploitation.objects.none()
     except Administ.DoesNotExist:
         chefexp = Chefexploitation.objects.none()
     cxt = {}
-    employ = CustomUser.objects.all()
+    employ = CustomUser.objects.filter(entreprise=entreprise) if entreprise else CustomUser.objects.none()
     if request.method == 'POST':
         userform = CustomUserCreationForm(request.POST)
         chefexploitform = ChefexploitationForm(request.POST)
@@ -403,16 +337,15 @@ def add_chefexploit(request):
                 user = userform.save(commit=False)
                 password = generate_random_password()
                 user.set_password(password)
-                user.user_type = "2" 
+                user.user_type = "gestionnaire"
+                user.entreprise = request.user.entreprise
                 user.save()
                 
                 chefexploitation = chefexploitform.save(commit=False)
                 chefexploitation.user = user
-                
                 # Utiliser le profil Administ de l'utilisateur connecté
                 chefexploitation.create_by = admin_profile
                 chefexploitation.save()
-
                 ################ Ajouter des permissions #################
                 permissions = permission_form.cleaned_data['permissions']
                 user.custom_permissions.set(permissions)
@@ -459,13 +392,23 @@ def add_chefexploit(request):
         'list_chefexp': chefexp,
     })
 
+@login_required(login_url='/login/')
+@require_POST
 def delete_chefexploit(request, pk):
+    chefexploit = get_object_or_404(Chefexploitation, id=pk)
+    if request.user.user_type != "admin":
+        messages.error(request, "Permission insuffisante.")
+        return redirect('addchefexploit')
+    # Isolation : l'admin ne peut supprimer que les comptes de sa propre entreprise
+    if chefexploit.user.entreprise != request.user.entreprise:
+        messages.error(request, "Vous ne pouvez pas supprimer un compte d'une autre entreprise.")
+        return redirect('addchefexploit')
     try:
-        chefexploit = get_object_or_404(Chefexploitation, id=pk)
-        user = chefexploit.user  
+        username = chefexploit.user.username
+        user_to_delete = chefexploit.user
         chefexploit.delete()
-        user.delete()
-        messages.success(request, f"le compte Chef exploitation de {chefexploit.user.username} et le profile associé ont été supprimés avec succès.")
+        user_to_delete.delete()
+        messages.success(request, f"Le compte Chef exploitation de {username} et le profil associé ont été supprimés.")
     except Exception as e:
         messages.error(request, f"Erreur lors de la suppression : {str(e)}")
     return redirect('addchefexploit')
@@ -474,7 +417,7 @@ def delete_chefexploit(request, pk):
 def add_comptable(request):
     user=request.user
     # Vérifier que l'utilisateur connecté est un administrateur
-    if user.user_type != "1":
+    if user.user_type != "admin":
         messages.error(request, "Seuls les administrateurs peuvent créer des comptes comptable.")
         return redirect('home')
     admin_profile, created = Administ.objects.get_or_create(
@@ -488,13 +431,13 @@ def add_comptable(request):
     if created:
         messages.info(request, f"Votre profil administrateur a été créé automatiquement. Veuillez le compléter dans votre profil.")
     
+    entreprise = getattr(request.user, 'entreprise', None)
     try:
-        # admins = Administ.objects.get(user=user)
-        compt = Comptable.objects.all()
+        compt = Comptable.objects.filter(user__entreprise=entreprise) if entreprise else Comptable.objects.none()
     except Administ.DoesNotExist:
         compt = Comptable.objects.none()
     cxt = {}
-    employ = CustomUser.objects.all()
+    employ = CustomUser.objects.filter(entreprise=entreprise) if entreprise else CustomUser.objects.none()
     if request.method == 'POST':
         userform = CustomUserCreationForm(request.POST)
         comptableform = ComptableForm(request.POST)
@@ -504,7 +447,8 @@ def add_comptable(request):
                 user = userform.save(commit=False)
                 password = generate_random_password()
                 user.set_password(password)
-                user.user_type = "3"  
+                user.user_type = "comptable"
+                user.entreprise = request.user.entreprise
                 user.save()
                 
                 comptable = comptableform.save(commit=False)
@@ -558,13 +502,22 @@ def add_comptable(request):
         'permission_form': permission_form,
     })
 
+@login_required(login_url='/login/')
+@require_POST
 def delete_comptable(request, pk):
+    comptable = get_object_or_404(Comptable, id=pk)
+    if request.user.user_type != "admin":
+        messages.error(request, "Permission insuffisante.")
+        return redirect('addcomptable')
+    if comptable.user.entreprise != request.user.entreprise:
+        messages.error(request, "Vous ne pouvez pas supprimer un compte d'une autre entreprise.")
+        return redirect('addcomptable')
     try:
-        comptable = get_object_or_404(Comptable, id=pk)
-        user = comptable.user  
+        username = comptable.user.username
+        user_to_delete = comptable.user
         comptable.delete()
-        user.delete()
-        messages.success(request, f"le compte comptable de {comptable.user.username} et le profile associé ont été supprimés avec succès.")
+        user_to_delete.delete()
+        messages.success(request, f"Le compte comptable de {username} et le profil associé ont été supprimés.")
     except Exception as e:
         messages.error(request, f"Erreur lors de la suppression : {str(e)}")
     return redirect('addcomptable')
@@ -573,7 +526,7 @@ def delete_comptable(request, pk):
 def add_gerant(request):
     user=request.user
     # Vérifier que l'utilisateur connecté est un administrateur
-    if user.user_type != "1":
+    if user.user_type != "admin":
         messages.error(request, "Seuls les administrateurs peuvent créer des comptes de gérant.")
         return redirect('home')
     # S'assurer que l'utilisateur connecté a un profil Administ
@@ -589,12 +542,13 @@ def add_gerant(request):
     if created:
         messages.info(request, f"Votre profil administrateur a été créé automatiquement. Veuillez le compléter dans votre profil.")
     
+    entreprise = getattr(request.user, 'entreprise', None)
     try:
-        list_gerant = Gerant.objects.all()
+        list_gerant = Gerant.objects.filter(user__entreprise=entreprise) if entreprise else Gerant.objects.none()
     except Administ.DoesNotExist:
         list_gerant = Gerant.objects.none()
     cxt = {}
-    employ = CustomUser.objects.all()
+    employ = CustomUser.objects.filter(entreprise=entreprise) if entreprise else CustomUser.objects.none()
     if request.method == 'POST':
         userform = CustomUserCreationForm(request.POST)
         gerantform = GerantForm(request.POST)
@@ -604,7 +558,8 @@ def add_gerant(request):
                 user = userform.save(commit=False)
                 password = generate_random_password()
                 user.set_password(password)
-                user.user_type = "4"  
+                user.user_type = "gerant"
+                user.entreprise = request.user.entreprise
                 user.save()
                 gerant = gerantform.save(commit=False)
                 gerant.user = user
@@ -659,13 +614,22 @@ def add_gerant(request):
         'permission_form': permission_form,
     })
 
+@login_required(login_url='/login/')
+@require_POST
 def delete_gerant(request, pk):
+    gerant = get_object_or_404(Gerant, id=pk)
+    if request.user.user_type != "admin":
+        messages.error(request, "Permission insuffisante.")
+        return redirect('addgerant')
+    if gerant.user.entreprise != request.user.entreprise:
+        messages.error(request, "Vous ne pouvez pas supprimer un compte d'une autre entreprise.")
+        return redirect('addgerant')
     try:
-        gerant = get_object_or_404(Gerant, id=pk)
-        user = gerant.user  
+        username = gerant.user.username
+        user_to_delete = gerant.user
         gerant.delete()
-        user.delete()
-        messages.success(request, f"Le gérant {user.username} été supprimés avec succès.")
+        user_to_delete.delete()
+        messages.success(request, f"Le gérant {username} a été supprimé avec succès.")
     except Exception as e:
         messages.error(request, f"Erreur lors de la suppression : {str(e)}")
     return redirect('addgerant')
@@ -764,7 +728,7 @@ def edit_gerant_by_user(request, user_id):
             return redirect('compte')
         
         try:
-            gerant = user.gerants.get()
+            gerant = user.gerant
         except Gerant.DoesNotExist:
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
@@ -995,8 +959,7 @@ class RequestEmailView(View):
             return  render(request, "perfect/forgot_password.html")
 
 # Vue pour vérifier l'OTP envoyé par email
-CustomUser = get_user_model()
-from django.utils import timezone
+
 class VerifyOtpView(View):
     def get(self, request):
         return render(request, 'perfect/reinitialise.html')
@@ -1068,24 +1031,24 @@ class PasswordChangeView(PasswordChangeView):
         comptable_profil = None
         gerant_profil = None
         
-        if user.user_type == "1":
+        if user.user_type == "admin":
             try:
                 admin_profil = Administ.objects.get(user=user)
             except Administ.DoesNotExist:
                 admin_profil = None
-        elif user.user_type == "2":
+        elif user.user_type == "gestionnaire":
             try:
                 chefexploit_profil = Chefexploitation.objects.get(user=user)
             except Chefexploitation.DoesNotExist:
                 chefexploit_profil = None
                 
-        elif user.user_type == "3":
+        elif user.user_type == "comptable":
             try:
                 comptable_profil = Comptable.objects.get(user=user)
             except Comptable.DoesNotExist:
                 comptable_profil = None
         
-        elif user.user_type == "4":
+        elif user.user_type == "gerant":
             try:
                 gerant_profil = Gerant.objects.get(user=user)
             except Gerant.DoesNotExist:
@@ -1129,22 +1092,22 @@ class PasswordChangeView(PasswordChangeView):
         comptable_profil = None
         gerant_profil = None
         
-        if user.user_type == "1":
+        if user.user_type == "admin":
             try:
                 admin_profil = Administ.objects.get(user=user)
             except Administ.DoesNotExist:
                 admin_profil = None
-        elif user.user_type == "2":
+        elif user.user_type == "gestionnaire":
             try:
                 chefexploit_profil = Chefexploitation.objects.get(user=user)
             except Chefexploitation.DoesNotExist:
                 chefexploit_profil = None
-        elif user.user_type == "3":
+        elif user.user_type == "comptable":
             try:
                 comptable_profil = Comptable.objects.get(user=user)
             except Comptable.DoesNotExist:
                 comptable_profil = None
-        elif user.user_type == "4":
+        elif user.user_type == "gerant":
             try:
                 gerant_profil = Gerant.objects.get(user=user)
             except Gerant.DoesNotExist:
@@ -1186,22 +1149,22 @@ class PasswordChangeView(PasswordChangeView):
         comptable_profil = None
         gerant_profil = None
         
-        if user.user_type == "1":
+        if user.user_type == "admin":
             try:
                 admin_profil = Administ.objects.get(user=user)
             except Administ.DoesNotExist:
                 admin_profil = None
-        elif user.user_type == "2":
+        elif user.user_type == "gestionnaire":
             try:
                 chefexploit_profil = Chefexploitation.objects.get(user=user)
             except Chefexploitation.DoesNotExist:
                 chefexploit_profil = None
-        elif user.user_type == "3":
+        elif user.user_type == "comptable":
             try:
                 comptable_profil = Comptable.objects.get(user=user)
             except Comptable.DoesNotExist:
                 comptable_profil = None
-        elif user.user_type == "4":
+        elif user.user_type == "gerant":
             try:
                 gerant_profil = Gerant.objects.get(user=user)
             except Gerant.DoesNotExist:

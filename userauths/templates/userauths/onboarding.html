@@ -2,56 +2,91 @@
 {% load static %}
 {% block title %}Bienvenue sur MaFlot{% endblock title %}
 {% block content %}
-<div class="login-box" style="max-width: 780px;">
-    <div class="login-logo" style="font-size: 30px; color: white;">
-        <img src="{% static 'site_assets/images/Maflot-f.png' %}" alt="MaFlot Logo" class="img-fluid" loading="eager" />
-    </div>
-    <div class="card" style="border-radius: 22px; background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.45); box-shadow: 0 20px 35px rgba(0, 0, 0, 0.35); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);">
-        <div class="card-body login-card-body" style="background: transparent; border-radius: 22px; min-height: 340px;">
-            <div class="onboarding-slide slide-active" id="slide1" style="display: block;">
-                <p class="text-center mb-4" style="font-size: 1.1rem; color: rgba(2, 26, 78, 0.9); line-height: 1.6;">
-                    Bienvenue <strong>{{ username }}</strong>, nous sommes heureux de vous compter parmi nous.
-                </p>
-                <div class="text-center mb-4">
-                    <img src="{% static 'site_assets/images/Welcome.png' %}" alt="Bienvenue sur MaFlot" class="img-fluid slide-illustration fade-in-up" style="max-height: 220px;">
+<div class="container mt-5">
+    <div class="" style="border-radius: 18px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.35); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+        <div class="login-logo text-center mb-4" style="font-size: 30px;">
+          <img src="{% static 'site_assets/images/Maflot-f.png' %}" alt="MaFlot Logo" class="img-fluid" loading="eager" style="max-height: 70px;" />
+            <div class="login-card-body onboarding-card-body">
+                <div class="onboarding-slide slide-active" id="slide1" style="display: block;">
+                    <div class="text-center mb-4">
+                        <img src="{% static 'site_assets/images/Welcome.png' %}" alt="Bienvenue sur MaFlot" class="img-fluid slide-illustration fade-in-up" style="max-height: 220px;">
+                    </div>
+                    <p class="text-center mb-4" style="font-size: 1.1rem; color: rgba(2, 26, 78, 0.9); line-height: 1.6;">
+                        Bienvenue <strong>{{ username }}</strong>, nous sommes heureux de vous compter parmi nous.
+                    </p>
                 </div>
-                <div class="text-center">
-                    <button type="button" class="btn btn-outline-primary onboarding-next" style="border-radius: 50px; border-color: rgba(2, 26, 78, 0.63); color: rgba(2, 26, 78, 0.9);" data-next="2">
-                        Suivant <i class="fas fa-arrow-right ml-1"></i>
-                    </button>
+                <div class="onboarding-slide" id="slide2" style="display: none;">
+                    <div class="text-center mb-4">
+                        <img src="{% static 'site_assets/images/Usapp.png' %}" alt="Application MaFlot" class="img-fluid slide-illustration fade-in-up" style="max-height: 220px;">
+                    </div>
+                    <p class="text-center mb-4" style="font-size: 1.1rem; color: rgba(2, 26, 78, 0.9); line-height: 1.6;">
+                        MaFlot est une application qui va vous permettre de gérer votre flotte de véhicules en toute sécurité, quel que soit votre emplacement.
+                    </p>
                 </div>
-            </div>
-            <div class="onboarding-slide" id="slide2" style="display: none;">
-                <p class="text-center mb-4" style="font-size: 1.1rem; color: rgba(2, 26, 78, 0.9); line-height: 1.6;">
-                    MaFlot est une application qui va vous permettre de gérer votre flotte de véhicules en toute sécurité, quel que soit votre emplacement.
-                </p>
-                <div class="text-center mb-4">
-                    <img src="{% static 'site_assets/images/Usapp.png' %}" alt="Application MaFlot" class="img-fluid slide-illustration fade-in-up" style="max-height: 220px;">
+                <div class="onboarding-slide" id="slide3" style="display: none;">
+                    <div class="text-center mb-4">
+                        <img src="{% static 'site_assets/images/digital.png' %}" alt="Expérience digitale MaFlot" class="img-fluid slide-illustration fade-in-up" style="max-height: 220px;">
+                    </div>
+                    <p class="text-center mb-4" style="font-size: 1.1rem; color: rgba(2, 26, 78, 0.9); line-height: 1.6;">
+                        Vivez maintenant une belle expérience avec MaFlot.
+                    </p>
+                    <div class="text-center">
+                        <a href="{% url 'onboarding_complete' %}" class="btn btn-outline-primary" style="border-radius: 50px; border-color: rgba(2, 26, 78, 0.63); color: rgba(2, 26, 78, 0.9); text-decoration: none;">
+                            Accéder au tableau de bord <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="text-center">
-                    <button type="button" class="btn btn-outline-primary onboarding-next" style="border-radius: 50px; border-color: rgba(2, 26, 78, 0.63); color: rgba(2, 26, 78, 0.9);" data-next="3">
-                        Suivant <i class="fas fa-arrow-right ml-1"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="onboarding-slide" id="slide3" style="display: none;">
-                <div class="text-center mb-4">
-                    <img src="{% static 'site_assets/images/digital.png' %}" alt="Expérience digitale MaFlot" class="img-fluid slide-illustration fade-in-up" style="max-height: 220px;">
-                </div>
-                <p class="text-center mb-4" style="font-size: 1.1rem; color: rgba(2, 26, 78, 0.9); line-height: 1.6;">
-                    Vivez maintenant une belle expérience avec MaFlot.
-                </p>
-                <div class="text-center">
-                    <a href="{% url 'onboarding_complete' %}" class="btn btn-outline-primary" style="border-radius: 50px; border-color: rgba(2, 26, 78, 0.63); color: rgba(2, 26, 78, 0.9); text-decoration: none;">
-                        Accéder au tableau de bord <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
+                <div class="onboarding-nav d-flex justify-content-between align-items-center mt-3">
+                    <button type="button" class="btn btn-link onboarding-prev text-primary px-0 p-2">Previous</button>
+                    <div class="onboarding-dots">
+                        <span class="dot active" data-slide="1"></span>
+                        <span class="dot" data-slide="2"></span>
+                        <span class="dot" data-slide="3"></span>
+                    </div>
+                    <button type="button" class="btn btn-link onboarding-next-main text-primary px-0 p-2">Next</button>
                 </div>
             </div>
         </div>
     </div>
-    </div>
 </div>
 <style>
+    .onboarding-card {
+        width: 100%;
+        min-width: 650px;
+        margin: 0 auto;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        box-shadow: 0 24px 40px rgba(0, 0, 0, 0.40);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+    .onboarding-card-body {
+        background: transparent;
+        border-radius: 22px;
+        min-height: 500px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 2.5rem 3rem;
+    }
+    @media (max-width: 768px) {
+        .login-box {
+            max-width: 100% !important;
+            padding: 0 1rem;
+        }
+        .onboarding-card {
+            min-width: auto;
+            width: 100%;
+        }
+        .onboarding-card-body {
+            min-height: 420px;
+            padding: 1.5rem 1.25rem;
+        }
+        .slide-illustration {
+            max-height: 180px !important;
+        }
+    }
     .onboarding-slide {
         opacity: 0;
         transform: translateY(10px);
@@ -77,13 +112,76 @@
             transform: translateY(0);
         }
     }
+    .onboarding-nav {
+        border-top: 1px solid rgba(2, 26, 78, 0.06);
+        padding-top: 0.5rem;
+        margin-top: 0.75rem;
+    }
+    .onboarding-dots {
+        display: flex;
+        gap: 0.4rem;
+        align-items: center;
+        justify-content: center;
+    }
+    .onboarding-dots .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #d0d4e4;
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+    .onboarding-dots .dot.active {
+        background-color: #ff4d4f;
+        transform: scale(1.1);
+    }
+    .onboarding-prev,
+    .onboarding-next-main {
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        text-decoration: none;
+    }
+    .onboarding-prev.invisible,
+    .onboarding-next-main.invisible {
+        visibility: hidden;
+    }
 </style>
 <script>
 (function() {
-    var buttons = document.querySelectorAll('.onboarding-next');
     var slides = document.querySelectorAll('.onboarding-slide');
+    var dots = document.querySelectorAll('.onboarding-dots .dot');
+    var prevBtn = document.querySelector('.onboarding-prev');
+    var nextBtn = document.querySelector('.onboarding-next-main');
+    var currentIndex = 1;
+
+    function updateNav() {
+        dots.forEach(function(dot) {
+            var target = parseInt(dot.getAttribute('data-slide'), 10);
+            if (target === currentIndex) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+        if (prevBtn) {
+            if (currentIndex === 1 || currentIndex === slides.length) {
+                prevBtn.classList.add('invisible');
+            } else {
+                prevBtn.classList.remove('invisible');
+            }
+        }
+        if (nextBtn) {
+            if (currentIndex === slides.length) {
+                nextBtn.classList.add('invisible');
+            } else {
+                nextBtn.classList.remove('invisible');
+            }
+        }
+    }
 
     function showSlide(id) {
+        currentIndex = id;
         slides.forEach(function(s) {
             s.style.display = 'none';
             s.classList.remove('slide-active');
@@ -95,15 +193,35 @@
             void nextEl.offsetWidth;
             nextEl.classList.add('slide-active');
         }
+        updateNav();
     }
 
-    buttons.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var nextId = this.getAttribute('data-next');
-            if (!nextId) return;
-            showSlide(nextId);
+    if (prevBtn) {
+        prevBtn.addEventListener('click', function() {
+            if (currentIndex > 1) {
+                showSlide(currentIndex - 1);
+            }
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function() {
+            if (currentIndex < slides.length) {
+                showSlide(currentIndex + 1);
+            }
+        });
+    }
+
+    dots.forEach(function(dot) {
+        dot.addEventListener('click', function() {
+            var target = parseInt(this.getAttribute('data-slide'), 10);
+            if (!isNaN(target)) {
+                showSlide(target);
+            }
         });
     });
+    // Initial state
+    showSlide(currentIndex);
 })();
 </script>
 {% endblock content %}
